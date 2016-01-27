@@ -8,11 +8,11 @@ function AssetManager() {
 AssetManager.prototype.queueDownload = function (path) {
     console.log("Queueing " + path);
     this.downloadQueue.push(path);
-}
+};
 
 AssetManager.prototype.isDone = function () {
     return this.downloadQueue.length === this.successCount + this.errorCount;
-}
+};
 
 AssetManager.prototype.downloadAll = function (callback) {
     for (var i = 0; i < this.downloadQueue.length; i++) {
@@ -37,8 +37,8 @@ AssetManager.prototype.downloadAll = function (callback) {
         img.src = path;
         this.cache[path] = img;
     }
-}
+};
 
 AssetManager.prototype.getAsset = function (path) {
     return this.cache[path];
-}
+};

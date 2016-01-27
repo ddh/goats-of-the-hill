@@ -1,7 +1,3 @@
-// TODO: currently MushroomDude walks off of screen, need to figure out how to programmatically stop him at right edge
-
-var AM = new AssetManager();
-
 function Animation(spriteSheet, frameWidth, frameHeight, frameDuration, frames, loop, reverse) {
     this.spriteSheet = spriteSheet;
     this.frameWidth = frameWidth;
@@ -46,42 +42,3 @@ Animation.prototype.currentFrame = function () {
 Animation.prototype.isDone = function () {
     return (this.elapsedTime >= this.totalTime);
 };
-
-function MushroomDude(game, spritesheet) {
-    this.animation = new Animation(spritesheet, 189, 230, 0.05, 26, true, false);
-    this.x = 0;
-    this.y = 0;
-    this.game = game;
-    this.ctx = game.ctx;
-}
-
-MushroomDude.prototype.draw = function () {
-//    console.log("drawing");
-    this.animation.drawFrame(this.game.clockTick, this.ctx, this.x, this.y);
-};
-
-MushroomDude.prototype.update = function() {
-    this.x += 2;
-};
-
-
-AM.queueDownload("./img/RobotUnicorn.png");
-AM.queueDownload("./img/guy.png");
-AM.queueDownload("./img/mushroomdude.png");
-AM.queueDownload("./img/runningcat.png");
-AM.queueDownload("./img/notthere.png");
-
-AM.downloadAll(function () {
-    var canvas = document.getElementById("gameWorld");
-    var ctx = canvas.getContext("2d");
-
-//    var img = AM.getAsset("./img/mushroomdude.png");
-
-    var gameEngine = new GameEngine();
-    gameEngine.init(ctx);
-    gameEngine.start();
-
-    gameEngine.addEntity(new MushroomDude(gameEngine, AM.getAsset("./img/mushroomdude.png")));
-
-    console.log("All Done!");
-});

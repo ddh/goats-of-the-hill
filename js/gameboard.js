@@ -14,8 +14,6 @@ function GameBoard(game) {
     }
 }
 
-// TODO: Entity.call() ??? - calling superclass methods from subclass
-
 GameBoard.prototype = new Entity();
 GameBoard.prototype.constructor = GameBoard;
 
@@ -25,7 +23,7 @@ GameBoard.prototype.update = function () {
         this.player = this.player === 1 ? 2 : 1;
     }
     Entity.prototype.update.call(this);
-}
+};
 
 GameBoard.prototype.draw = function (ctx) {
     ctx.drawImage(ASSET_MANAGER.getAsset("./img/960px-Blank_Go_board.png"), this.x, this.y, 760, 760);
@@ -55,27 +53,4 @@ GameBoard.prototype.draw = function (ctx) {
         else ctx.drawImage(ASSET_MANAGER.getAsset("./img/white.png"), this.game.mouse.x * size + offset, this.game.mouse.y * size + offset, 40, 40);
         ctx.restore();
     }
-}
-
-
-
-// the "main" code begins here
-
-var ASSET_MANAGER = new AssetManager();
-
-ASSET_MANAGER.queueDownload("./img/960px-Blank_Go_board.png");
-ASSET_MANAGER.queueDownload("./img/black.png");
-ASSET_MANAGER.queueDownload("./img/white.png");
-
-ASSET_MANAGER.downloadAll(function () {
-    console.log("starting up da sheild");
-    var canvas = document.getElementById('gameWorld');
-    var ctx = canvas.getContext('2d');
-
-    var gameEngine = new GameEngine();
-    var gameboard = new GameBoard(gameEngine);
-    gameEngine.addEntity(gameboard);
- 
-    gameEngine.init(ctx);
-    gameEngine.start();
-});
+};

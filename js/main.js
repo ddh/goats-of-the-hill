@@ -3,7 +3,7 @@
 // asset manager is now constructed after class is defined (bottom of assetmanager.js)
 
 // TODO: queue downloads
-ASSET_MANAGER.queueDownload("../img/canvas-meadow.png"); // temporary background image for testing
+ASSET_MANAGER.queueDownload("./img/canvas-meadow.png"); // temporary background image for testing
 
 ASSET_MANAGER.downloadAll(function () {
     var canvas = document.getElementById('gameWorld');
@@ -25,7 +25,7 @@ ASSET_MANAGER.downloadAll(function () {
     };
 
     // TODO: here, initialize entities & add entities to game engine
-    var bg = new Background(game, ASSET_MANAGER.getAsset("../img/canvas-meadow.png"));
+    var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/canvas-meadow.png"));
     gameEngine.addEntity(bg);
 
     // TODO: in loop for all goats to be created in game, call initEngineWithGoatCirclePair

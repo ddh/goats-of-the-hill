@@ -1,3 +1,4 @@
+// TODO: put these vars into a Global object as fields
 var friction = 1;
 var acceleration = 1000000;
 var maxSpeed = 200;
@@ -8,14 +9,19 @@ function distance(a, b) {
     return Math.sqrt(dx * dx + dy * dy);
 }
 
-function Circle(game) {
-    this.player = 1;
-    this.radius = 20;
-    this.visualRadius = 500;
-    this.colors = ["Red", "Green", "Blue", "White"];
-    this.setNotIt();
-    Entity.call(this, game, this.radius + Math.random() * (800 - this.radius * 2), this.radius + Math.random() * (800 - this.radius * 2));
+// TODO: do we want this to represent a bounding circle for now, then change to bounding boxes later?
+function Circle(game, goat) {
+    this.game = game;
+    this.goat = goat;
 
+    // initializes x and y fields for Circle in relation to Goat animation frame's dimensions
+    this.x = this.goat.width / 2;
+    this.y = this.goat.height / 2;
+    this.radius = distance({x: this.x, y: this.y}, {x: this.goat.width, y: this.goat.height});
+
+    Entity.call(this, game, this.x, this.y);
+
+    /*
     this.velocity = { x: Math.random() * 1000, y: Math.random() * 1000 };
     var speed = Math.sqrt(this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y);
     if (speed > maxSpeed) {
@@ -23,27 +29,18 @@ function Circle(game) {
         this.velocity.x *= ratio;
         this.velocity.y *= ratio;
     }
-};
+    */
+}
 
 Circle.prototype = new Entity();
 Circle.prototype.constructor = Circle;
 
-Circle.prototype.setIt = function () {
-    this.it = true;
-    this.color = 0;
-    this.visualRadius = 500;
-};
-
-Circle.prototype.setNotIt = function () {
-    this.it = false;
-    this.color = 3;
-    this.visualRadius = 200;
-};
-
+// handles collisions with other circles
 Circle.prototype.collide = function (other) {
     return distance(this, other) < this.radius + other.radius;
 };
 
+// the below four methods handle collisions with walls
 Circle.prototype.collideLeft = function () {
     return (this.x - this.radius) < 0;
 };

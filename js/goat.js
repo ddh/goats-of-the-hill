@@ -1,20 +1,20 @@
-function Unicorn(game) {
-    this.animation = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
-    this.jumpAnimation = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 618, 334, 174, 138, 0.02, 40, false, true);
+function Goat(game) {
+    // TODO: initialize animation field(s)
     this.jumping = false;
-    this.radius = 100;
-    this.ground = 400;
+    //this.radius = 100;
+    this.ground = 650; // changed value from 400
     this.x = 0;
     this.y = 0;
+    // TODO: add hardcoded values for width and height of one of the Goat's animations
     this.game = game;
     this.ctx = game.ctx;
-    Entity.call(this, game, 0, 400);
+    Entity.call(this, game, 0, 650); // changed value from 400
 }
 
-Unicorn.prototype = new Entity();
-Unicorn.prototype.constructor = Unicorn;
+Goat.prototype = new Entity();
+Goat.prototype.constructor = Goat;
 
-Unicorn.prototype.update = function () {
+Goat.prototype.update = function () {
     if (this.game.space) this.jumping = true;
     if (this.jumping) {
         if (this.jumpAnimation.isDone()) {
@@ -35,7 +35,7 @@ Unicorn.prototype.update = function () {
     Entity.prototype.update.call(this); // TODO: call is built-in method of JavaScript ??
 };
 
-Unicorn.prototype.draw = function (ctx) {
+Goat.prototype.draw = function (ctx) {
     if (this.jumping) {
         // TODO: meaning of magic numbers?
         this.jumpAnimation.drawFrame(this.game.clockTick, ctx, this.x + 17, this.y - 34);

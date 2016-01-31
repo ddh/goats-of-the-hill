@@ -11,11 +11,27 @@ ASSET_MANAGER.downloadAll(function () {
 
     var gameEngine = new GameEngine();
 
-    // TODO: initialize entities
+    var initEngineWithGoatCirclePair = function () {
+        var goat = new Goat(gameEngine);
+        var circ = new Circle(gameEngine);
+        circ.setX(goat.width);
+        circ.setY(goat.height);
+        circ.makeCircleBeEntity();
+        circ.setRadius({x: goat.width, y: goat.height});
+        goat.setBoundingCircle(circ);
+        gameEngine.addEntity(goat);
+        gameEngine.addEntity(circ);
+    };
+
+    // TODO: here, initialize entities & add entities to game engine
     var bg = new Background(game, ASSET_MANAGER.getAsset("../img/canvas-meadow.png"));
-    // TODO: add entities to game engine
     gameEngine.addEntity(bg);
+
+    // TODO: in loop for all goats to be created in game, call initEngineWithGoatCirclePair
+    initEngineWithGoatCirclePair(); // just creating one goat and bounding circle for now
 
     gameEngine.init(ctx);
     gameEngine.start();
 });
+
+

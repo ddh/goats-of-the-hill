@@ -64,7 +64,7 @@ GameEngine.prototype.startInput = function () {
     this.ctx.canvas.addEventListener("wheel", function (e) {
         //console.log(getXandY(e));
         that.wheel = e;
-        //       console.log(e.wheelDelta);
+        //console.log(e.wheelDelta);
         e.preventDefault();
     }, false);
 

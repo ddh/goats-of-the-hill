@@ -11,6 +11,7 @@ ASSET_MANAGER.downloadAll(function () {
 
     var gameEngine = new GameEngine();
 
+    // initializes Goat and Circle objects properly, binds Circle to Goat, and adds both to GameEngine
     var initEngineWithGoatCirclePair = function () {
         var goat = new Goat(gameEngine);
         var circ = new Circle(gameEngine);
@@ -28,7 +29,7 @@ ASSET_MANAGER.downloadAll(function () {
     gameEngine.addEntity(bg);
 
     // TODO: in loop for all goats to be created in game, call initEngineWithGoatCirclePair
-    initEngineWithGoatCirclePair(); // just creating one goat and bounding circle for now
+    //initEngineWithGoatCirclePair(); // just creating one goat and bounding circle for now
 
     gameEngine.init(ctx);
     gameEngine.start();

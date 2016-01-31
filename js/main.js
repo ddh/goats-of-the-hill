@@ -1,6 +1,6 @@
 // the "main" code begins here
 
-var ASSET_MANAGER = new AssetManager();
+// asset manager is now constructed after class is defined (bottom of assetmanager.js)
 
 ASSET_MANAGER.queueDownload("./img/960px-Blank_Go_board.png");
 ASSET_MANAGER.queueDownload("./img/black.png");

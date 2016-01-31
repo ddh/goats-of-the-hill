@@ -1,5 +1,3 @@
-// GameBoard code below
-
 var friction = 1;
 var acceleration = 1000000;
 var maxSpeed = 200;

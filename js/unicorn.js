@@ -4,6 +4,10 @@ function Unicorn(game) {
     this.jumping = false;
     this.radius = 100;
     this.ground = 400;
+    this.x = 0;
+    this.y = 0;
+    this.game = game;
+    this.ctx = game.ctx;
     Entity.call(this, game, 0, 400);
 }
 

@@ -49,7 +49,7 @@ GameEngine.prototype.startInput = function () {
         var y = e.clientY - that.ctx.canvas.getBoundingClientRect().top;
 
         return { x: x, y: y };
-    }
+    };
 
     this.ctx.canvas.addEventListener("mousemove", function (e) {
         //console.log(getXandY(e));
@@ -102,9 +102,9 @@ GameEngine.prototype.update = function () {
         }
     }
 
-    for (var i = this.entities.length - 1; i >= 0; --i) {
-        if (this.entities[i].removeFromWorld) {
-            this.entities.splice(i, 1);
+    for (var j = this.entities.length - 1; j >= 0; --j) {
+        if (this.entities[j].removeFromWorld) {
+            this.entities.splice(j, 1);
         }
     }
 };

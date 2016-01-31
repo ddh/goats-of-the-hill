@@ -9,7 +9,7 @@ function Entity(game, x, y) {
 // TODO: Marriott has this empty in his code, do we need to add anything to this???
 Entity.prototype.update = function () {};
 
-Entity.prototype.draw = function () {
+Entity.prototype.draw = function (ctx) {
     if (this.game.showOutlines && this.radius) { // means that we should only give radii fields to those entities
                                                  // whose outlines should be drawn
         this.game.ctx.beginPath();

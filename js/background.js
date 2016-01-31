@@ -12,7 +12,7 @@ Background.prototype.constructor = Background;
 // currently, background image isn't being updated - static image
 Background.prototype.update = function () {};
 
-Background.prototype.draw = function () { // deleted ctx parameter and put it as a field of the Background object
-    this.ctx.drawImage(this.image, 0, 0);
+Background.prototype.draw = function (ctx) {
+    ctx.drawImage(this.image, 0, 0);
     Entity.prototype.draw.call(this);
 };

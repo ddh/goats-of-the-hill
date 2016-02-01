@@ -7,35 +7,38 @@
     <!--
         *NOTE: The order of the JS script tags below MUST meet the dependency rule (ie. if a.js is dependent on b.js,
         then the 1st script tag's src attribute must be b.js and then a.js second.
-        TODO: I think I've correctly imported our codebase, thus far (1/30).
+        TODO: I think I've correctly imported our codebase, thus far (1/31).
      -->
 
+    <script type="text/javascript" src="./js/boundingbox.js"></script>
     <script type="text/javascript" src="./js/timer.js"></script>
     <script type="text/javascript" src="./js/gameengine.js"></script>
     <script type="text/javascript" src="./js/entity.js"></script>
+    <script type="text/javascript" src="./js/playgame.js"></script>
+    <script type="text/javascript" src="./js/platform.js"></script>
     <script type="text/javascript" src="./js/animation.js"></script>
-    <!--<script type="text/javascript" src="./js/unicorn.js"></script>-->
-    <script type="text/javascript" src="./js/circle.js"></script>
+    <script type="text/javascript" src="./js/goat.js"></script>
     <script type="text/javascript" src="./js/background.js"></script>
     <script type="text/javascript" src="./js/assetmanager.js"></script>
-    <!--<script type="text/javascript" src="./js/gameboard.js"></script>-->
-    <script type="text/javascript" src="./js/goat.js"></script>
-
-    <!--
-    <script type="text/javascript" src="./js/circle.js"></script>
-    -->
-
-    <!--<script type="text/javascript" src="./js/background.js"></script>-->
-    <!--<script type="text/javascript" src="./js/assetmanager.js"></script>-->
     <script type="text/javascript" src="./js/main.js"></script>
 </head>
 <body>
-    <div>Right click and "Inspect Element".  Select the Console Tab to see the debugger output.</div>
-
+    <div style="position: absolute; left: 15px; top: 30px; width: 400px; height: 30px; background-color: rgba(0,0,0,0);
+        font-family: Impact, Charcoal, sans-serif; font-size: 24pt; color: purple; ">
+        Oh My Goat!
+    </div>
+    <br>
+    <div id="roundNumber" style="position: absolute; left: 700px; top: 30px; width: 100px; height: 30px;
+        background-color: rgba(0,0,0,0); font-family: Impact, Charcoal, sans-serif; font-size: 24pt; color: purple; ">
+        Round #1
+    </div>
+    <br>
     <div style="width:100%; text-align:center">
         <canvas id="gameWorld" width="800" height="800" style="border: 1px solid white; display:inline"></canvas>
     </div>
-    <audio src="./audio/SSBM%20Icicle%20Mountain%20Rap%20Beat.mp3" controls autoplay loop></audio>
-    <!--<canvas id="gameWorld" width="800" height="800"></canvas>-->
+    <br>
+    <audio src="https://raw.githubusercontent.com/reidobandedo/Goat-Of-The-Hill/0e8d75e483e9e1aa145228c5b09bc5253cdf3e95/audio/SSBM%20Icicle%20Mountain%20Rap%20Beat.mp3" controls autoplay loop></audio>
+    <div>Right click and "Inspect Element".  Select the Console Tab to see the debugger output.</div>
+
 </body>
 </html>

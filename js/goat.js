@@ -12,13 +12,11 @@ function Goat(game) {
     this.ground = 650; // changed value from 400
     this.x = 0;
     this.y = 0;
+    this.lastY = this.y; // TODO: to be used for animation drawing calculations when jumping btwn platforms
     this.velocity = { x: 0, y: 0 };
 
-    // TODO: add correct values for width and height of Goat's default state animation
-    this.width = 0;
-    this.height = 0;
-
     // TODO: initialize animation field(s) - SORTA-DONE(duy)
+    // TODO: important to note that the last param for the Animation constructor is a reverse boolean
     // Animations:
     this.standAnimation             = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
     this.idleAnimation              = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
@@ -45,14 +43,24 @@ function Goat(game) {
     this.standing   = true;
     this.idle       = false;
     this.jumping    = false;
+    this.falling    = false;
     this.running    = false;
     this.charging   = false;
     this.attacking  = false;
     this.stunned    = false;
+    this.dead       = false; // TODO: want to add this now for later??
 
     // Game engine stuff:
     this.game = game;
     this.ctx = game.ctx;
+
+    this.boundingbox = new BoundingBox(this.x, this.y, this.standAnimation.frameWidth, this.standAnimation.frameHeight);
+
+    // TODO: figure out this value later!
+    this.jumpHeight = 200;
+
+    // TODO: add anymore boolean flags needed for debugging
+    this.drawBoundingBoxes = false; // used to draw bounding boxes around goat as it goes thru its different animations
 
     Entity.call(this, game, 0, 650); // changed value from 400
 }
@@ -60,8 +68,21 @@ function Goat(game) {
 Goat.prototype = new Entity();
 Goat.prototype.constructor = Goat;
 
-Goat.prototype.setBoundingCircle = function (circle) {
-    this.circle = circle;
+Goat.prototype.reset = function () {
+    this.standing   = true;
+    this.idle       = false;
+    this.jumping    = false;
+    this.falling    = false;
+    this.running    = false;
+    this.charging   = false;
+    this.attacking  = false;
+    this.stunned    = false;
+    this.dead       = false;
+
+    this.x = 0;
+    this.y = 0;
+
+    this.boundingbox = new BoundingBox(this.x, this.y, this.standAnimation.frameWidth, this.standAnimation.frameHeight);
 };
 
 Goat.prototype.update = function () {
@@ -103,6 +124,7 @@ Goat.prototype.update = function () {
     Entity.prototype.update.call(this);
 };
 
+// TODO: integrate boxes boolean flag here to draw boundingboxes for debugging different animations
 Goat.prototype.draw = function (ctx) {
     if (this.jumping) {
         this.jumpLeftAscendAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);

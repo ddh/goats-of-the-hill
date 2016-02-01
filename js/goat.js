@@ -19,6 +19,7 @@ function Goat(game) {
     this.height = 0;
 
     // TODO: initialize animation field(s) - SORTA-DONE(duy)
+    // TODO: important to note that the last param for the Animation constructor is a reverse boolean
     // Animations:
     this.standAnimation             = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
     this.idleAnimation              = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);

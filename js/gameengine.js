@@ -20,6 +20,7 @@ function GameEngine() {
     this.wheel = null;
     this.surfaceWidth = null;
     this.surfaceHeight = null;
+    this.running = false; // boolean used by playgame.js
 }
 
 GameEngine.prototype.init = function (ctx) {
@@ -116,4 +117,10 @@ GameEngine.prototype.loop = function () {
     this.click = null;
     this.rightclick = null;
     this.wheel = null;
+};
+
+GameEngine.prototype.reset = function () {
+    for (var i = 0; i < this.entities.length; i++) {
+        this.entities[i].reset();
+    }
 };

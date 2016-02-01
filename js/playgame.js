@@ -26,7 +26,6 @@ PlayGame.prototype.update = function () {
 PlayGame.prototype.draw = function (ctx) {
     if (!this.game.running) {
         ctx.font = "24pt Arial";
-        ctx.fillStyle = "gold";
         if (this.game.mouse) { ctx.fillStyle = "purple"; }
         if (TIMES_PLAYED === 0) {
             ctx.fillText("Play OMG!?!", this.x, this.y);

@@ -10,9 +10,12 @@
         TODO: I think I've correctly imported our codebase, thus far (1/30).
      -->
 
+    <script type="text/javascript" src="./js/boundingbox.js"></script>
     <script type="text/javascript" src="./js/timer.js"></script>
     <script type="text/javascript" src="./js/gameengine.js"></script>
     <script type="text/javascript" src="./js/entity.js"></script>
+    <script type="text/javascript" src="./js/playgame.js"></script>
+    <script type="text/javascript" src="./js/platform.js"></script>
     <script type="text/javascript" src="./js/animation.js"></script>
     <script type="text/javascript" src="./js/goat.js"></script>
     <script type="text/javascript" src="./js/background.js"></script>
@@ -20,8 +23,19 @@
     <script type="text/javascript" src="./js/main.js"></script>
 </head>
 <body>
-    <canvas id="gameWorld" width="800" height="600"></canvas>
+    <div style="position: absolute; left: 15px; top: 30px; width: 400px; height: 30px; background-color: rgba(0,0,0,0);
+        font-family: Impact, Charcoal, sans-serif; font-size: 24pt; color: purple; ">
+        Oh My Goat!
+    </div>
+    <br>
+    <div id="roundNumber" style="position: absolute; left: 700px; top: 30px; width: 100px; height: 30px;
+        background-color: rgba(0,0,0,0); font-family: Impact, Charcoal, sans-serif; font-size: 24pt; color: purple; ">
+        Round #1
+    </div>
+    <br>
+    <canvas id="gameWorld" tabindex="1" width="800" height="600"></canvas>
     <br>
     <audio src="https://raw.githubusercontent.com/reidobandedo/Goat-Of-The-Hill/0e8d75e483e9e1aa145228c5b09bc5253cdf3e95/audio/SSBM%20Icicle%20Mountain%20Rap%20Beat.mp3" controls autoplay loop></audio>
+    <div>Right click and "Inspect Element".  Select the Console Tab to see the debugger output.</div>
 </body>
 </html>

@@ -13,7 +13,7 @@ window.requestAnimFrame = (function () {
 
 function GameEngine() {
     this.entities = [];
-    this.showOutlines = false;
+    this.showOutlines = false; // debugging flag for drawing bounding circles
     this.ctx = null;
     this.click = null;
     this.mouse = null;
@@ -64,7 +64,7 @@ GameEngine.prototype.startInput = function () {
     this.ctx.canvas.addEventListener("wheel", function (e) {
         //console.log(getXandY(e));
         that.wheel = e;
-        //       console.log(e.wheelDelta);
+        //console.log(e.wheelDelta);
         e.preventDefault();
     }, false);
 

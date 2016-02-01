@@ -1,17 +1,19 @@
 function Entity(game, x, y) {
     this.game = game;
+    // location of entity on canvas
     this.x = x;
     this.y = y;
     this.removeFromWorld = false;
 }
 
-Entity.prototype.update = function () {
-};
+// TODO: Marriott has this empty in his code, do we need to add anything to this???
+Entity.prototype.update = function () {};
 
 Entity.prototype.draw = function (ctx) {
-    if (this.game.showOutlines && this.radius) {
+    if (this.game.showOutlines && this.radius) { // means that we should only give radii fields to those entities
+                                                 // whose outlines should be drawn
         this.game.ctx.beginPath();
-        this.game.ctx.strokeStyle = "green";
+        this.game.ctx.strokeStyle = "red";
         this.game.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
         this.game.ctx.stroke();
         this.game.ctx.closePath();

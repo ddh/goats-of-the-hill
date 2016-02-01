@@ -21,7 +21,6 @@ function GameEngine() {
     this.surfaceWidth = null;
     this.surfaceHeight = null;
     this.running = false; // boolean used by playgame.js
-    this.roundNumber = 1; // to be updated as the user(s) play more rounds of the game
 }
 
 GameEngine.prototype.init = function (ctx) {

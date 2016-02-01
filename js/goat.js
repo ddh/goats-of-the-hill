@@ -60,7 +60,7 @@ function Goat(game) {
     this.jumpHeight = 200;
 
     // TODO: add anymore boolean flags needed for debugging
-    this.boxes = false; // used to draw bounding boxes around goat as it goes thru its different animations
+    this.drawBoundingBoxes = false; // used to draw bounding boxes around goat as it goes thru its different animations
 
     Entity.call(this, game, 0, 650); // changed value from 400
 }

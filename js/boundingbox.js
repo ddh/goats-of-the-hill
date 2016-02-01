@@ -1,3 +1,6 @@
+// This code is based on Chris Marriott's Unicorn game found here:
+// https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
+
 function BoundingBox(x, y, width, height) {
     this.x = x;
     this.y = y;
@@ -10,7 +13,7 @@ function BoundingBox(x, y, width, height) {
     this.bottom = this.top + height;
 }
 
-BoundingBox.prototype.collide = function (oth) {
-    if (this.right > oth.left && this.left < oth.right && this.top < oth.bottom && this.bottom > oth.top) return true;
+BoundingBox.prototype.collide = function (other) {
+    if (this.right > other.left && this.left < other.right && this.top < other.bottom && this.bottom > other.top) return true;
     return false;
 };

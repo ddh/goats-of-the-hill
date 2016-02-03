@@ -1,10 +1,12 @@
 function Platform(game, image, x, y, width, height) {
+    this.game = game;
     this.image = image;
     this.width = width;
     this.height = height;
     this.startX = x;
     this.startY = y;
-    this.boundingbox = new BoundingBox(x, y, width, height);
+    this.velocity = 3;
+    this.boundingBox = new BoundingBox(x, y, width, height);
     Entity.call(this, game, x, y);
 }
 
@@ -14,7 +16,15 @@ Platform.prototype.constructor = Platform;
 Platform.prototype.reset = function () {};
 
 // don't need to update our platforms as their state won't change after the game is initialized
-Platform.prototype.update = function () {};
+Platform.prototype.update = function () {
+
+    // Sample code to make platforms move back and forth
+    //this.x += this.velocity;
+    //if (this.x <= 0 || this.x + 100 >= this.game.ctx.canvas.width) {
+    //    this.velocity *= -1;
+    //}
+    //this.boundingBox = new BoundingBox(this.x, this.y, this.width, this.height);
+};
 
 
 Platform.prototype.draw = function (ctx) {

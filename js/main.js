@@ -22,29 +22,29 @@ ASSET_MANAGER.downloadAll(function () {
     gameEngine.addEntity(pg);
 
     /* === Background === */
-    var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/farm.png"), 1000, 500);
+    var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/farm.png"), 800, 600);
     gameEngine.addEntity(bg);
 
     /* === Platforms === */
     /* Creates platforms */
-    //var platforms = [];
-    //var plats = function(x, y) {                                                        //w, h
-    //    var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay.png"), x, y, 85, 55);
-    //    gameEngine.addEntity(pf);
-    //    platforms.push(pf);
-    //}
-    ///* bottom row */
-    //plats(202, 380);
-    //plats(560, 380);
-    ///* second row */
-    //plats(283, 327);
-    //plats(357, 327);
-    //plats(428, 327);
-    //plats(500, 327);
-    ///* top row */
-    //plats(400, 273);
-    //
-    //gameEngine.platforms = platforms;
+    var platforms = [];
+    var plats = function(x, y) {                                                        //w, h
+        var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay.png"), x, y, 85, 55);
+        gameEngine.addEntity(pf);
+        platforms.push(pf);
+    }
+    /* bottom row */
+    plats(202, 480);
+    plats(560, 480);
+    /* second row */
+    plats(283, 427);
+    plats(357, 427);
+    plats(428, 427);
+    plats(500, 427);
+    /* top row */
+    plats(400, 373);
+
+    gameEngine.platforms = platforms;
 
     /* === Goats === */
     var goat = new Goat(gameEngine);

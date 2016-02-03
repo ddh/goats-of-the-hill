@@ -9,7 +9,7 @@ function maxSpeedEnforcement(speed, maxSpeed) {
 function Goat(game) {
 
     // Game physics:
-    this.ground = 600 - 60; // changed value from 400
+    this.ground = 480; // changed value from 400
     this.x = 0;
     this.y = this.ground;
     this.width = 50;
@@ -115,13 +115,17 @@ Goat.prototype.update = function () {
         if (this.game.left && this.x > 0) this.x -= this.speed;
     }
 
-    // Collisions on the way down:
-    var entities = this.game.entities;
+    // Collisions with platforms:
+    var platforms = this.game.platforms;
 
-    for (var i = 0; i < entities.length; i++) {
-        if(entities[i]!==this) { // Prevents collision with self! ~Duy
-            if (this.boundingBox.collide(entities[i].boundingBox)) {
-                console.log("COLLISION WITH " + entities[i]);
+    for (var i = 0; i < platforms.length; i++) {
+        if(platforms[i]!==this) { // Prevents collision with self! ~Duy
+            if (this.boundingBox.collide(platforms[i].boundingBox)) {
+                console.log("COLLISION WITH " + platforms[i]);
+                this.collided = platforms[i].collided = true;
+            } else{
+                this.collide = false;
+                platforms[i].collided = false;
             }
         }
 

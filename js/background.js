@@ -13,7 +13,9 @@ Background.prototype = new Entity();
 Background.prototype.constructor = Background;
 
 // currently, background image isn't being updated - static image
-Background.prototype.update = function () {};
+Background.prototype.update = function () {
+    //this.boundingBox = new BoundingBox(0, 0, 0, 0); // TODO: to prevent collisions with background for now. Needs fix. ~Duy
+};
 
 Background.prototype.draw = function (ctx) {
     ctx.drawImage(this.image, 0, 0, this.width, this.height);

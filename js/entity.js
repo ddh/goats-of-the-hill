@@ -3,20 +3,27 @@ function Entity(game, x, y) {
     // location of entity on canvas
     this.x = x;
     this.y = y;
+    this.collided = false;
     this.removeFromWorld = false;
 }
 
 // TODO: Marriott has this empty in his code, do we need to add anything to this???
-Entity.prototype.update = function () {};
+Entity.prototype.update = function () {
+};
 
 // added b/c Marriott had it in his Unicorn game code and I thought it might be useful later down the road
-Entity.prototype.reset = function () {};
+Entity.prototype.reset = function () {
+};
 
 Entity.prototype.draw = function (ctx) {
     if (this.game.enableDebug) {
         this.game.ctx.beginPath();
-        this.game.ctx.lineWidth = "4";
-        this.game.ctx.strokeStyle = "green";
+        this.game.ctx.lineWidth = "2";
+        if (this.collided) {
+            this.game.ctx.strokeStyle = "red";
+        } else {
+            this.game.ctx.strokeStyle = "green";
+        }
         this.game.ctx.rect(this.x, this.y, this.width, this.height);
         this.game.ctx.stroke();
         this.game.ctx.closePath();

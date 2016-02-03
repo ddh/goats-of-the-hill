@@ -18,7 +18,7 @@ Platform.prototype.update = function () {};
 
 
 Platform.prototype.draw = function (ctx) {
-    ctx.drawImage(this.image, this.sta, this.startX, this.startY, this.width, this.height);
+    ctx.drawImage(this.image, this.startX, this.startY, this.width, this.height);
     Entity.prototype.draw.call(this);
 };
 

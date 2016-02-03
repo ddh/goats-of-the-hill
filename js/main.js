@@ -22,19 +22,6 @@ ASSET_MANAGER.downloadAll(function () {
     var platforms = [];
     gameEngine.roundNumber = roundNumber;
 
-    // initializes Goat and Circle objects properly, binds Circle to Goat, and adds both to GameEngine
-    var initEngineWithGoatCirclePair = function () {
-        var goat = new Goat(gameEngine);
-        var circ = new Circle(gameEngine);
-        circ.setX(goat.width);
-        circ.setY(goat.height);
-        circ.makeCircleBeEntity();
-        circ.setRadius({x: goat.width, y: goat.height});
-        goat.setBoundingCircle(circ);
-        gameEngine.addEntity(goat);
-        gameEngine.addEntity(circ);
-    };
-
     // TODO: here, initialize entities & add entities to game engine
     var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/farm.png"), 1000, 500);
     gameEngine.addEntity(bg);
@@ -47,7 +34,7 @@ ASSET_MANAGER.downloadAll(function () {
 
     // // TODO: initialize entities
     // var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/smb_mountain.png"));
-    var pg = new PlayGame(gameEngine, 320, 350);
+    var pg = new PlayGame(gameEngine, 320, 250);
 
     // TODO: add entities to game engine
     gameEngine.addEntity(bg);

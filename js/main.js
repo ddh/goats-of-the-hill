@@ -35,13 +35,26 @@ ASSET_MANAGER.downloadAll(function () {
         gameEngine.addEntity(circ);
     };
 
-    // TODO: here, initialize entities & add entities to game engine
+    /* Background */
     var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/farm.png"), 1000, 500);
     gameEngine.addEntity(bg);
     
-    var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay.png"), 500, 500, 100, 100);
-    gameEngine.addEntity(pf);
-    platforms.push(pf);
+    /* Creates platforms */
+    var plats = function(x, y) {                                                        //w, h
+        var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay.png"), x, y, 85, 55);
+        gameEngine.addEntity(pf);
+        platforms.push(pf);
+    }
+    /* bottom row */
+    plats(202, 380);
+    plats(560, 380);
+    /* second row */
+    plats(283, 327);
+    plats(357, 327);
+    plats(428, 327);
+    plats(500, 327);
+    /* top row */
+    plats(400, 273);
     
     gameEngine.platforms = platforms;
 
@@ -50,18 +63,12 @@ ASSET_MANAGER.downloadAll(function () {
     var pg = new PlayGame(gameEngine, 320, 350);
 
     // TODO: add entities to game engine
-    gameEngine.addEntity(bg);
+    //gameEngine.addEntity(bg);
     gameEngine.addEntity(pg);
 
     gameEngine.init(ctx);
     gameEngine.start();
     
-    // var background = new Image();
-    // background.src = ASSET_MANAGER.getAsset('./js/img/farm.png').src;
-    // background.onload = function() {
-    //     console.log("Set background");
-    //     ctx.drawImage(background, 30, 0, 1000, 500);
-    // }
 });
 
 

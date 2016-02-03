@@ -119,9 +119,12 @@ Goat.prototype.update = function () {
     var entities = this.game.entities;
 
     for (var i = 0; i < entities.length; i++) {
-        if (this.boundingBox.collide(entities[i].boundingBox)) {
-            console.log("COLLISION WITH " + entities[i]);
+        if(entities[i]!==this) { // Prevents collision with self! ~Duy
+            if (this.boundingBox.collide(entities[i].boundingBox)) {
+                console.log("COLLISION WITH " + entities[i]);
+            }
         }
+
     }
 
     Entity.prototype.update.call(this);

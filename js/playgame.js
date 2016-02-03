@@ -26,14 +26,13 @@ PlayGame.prototype.update = function () {
 };
 
 PlayGame.prototype.draw = function (ctx) {
+    ctx.fillStyle = "purple";
     if (!this.game.running) {
-        ctx.font = "24pt Arial";
-        //ctx.fillStyle = "gold"; // TODO: thought the UW colors would be a fun theme, at least for play game button
-        if (this.game.mouse) { ctx.fillStyle = "purple"; }
+        ctx.font = "24pt Impact";
         if (ROUNDS_PLAYED === 0) {
             ctx.fillText("Play OMG!?!", this.x, this.y);
         } else {
-            ctx.fillText("Play OMG Again?!?", this.x - 30, this.y);
+            ctx.fillText("Play OMG Again?!?", this.x, this.y);
         }
     }
 };

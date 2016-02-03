@@ -60,7 +60,7 @@ ASSET_MANAGER.downloadAll(function () {
 
     // // TODO: initialize entities
     // var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/smb_mountain.png"));
-    var pg = new PlayGame(gameEngine, 320, 350);
+    var pg = new PlayGame(gameEngine, 320, 250);
 
     // TODO: add entities to game engine
     //gameEngine.addEntity(bg);

@@ -18,3 +18,7 @@ Background.prototype.draw = function (ctx) {
     ctx.drawImage(this.image, 0, 0, this.width, this.height);
     Entity.prototype.draw.call(this);
 };
+
+Background.prototype.toString = function backgroundToString() {
+    return 'Background';
+};

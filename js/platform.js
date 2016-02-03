@@ -22,6 +22,9 @@ Platform.prototype.draw = function (ctx) {
     Entity.prototype.draw.call(this);
 };
 
+Platform.prototype.toString = function platformToString() {
+    return 'Platform';
+};
 
 // Platform.prototype.draw = function (ctx) {
 //     // TODO: would be cool to draw platforms with gradients like in code below

@@ -138,3 +138,7 @@ Goat.prototype.draw = function (ctx) {
     }
     Entity.prototype.draw.call(this);
 };
+
+Goat.prototype.toString = function goatToString() {
+    return 'Goat';
+};

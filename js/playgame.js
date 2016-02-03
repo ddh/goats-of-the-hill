@@ -36,3 +36,7 @@ PlayGame.prototype.draw = function (ctx) {
         }
     }
 };
+
+PlayGame.prototype.toString = function playGameToString() {
+    return 'PlayGame';
+};

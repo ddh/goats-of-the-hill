@@ -2,44 +2,32 @@
 
 // asset manager is now constructed after class is defined (bottom of assetmanager.js)
 
-
-//ASSET_MANAGER.queueDownload("./img/960px-Blank_Go_board.png");
-//ASSET_MANAGER.queueDownload("./img/black.png");
-//ASSET_MANAGER.queueDownload("./img/white.png");
 ASSET_MANAGER.queueDownload("./img/farm.png");
 ASSET_MANAGER.queueDownload("./img/mountain.png");
 ASSET_MANAGER.queueDownload("./img/hay.png");
-ASSET_MANAGER.queueDownload("./img/canvas-meadow.png"); // temporary background image for testing
 ASSET_MANAGER.queueDownload("./img/smb_mountain.png"); // temporary background image for testing
+ASSET_MANAGER.queueDownload("./img/spaz_frames.png"); // temporary entity sprites for testing
 
 ASSET_MANAGER.downloadAll(function () {
+
+    /* === Game Engine === */
     var canvas = document.getElementById('gameWorld');
-    var roundNumber = document.getElementById('roundNumber');
     var ctx = canvas.getContext('2d');
-    
-    
     var gameEngine = new GameEngine();
-    var platforms = [];
+
+    /* === Game Logistics === */
+    var roundNumber = document.getElementById('roundNumber');
     gameEngine.roundNumber = roundNumber;
+    var pg = new PlayGame(gameEngine, 320, 250);
+    gameEngine.addEntity(pg);
 
-    // initializes Goat and Circle objects properly, binds Circle to Goat, and adds both to GameEngine
-    var initEngineWithGoatCirclePair = function () {
-        var goat = new Goat(gameEngine);
-        var circ = new Circle(gameEngine);
-        circ.setX(goat.width);
-        circ.setY(goat.height);
-        circ.makeCircleBeEntity();
-        circ.setRadius({x: goat.width, y: goat.height});
-        goat.setBoundingCircle(circ);
-        gameEngine.addEntity(goat);
-        gameEngine.addEntity(circ);
-    };
-
-    /* Background */
+    /* === Background === */
     var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/farm.png"), 1000, 500);
     gameEngine.addEntity(bg);
-    
+
+    /* === Platforms === */
     /* Creates platforms */
+    var platforms = [];
     var plats = function(x, y) {                                                        //w, h
         var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay.png"), x, y, 85, 55);
         gameEngine.addEntity(pf);
@@ -58,14 +46,11 @@ ASSET_MANAGER.downloadAll(function () {
     
     gameEngine.platforms = platforms;
 
-    // // TODO: initialize entities
-    // var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/smb_mountain.png"));
-    var pg = new PlayGame(gameEngine, 320, 250);
+    /* === Goats === */
+    var goat = new Goat(gameEngine);
+    gameEngine.addEntity(goat);
 
-    // TODO: add entities to game engine
-    //gameEngine.addEntity(bg);
-    gameEngine.addEntity(pg);
-
+    /* === START GAME === */
     gameEngine.init(ctx);
     gameEngine.start();
     

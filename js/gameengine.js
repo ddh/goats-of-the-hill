@@ -47,7 +47,7 @@ GameEngine.prototype.startInput = function () {
 
     /* === KEYBOARD EVENTS === */
 
-    // Prevent some keyboard defaults:
+    // Prevent some keyboard navigation defaults:
     // http://stackoverflow.com/questions/8916620/disable-arrow-key-scrolling-in-users-browser
     this.ctx.canvas.addEventListener("keydown", function (e) {
         // space and arrow keys (32:spacebar, 37:left, 38:up, 39:right, 40:down)
@@ -111,6 +111,7 @@ GameEngine.prototype.addEntity = function (entity) {
 };
 
 GameEngine.prototype.draw = function () {
+
     // 1. Clear the window (Removes previously drawn things from canvas)
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
@@ -146,13 +147,21 @@ GameEngine.prototype.update = function () {
 };
 
 GameEngine.prototype.loop = function () {
+
+    // 1. Advance game a 'tick' on the game timer
     this.clockTick = this.timer.tick();
+
+    // 2. Update game engine (cycle through all entities)
     this.update();
+
+    // 3. Redraw out to canvas
     this.draw();
+
+    // 4. Reset inputs to prevent repeated firing
     this.click = null;
     this.rightclick = null;
     this.wheel = null;
-    this.space = null; // Clear out space at end of loop, otherwise it will keep firing
+    this.space = null;
 };
 
 GameEngine.prototype.reset = function () {

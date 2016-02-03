@@ -1,11 +1,11 @@
 function Background(game, image, width, height) {
     Entity.call(this, game, 0, 0); // changed last param from 400
-    //this.radius = 200; // TODO: double-check w/ Marriott that radius is used for drawing bounding circles
     this.game = game;
     this.ctx = game.ctx;
     this.image = image;
     this.width = width;
     this.height = height;
+    this.boundingBox = new BoundingBox(0, 0, width, height); // bg has to have boundingbox too or game will crashe. ~Duy
 }
 
 Background.prototype = new Entity();

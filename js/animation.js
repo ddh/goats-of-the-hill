@@ -1,5 +1,7 @@
-function Animation(spriteSheet, frameWidth, frameHeight, frameDuration, frames, loop, reverse) {
+function Animation(spriteSheet, startX, startY, frameWidth, frameHeight, frameDuration, frames, loop, reverse) {
     this.spriteSheet = spriteSheet;
+    this.startX = startX;
+    this.startY = startY;
     this.frameWidth = frameWidth;
     this.frameDuration = frameDuration;
     this.frameHeight = frameHeight;
@@ -7,29 +9,40 @@ function Animation(spriteSheet, frameWidth, frameHeight, frameDuration, frames, 
     this.totalTime = frameDuration * frames;
     this.elapsedTime = 0;
     this.loop = loop;
-    this.reverse = reverse; // might as well keep this in here, just in case it's needed
+    this.reverse = reverse;
 }
 
-Animation.prototype.drawFrame = function (tick, ctx, x, y) {
+Animation.prototype.drawFrame = function (tick, ctx, x, y, scaleBy) {
+    var scaleBy = scaleBy || 1;
     this.elapsedTime += tick;
-    if (this.isDone()) {
-        if (this.loop) this.elapsedTime = 0;
+    if (this.loop) {
+        if (this.isDone()) {
+            this.elapsedTime = 0;
+        }
+    } else if (this.isDone()) {
+        return;
     }
-    var frame = this.currentFrame();
-    var xindex = 0;
-    var yindex = 0;
+    var index = this.reverse ? this.frames - this.currentFrame() - 1 : this.currentFrame();
+    var vindex = 0;
+    if ((index+1) * this.frameWidth + this.startX > this.spriteSheet.width) {
+        index -= Math.floor((this.spriteSheet.width - this.startX) / this.frameWidth);
+        vindex++;
+    }
+    while ((index + 1) * this.frameWidth > this.spriteSheet.width) {
+        index -= Math.floor(this.spriteSheet.width / this.frameWidth);
+        vindex++;
+    }
 
-    // TODO: calculate current frame's x/y coords for drawing
-
-    console.log(frame + " " + xindex + " " + yindex);
-
+    var locX = x;
+    var locY = y;
+    var offset = vindex === 0 ? this.startX : 0;
     ctx.drawImage(this.spriteSheet,
-                 xindex * this.frameWidth, yindex * this.frameHeight,  // source from sheet
-                 this.frameWidth, this.frameHeight,
-                 x, y,
-                 this.frameWidth,
-                 this.frameHeight);
-};
+        index * this.frameWidth + offset, vindex*this.frameHeight + this.startY,  // source from sheet
+        this.frameWidth, this.frameHeight,
+        locX, locY,
+        this.frameWidth * scaleBy,
+        this.frameHeight * scaleBy);
+}
 
 Animation.prototype.currentFrame = function () {
     return Math.floor(this.elapsedTime / this.frameDuration);

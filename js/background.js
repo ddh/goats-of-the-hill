@@ -5,7 +5,8 @@ function Background(game, image, width, height) {
     this.image = image;
     this.width = width;
     this.height = height;
-    this.boundingBox = new BoundingBox(0, 0, width, height); // bg has to have boundingbox too or game will crashe. ~Duy
+    // TODO: Needs a BoundingBox otherwise crashes Work-around: hide it ~Duy
+    this.boundingBox = new BoundingBox(0, 0, width, height);
 }
 
 Background.prototype = new Entity();

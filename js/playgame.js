@@ -10,8 +10,7 @@ function PlayGame(game, x, y) {
     this.y = y;
     this.game.roundNumber.innerHTML = "Round #" + (ROUNDS_PLAYED + 1);
 
-    this.boundingBox = new BoundingBox(0, 0, 0, 0);
-    Entity.call(this, game, x, y);
+    Entity.call(this, game, x, y, 0, 0);
 }
 
 PlayGame.prototype = new Entity();
@@ -24,8 +23,8 @@ PlayGame.prototype.reset = function () {
 };
 
 PlayGame.prototype.update = function () {
-    this.boundingBox = new BoundingBox(0, 0, 0, 0);
     if (this.game.click && this.game.timer.gameTime < ROUND_TIME_LIMIT) this.game.running = true;
+    Entity.prototype.update.call(this);
 };
 
 PlayGame.prototype.draw = function (ctx) {
@@ -38,8 +37,9 @@ PlayGame.prototype.draw = function (ctx) {
             ctx.fillText("Play OMG Again?!?", this.x, this.y);
         }
     }
+    Entity.prototype.draw.call(this, ctx);
 };
 
-PlayGame.prototype.toString = function playGameToString() {
+PlayGame.prototype.toString = function () {
     return 'PlayGame';
 };

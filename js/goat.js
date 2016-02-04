@@ -12,26 +12,26 @@ function Goat(game) {
     this.ground = 480; // changed value from 400
     this.x = 0;
     this.y = this.ground;
-    this.width = 50;
-    this.height = 50;
+    this.width = 50; //TODO: What is width of goat?
+    this.height = 50; //TODO: What is height of goat?
     this.lastY = this.y; // TODO: to be used for animation drawing calculations when jumping btwn platforms
     this.velocity = {x: 0, y: 0};
     this.speed = 5;
     this.jumpHeight = 200;
 
     // Animations:
-    this.standAnimation                 = new Animation(ASSET_MANAGER.getAsset("./img/spaz_frames.png"), 0, 0, 56, 52, 0.1, 6, true, false);
+    this.standAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spaz_frames.png"), 0, 0, 56, 52, 0.1, 6, true, false);
     //this.idleAnimation              = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
     //
-    this.jumpLeftAscendAnimation        = new Animation(ASSET_MANAGER.getAsset("./img/spaz_frames.png"), 3920, 0, 56, 52, 0.05, 17, false, false);
+    this.jumpLeftAscendAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spaz_frames.png"), 3920, 0, 56, 52, 0.05, 17, false, false);
     //this.jumpRightAscendAnimation   = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
     //this.jumpLeftDescendAnimation   = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
     //this.jumpRightDescendAnimation  = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
     //this.landLeftAnimation          = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
     //this.landRightAnimation         = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
     //
-    this.runLeftAnimation               = new Animation(ASSET_MANAGER.getAsset("./img/spaz_frames.png"), 1904, 0, 56, 52, 0.1, 8, true, false);
-    this.runRightAnimation              = new Animation(ASSET_MANAGER.getAsset("./img/spaz_frames.png"), 1456, 0, 56, 52, 0.1, 8, true, false);
+    this.runLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spaz_frames.png"), 1904, 0, 56, 52, 0.1, 8, true, false);
+    this.runRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/spaz_frames.png"), 1456, 0, 56, 52, 0.1, 8, true, false);
     //
     //this.chargingLeftAnimation      = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
     //this.chargingRightAnimation     = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
@@ -41,41 +41,41 @@ function Goat(game) {
     //this.stunnedRightAnimation      = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
 
     // Action states
-    this.standing   = true;
-    this.idle       = false;
-    this.jumping    = false;
-    this.falling    = false;
-    this.running    = false;
-    this.charging   = false;
-    this.attacking  = false;
-    this.stunned    = false;
+    this.standing = true;
+    this.idle = false;
+    this.jumping = false;
+    this.falling = false;
+    this.running = false;
+    this.charging = false;
+    this.attacking = false;
+    this.stunned = false;
 
-    this.boundingBox = new BoundingBox(this.x + 25, this.y, this.standAnimation.frameWidth - 40, this.standAnimation.frameHeight - 20);
+    //this.boundingBox = new BoundingBox(this.x + 25, this.y, this.standAnimation.frameWidth - 40, this.standAnimation.frameHeight - 20);
 
     // Game engine stuff:
     //this.game = game;
     //this.ctx = game.ctx;
 
-    Entity.call(this, game, 0, this.ground);
+    Entity.call(this, game, 0, this.ground, this.width, this.height);
 }
 
 Goat.prototype = new Entity();
 Goat.prototype.constructor = Goat;
 
 Goat.prototype.reset = function () {
-    this.standing   = true;
-    this.idle       = false;
-    this.jumping    = false;
-    this.falling    = false;
-    this.running    = false;
-    this.charging   = false;
-    this.attacking  = false;
-    this.stunned    = false;
+    this.standing = true;
+    this.idle = false;
+    this.jumping = false;
+    this.falling = false;
+    this.running = false;
+    this.charging = false;
+    this.attacking = false;
+    this.stunned = false;
 
     this.x = 0;
     this.y = 0;
 
-    this.boundingbox = new BoundingBox(this.x, this.y, this.standAnimation.frameWidth, this.standAnimation.frameHeight);
+    //this.boundingbox = new BoundingBox(this.x, this.y, this.standAnimation.frameWidth, this.standAnimation.frameHeight);
 };
 
 Goat.prototype.update = function () {
@@ -119,11 +119,11 @@ Goat.prototype.update = function () {
     var platforms = this.game.platforms;
 
     for (var i = 0; i < platforms.length; i++) {
-        if(platforms[i]!==this) { // Prevents collision with self! ~Duy
+        if (platforms[i] !== this) { // Prevents collision with self! ~Duy
             if (this.boundingBox.collide(platforms[i].boundingBox)) {
                 console.log("COLLISION WITH " + platforms[i]);
                 this.collided = platforms[i].collided = true;
-            } else{
+            } else {
                 this.collide = false;
                 platforms[i].collided = false;
             }
@@ -149,9 +149,9 @@ Goat.prototype.draw = function (ctx) {
         this.standAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
     }
 
-    Entity.prototype.draw.call(this);
+    Entity.prototype.draw.call(this, ctx);
 };
 
-Goat.prototype.toString = function goatToString() {
+Goat.prototype.toString = function () {
     return 'Goat';
 };

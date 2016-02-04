@@ -6,14 +6,14 @@ function Platform(game, image, x, y, width, height) {
     this.startX = x;
     this.startY = y;
     this.velocity = 3;
-    this.boundingBox = new BoundingBox(x, y, width, height);
-    Entity.call(this, game, x, y);
+    Entity.call(this, game, x, y, width, height);
 }
 
 Platform.prototype = new Entity();
 Platform.prototype.constructor = Platform;
 
-Platform.prototype.reset = function () {};
+Platform.prototype.reset = function () {
+};
 
 // don't need to update our platforms as their state won't change after the game is initialized
 Platform.prototype.update = function () {
@@ -24,15 +24,16 @@ Platform.prototype.update = function () {
     //    this.velocity *= -1;
     //}
     //this.boundingBox = new BoundingBox(this.x, this.y, this.width, this.height);
+    Entity.prototype.update.call(this);
 };
 
 
 Platform.prototype.draw = function (ctx) {
     ctx.drawImage(this.image, this.startX, this.startY, this.width, this.height);
-    Entity.prototype.draw.call(this);
+    Entity.prototype.draw.call(this, ctx);
 };
 
-Platform.prototype.toString = function platformToString() {
+Platform.prototype.toString = function () {
     return 'Platform';
 };
 

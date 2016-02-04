@@ -10,8 +10,6 @@
         TODO: I think I've correctly imported our codebase, thus far (1/31).
      -->
 
-    <script type="text/javascript" src="./js/boundingbox.js"></script>
-    <script type="text/javascript" src="./js/timer.js"></script>
     <script type="text/javascript" src="./js/gameengine.js"></script>
     <script type="text/javascript" src="./js/entity.js"></script>
     <script type="text/javascript" src="./js/playgame.js"></script>
@@ -23,21 +21,22 @@
     <script type="text/javascript" src="./js/main.js"></script>
 </head>
 <body>
-    <div style="position: absolute; left: 250px; top: 50px; width: 400px; height: 30px; background-color: rgba(0,0,0,0);
+<div style="position: absolute; left: 250px; top: 50px; width: 400px; height: 30px; background-color: rgba(0,0,0,0);
         font-family: Impact, Charcoal, sans-serif; font-size: 24pt; color: purple; ">
-        Oh My Goat!
-    </div>
-    <br>
-    <div id="roundNumber" style="position: absolute; left: 900px; top: 50px; width: 200px; height: 30px;
+    Oh My Goat!
+</div>
+<br>
+<div id="roundNumber" style="position: absolute; left: 900px; top: 50px; width: 200px; height: 30px;
         background-color: rgba(0,0,0,0); font-family: Impact, Charcoal, sans-serif; font-size: 24pt; color: purple; ">
-        Round #1
-    </div>
-    <br>
-    <div style="width:100%; text-align:center">
-        <canvas id="gameWorld" width="800" height="800" style="border: 1px solid white; display:inline"></canvas>
-    </div>
-    <br>
-    <audio src="" controls autoplay loop></audio>
-    <div>Right click and "Inspect Element".  Select the Console Tab to see the debugger output.</div>
+    Round #1
+</div>
+<br>
+<!--SUPER IMPORTANT: Set the game canvas' tabindex="1", otherwise it won't respond to keyboard! ~Duy-->
+<div style="width:100%; text-align:center">
+    <canvas id="gameWorld" width="800" height="600" tabindex="1"
+            style="border: 1px solid white; display:inline"></canvas>
+</div>
+<br>
+<!--<audio src="" controls autoplay loop></audio>-->
 </body>
 </html>

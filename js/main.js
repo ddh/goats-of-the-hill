@@ -7,6 +7,8 @@ ASSET_MANAGER.queueDownload("./img/mountain.png");
 ASSET_MANAGER.queueDownload("./img/hay.png");
 ASSET_MANAGER.queueDownload("./img/smb_mountain.png"); // temporary background image for testing
 ASSET_MANAGER.queueDownload("./img/spaz_frames.png"); // temporary entity sprites for testing
+ASSET_MANAGER.queueDownload("./img/WhiteGoatLeft.png");
+ASSET_MANAGER.queueDownload("./img/WhiteGoatRight.png");
 
 ASSET_MANAGER.downloadAll(function () {
 

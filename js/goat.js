@@ -12,26 +12,27 @@ function Goat(game) {
     this.ground = 480; // changed value from 400
     this.x = 0;
     this.y = this.ground;
-    this.width = 50;
-    this.height = 50;
+    this.width = 96;
+    this.height = 95;
     this.lastY = this.y; // TODO: to be used for animation drawing calculations when jumping btwn platforms
     this.velocity = {x: 0, y: 0};
     this.speed = 5;
     this.jumpHeight = 200;
 
     // Animations:
-    this.standAnimation                 = new Animation(ASSET_MANAGER.getAsset("./img/spaz_frames.png"), 0, 0, 56, 52, 0.1, 6, true, false);
+    this.standLeftAnimation           = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 0, 0, 96, 95, 0.1, 4, true, true);
+    this.standRightAnimation          = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 768, 0, 96, 95, 0.1, 4, true, false);
     //this.idleAnimation              = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
     //
-    this.jumpLeftAscendAnimation        = new Animation(ASSET_MANAGER.getAsset("./img/spaz_frames.png"), 3920, 0, 56, 52, 0.05, 17, false, false);
-    //this.jumpRightAscendAnimation   = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
+    this.jumpLeftAscendAnimation      = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 0, 0, 96, 95, 0.1, 4, false, true);
+    this.jumpRightAscendAnimation     = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 768, 0, 96, 95, 0.1, 4, false, false);
     //this.jumpLeftDescendAnimation   = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
-    //this.jumpRightDescendAnimation  = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
+    //this.jumpRightDescendAnimation    = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 768, 0, 96, 96, 0.1, 4, false, false);
     //this.landLeftAnimation          = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
     //this.landRightAnimation         = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
     //
-    this.runLeftAnimation               = new Animation(ASSET_MANAGER.getAsset("./img/spaz_frames.png"), 1904, 0, 56, 52, 0.1, 8, true, false);
-    this.runRightAnimation              = new Animation(ASSET_MANAGER.getAsset("./img/spaz_frames.png"), 1456, 0, 56, 52, 0.1, 8, true, false);
+    this.runLeftAnimation             = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 384, 0, 96, 95, 0.1, 4, true, true);
+    this.runRightAnimation            = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 385, 0, 96, 95, 0.1, 4, true, false);
     //
     //this.chargingLeftAnimation      = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
     //this.chargingRightAnimation     = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
@@ -41,6 +42,7 @@ function Goat(game) {
     //this.stunnedRightAnimation      = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
 
     // Action states
+    this.right      = true; // Facing right (true) or left (false)
     this.standing   = true;
     this.idle       = false;
     this.jumping    = false;
@@ -50,7 +52,7 @@ function Goat(game) {
     this.attacking  = false;
     this.stunned    = false;
 
-    this.boundingBox = new BoundingBox(this.x + 25, this.y, this.standAnimation.frameWidth - 40, this.standAnimation.frameHeight - 20);
+    this.boundingBox = new BoundingBox(this.x + 25, this.y, this.standRightAnimation.frameWidth - 40, this.standRightAnimation.frameHeight - 20);
 
     // Game engine stuff:
     //this.game = game;
@@ -63,6 +65,7 @@ Goat.prototype = new Entity();
 Goat.prototype.constructor = Goat;
 
 Goat.prototype.reset = function () {
+    this.right      = true;
     this.standing   = true;
     this.idle       = false;
     this.jumping    = false;
@@ -75,7 +78,7 @@ Goat.prototype.reset = function () {
     this.x = 0;
     this.y = 0;
 
-    this.boundingbox = new BoundingBox(this.x, this.y, this.standAnimation.frameWidth, this.standAnimation.frameHeight);
+    this.boundingbox = new BoundingBox(this.x, this.y, this.standRightAnimation.frameWidth, this.standRightAnimation.frameHeight);
 };
 
 Goat.prototype.update = function () {
@@ -85,16 +88,25 @@ Goat.prototype.update = function () {
         this.jumping = true;
         console.log("Jumped");
     }
-
+    if (this.game.right) {
+        this.right = true;
+    } else if (this.game.left) {
+        this.right = false;
+    }
+    
     if (this.jumping) {
-
-        if (this.jumpLeftAscendAnimation.isDone()) {
+        var jumpAscendAnimation = this.jumpLeftAscendAnimation;
+        if (this.right) {
+            jumpAscendAnimation = this.jumpRightAscendAnimation;
+        }
+        
+        if (jumpAscendAnimation.isDone()) {
             // Reset jump animation timer
-            this.jumpLeftAscendAnimation.elapsedTime = 0;
+            jumpAscendAnimation.elapsedTime = 0;
             // Reset 'jump' state.
             this.jumping = false;
         }
-        var jumpDistance = this.jumpLeftAscendAnimation.elapsedTime / this.jumpLeftAscendAnimation.totalTime;
+        var jumpDistance = jumpAscendAnimation.elapsedTime / jumpAscendAnimation.totalTime;
         var totalHeight = 250;
 
         if (jumpDistance > 0.5)
@@ -137,16 +149,21 @@ Goat.prototype.update = function () {
 Goat.prototype.draw = function (ctx) {
 
     if (this.jumping) {
-        this.jumpLeftAscendAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+        if (this.right)
+            this.jumpRightAscendAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+        else
+            this.jumpLeftAscendAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+    } else if (this.running) {
+        if (this.right) 
+            this.runRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+        else 
+            this.runLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
 
-    }
-    else if (this.running) {
-        if (this.game.right) this.runRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
-        if (this.game.left) this.runLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
-
-    }
-    else {
-        this.standAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+    } else {
+        if (this.right)
+            this.standRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+        else 
+            this.standLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
     }
 
     Entity.prototype.draw.call(this);

@@ -87,39 +87,47 @@ Goat.prototype.reset = function () {
 
 Goat.prototype.update = function () {
 
-    // Jumping:
-    if (this.game.space && !this.jumping && !this.falling) {
-        this.jumping = true;
-        this.lastPlatform = this.currentPlatform;
-        this.currentPlatform = null;
-        console.log("Jumped");
-        this.base = this.y;
-    }
+
+    // Update goat's facing direction (LEFT or RIGHT)
     if (this.game.right) {
         this.right = true;
     } else if (this.game.left) {
         this.right = false;
     }
 
-    if (this.jumping) {
-        var jumpAscendAnimation = this.jumpLeftAscendAnimation;
-        if (this.right) {
-            jumpAscendAnimation = this.jumpRightAscendAnimation;
-        }
+    // The goat begins a JUMP:
+    if (this.game.space && !this.jumping && !this.falling) {
+        this.jumping = true;
+        this.lastPlatform = this.currentPlatform;
+        //this.currentPlatform = null; // TODO: Buggy if you set it to null
+        console.log("Jumped");
+        this.base = this.y + this.height; // Keep track of the goat's last bottom-y value
+    }
 
+    // WHILE the goat is JUMPING:
+    if (this.jumping) {
+
+        // Figure out which jump animation (left or right) to use
+        var jumpAscendAnimation = this.right ? this.jumpRightAscendAnimation : this.jumpLeftAscendAnimation;
+
+        // Jumping is finished:
         if (jumpAscendAnimation.isDone()) {
 
             // Reset jump animation timer
             jumpAscendAnimation.elapsedTime = 0;
+
             // Reset 'jump' state.
             this.jumping = false;
+            this.falling = false;
         }
         var jumpDistance = jumpAscendAnimation.elapsedTime / jumpAscendAnimation.totalTime;
 
-        var totalHeight = 250;
+        var totalHeight = 300;
 
-        if (jumpDistance > 0.5)
+        if (jumpDistance > 0.5){
+            this.falling = true;
             jumpDistance = 1 - jumpDistance;
+        }
 
         //var height = jumpDistance * 2 * totalHeight;
         var height = totalHeight * (-2 * (jumpDistance * jumpDistance - jumpDistance));
@@ -128,7 +136,7 @@ Goat.prototype.update = function () {
         this.y = this.base - height;
     }
 
-    // Running right and left:
+    // Update running state:
     this.game.right || this.game.left ? this.running = true : this.running = false;
 
 
@@ -145,10 +153,15 @@ Goat.prototype.update = function () {
     for (var i = 0; i < platforms.length; i++) {
         if (platforms[i] !== this) { // Prevents collision with self! ~Duy
             if (this.boundingBox.collide(platforms[i].boundingBox)) {
+
+                // Debug:
                 console.log("COLLISION WITH " + platforms[i]);
-                this.collided = platforms[i].collided = true;
+
+                // If falling?
+
+
                 this.currentPlatform = platforms[i];
-                this.y = this.currentPlatform.y - this.height;
+                this.y = this.currentPlatform.y - this.height - 1; // Add an extra pixel to separate goat from platform
             } else {
                 this.collide = false;
                 platforms[i].collided = false;

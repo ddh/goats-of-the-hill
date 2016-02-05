@@ -20,24 +20,22 @@ function Goat(game) {
     this.jumpHeight = 200;
 
     // Platforms
-    this.lastPlatform = game.platforms[0]; // Ground platform
-    this.currentPlatform = this.lastPlatform;
+    this.platform = game.platforms[0]; // Ground platform to start
+
+    // TODO: took out idle animation and status boolean b/c standing anim and bool serves that purpose already
 
     // Animations:
     this.standLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 0, 0, 96, 95, 0.1, 4, true, true);
     this.standRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 768, 0, 96, 95, 0.1, 4, true, false);
-    //this.idleAnimation              = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
-    //
+
     this.jumpLeftAscendAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 0, 0, 96, 95, 0.1, 4, false, true);
     this.jumpRightAscendAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 768, 0, 96, 95, 0.1, 4, false, false);
-    //this.jumpLeftDescendAnimation   = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
-    //this.jumpRightDescendAnimation    = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 768, 0, 96, 96, 0.1, 4, false, false);
-    //this.landLeftAnimation          = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
-    //this.landRightAnimation         = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
-    //
+    this.jumpLeftDescendAnimation   = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 0, 0, 96, 95, 0.1, 4, false, true);
+    this.jumpRightDescendAnimation   = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 768, 0, 96, 95, 0.1, 4, false, false);
+
     this.runLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 384, 0, 96, 95, 0.1, 4, true, true);
     this.runRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 385, 0, 96, 95, 0.1, 4, true, false);
-    //
+
     //this.chargingLeftAnimation      = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
     //this.chargingRightAnimation     = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
     //this.attackLeftAnimation        = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
@@ -48,7 +46,6 @@ function Goat(game) {
     // Action states
     this.right = true; // Facing right (true) or left (false)
     this.standing = true;
-    this.idle = false;
     this.jumping = false;
     this.falling = false;
     this.running = false;
@@ -71,7 +68,6 @@ Goat.prototype.constructor = Goat;
 Goat.prototype.reset = function () {
     this.right = true;
     this.standing = true;
-    this.idle = false;
     this.jumping = false;
     this.falling = false;
     this.running = false;
@@ -82,12 +78,13 @@ Goat.prototype.reset = function () {
     this.x = 0;
     this.y = 0;
 
+    this.platform = game.platforms[0];
+
     //this.boundingbox = new BoundingBox(this.x, this.y, this.standAnimation.frameWidth, this.standAnimation.frameHeight);
 };
 
+// Based off of Chris Marriott's Unicorn's update method: https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 Goat.prototype.update = function () {
-
-
     // Update goat's facing direction (LEFT or RIGHT)
     if (this.game.right) {
         this.right = true;
@@ -98,77 +95,72 @@ Goat.prototype.update = function () {
     // The goat begins a JUMP:
     if (this.game.space && !this.jumping && !this.falling) {
         this.jumping = true;
-        this.lastPlatform = this.currentPlatform;
-        //this.currentPlatform = null; // TODO: Buggy if you set it to null
         console.log("Jumped");
-        this.base = this.y + this.height; // Keep track of the goat's last bottom-y value
+        this.base = this.y; // Keep track of the goat's last bottom-y value
     }
 
     // WHILE the goat is JUMPING:
     if (this.jumping) {
-
         // Figure out which jump animation (left or right) to use
         var jumpAscendAnimation = this.right ? this.jumpRightAscendAnimation : this.jumpLeftAscendAnimation;
 
-        // Jumping is finished:
-        if (jumpAscendAnimation.isDone()) {
+        var duration = jumpAscendAnimation.elapsedTime + this.game.clockTick;
+        if (duration > jumpAscendAnimation.totalTime / 2) duration = jumpAscendAnimation.totalTime - duration;
+        duration = duration / jumpAscendAnimation.totalTime;
 
-            // Reset jump animation timer
-            jumpAscendAnimation.elapsedTime = 0;
-
-            // Reset 'jump' state.
-            this.jumping = false;
-            this.falling = false;
-        }
-        var jumpDistance = jumpAscendAnimation.elapsedTime / jumpAscendAnimation.totalTime;
-
-        var totalHeight = 300;
-
-        if (jumpDistance > 0.5){
-            this.falling = true;
-            jumpDistance = 1 - jumpDistance;
-        }
-
-        //var height = jumpDistance * 2 * totalHeight;
-        var height = totalHeight * (-2 * (jumpDistance * jumpDistance - jumpDistance));
-
-        this.lastY = this.y;
+        // quadratic jump
+        var height = (4 * duration - 4 * duration * duration) * this.jumpHeight;
+        this.lastY = this.boundingBox.bottom;
         this.y = this.base - height;
+        this.boundingBox = new BoundingBox(this.x, this.y, jumpAscendAnimation.frameWidth, jumpAscendAnimation.frameHeight);
 
-        if (this.lastY < this.y) this.y = this.base + 55;
+        var idx;
+        for (idx = 0; idx < this.game.platforms.length; idx++) {
+            var pf = this.game.platforms[idx];
+            if (this.boundingBox.collide(pf.boundingBox) && this.lastY < pf.boundingBox.top) {
+                console.log("JUMPING COLLISION WITH " + pf);
+                this.jumping = false;
+                this.y = pf.boundingBox.top - jumpAscendAnimation.frameHeight;
+                this.platform = pf;
+                jumpAscendAnimation.elapsedTime = 0;
+            }
+        }
+    }
+
+    // While the goat is FALLING:
+    if (this.falling) {
+        // Figure out which falling animation (left or right) to use
+        var jumpDescendAnimation = this.right ? this.jumpRightDescendAnimation : this.jumpLeftDescendAnimation;
+
+        this.lastY = this.boundingBox.bottom;
+        this.y += this.game.clockTick / jumpDescendAnimation.totalTime * 4 * this.jumpHeight;
+        this.boundingBox = new BoundingBox(this.x + 32, this.y - 32, jumpDescendAnimation.frameWidth, jumpDescendAnimation.frameHeight);
+
+        for (var i = 0; i < this.game.platforms.length; i++) {
+            var pf = this.game.platforms[i];
+            if (this.boundingBox.collide(pf.boundingBox) && this.lastY < pf.boundingBox.top) {
+                console.log("LANDING COLLISION WITH " + pf);
+                this.falling = false;
+                this.y = pf.boundingBox.top - jumpAscendAnimation.frameHeight;
+                this.platform = pf;
+                jumpDescendAnimation.elapsedTime = 0;
+            }
+        }
+    }
+
+    if (!this.jumping && !this.falling) {
+        var standingAnimation = this.right ? this.standRightAnimation : this.standLeftAnimation;
+        this.boundingBox = new BoundingBox(this.x, this.y, standingAnimation.frameWidth, standingAnimation.frameHeight);
+        if (this.boundingBox.left > this.platform.boundingBox.right) this.falling = true;
     }
 
     // Update running state:
     this.game.right || this.game.left ? this.running = true : this.running = false;
 
-
     // Running and boundary collisions:
     if (this.running) {
         if (this.game.right && this.x < this.game.surfaceWidth - this.width) this.x += this.speed;
         if (this.game.left && this.x > 0) this.x -= this.speed;
-    }
-
-    // Collisions with platforms:
-    var platforms = this.game.platforms;
-
-    for (var i = 0; i < platforms.length; i++) {
-        if (platforms[i] !== this) { // Prevents collision with self! ~Duy
-            if (this.boundingBox.collide(platforms[i].boundingBox)) {
-
-                // Debug:
-                console.log("COLLISION WITH " + platforms[i]);
-
-                // If falling?
-
-
-                this.currentPlatform = platforms[i];
-                this.y = this.currentPlatform.y - this.height - 1; // Add an extra pixel to separate goat from platform
-            } else {
-                this.collide = false;
-                platforms[i].collided = false;
-            }
-        }
-
     }
 
     Entity.prototype.update.call(this);

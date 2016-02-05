@@ -9,6 +9,7 @@ ASSET_MANAGER.queueDownload("./img/smb_mountain.png"); // temporary background i
 ASSET_MANAGER.queueDownload("./img/spaz_frames.png"); // temporary entity sprites for testing
 ASSET_MANAGER.queueDownload("./img/WhiteGoatLeft.png");
 ASSET_MANAGER.queueDownload("./img/WhiteGoatRight.png");
+ASSET_MANAGER.queueDownload("./img/transparent_pixel.png");
 
 ASSET_MANAGER.downloadAll(function () {
 
@@ -31,11 +32,19 @@ ASSET_MANAGER.downloadAll(function () {
     /* === Platforms === */
     /* Creates platforms */
     var platforms = [];
+
+    /* ground */
+    var groundPlatform = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/transparent_pixel.png"), 0, 530, 800, 70);
+    groundPlatform.oneWayCollision = false;
+    gameEngine.addEntity(groundPlatform);
+    platforms.push(groundPlatform);
+
     var plats = function(x, y) {                                                        //w, h
         var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay.png"), x, y, 85, 55);
+        pf.oneWayCollision = true; // indicates top down collision but not bottom up
         gameEngine.addEntity(pf);
         platforms.push(pf);
-    }
+    };
     /* bottom row */
     plats(202, 480);
     plats(560, 480);

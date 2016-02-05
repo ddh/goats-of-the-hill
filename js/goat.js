@@ -152,6 +152,7 @@ Goat.prototype.update = function () {
         var standingAnimation = this.right ? this.standRightAnimation : this.standLeftAnimation;
         this.boundingBox = new BoundingBox(this.x, this.y, standingAnimation.frameWidth, standingAnimation.frameHeight);
         if (this.boundingBox.left > this.platform.boundingBox.right) this.falling = true;
+        if (this.boundingBox.right < this.platform.boundingBox.left) this.falling = true;
     }
 
     // Update running state:

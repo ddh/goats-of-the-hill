@@ -13,7 +13,7 @@ window.requestAnimFrame = (function () {
 
 function GameEngine() {
     this.entities = [];
-    this.enableDebug = false; // debugging flag for drawing bounding circles
+    this.enableDebug = false; // debugging flag for drawing bounding boxes
     this.ctx = null;
     this.click = null;
     this.mouse = null;

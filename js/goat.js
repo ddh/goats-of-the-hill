@@ -43,22 +43,22 @@ function Goat(game) {
 
     // Action states
     this.right      = true; // Facing right (true) or left (false)
-    this.standing   = true;
-    this.idle       = false;
-    this.jumping    = false;
-    this.falling    = false;
-    this.running    = false;
-    this.charging   = false;
-    this.attacking  = false;
-    this.stunned    = false;
+    this.standing = true;
+    this.idle = false;
+    this.jumping = false;
+    this.falling = false;
+    this.running = false;
+    this.charging = false;
+    this.attacking = false;
+    this.stunned = false;
 
-    this.boundingBox = new BoundingBox(this.x + 25, this.y, this.standRightAnimation.frameWidth - 40, this.standRightAnimation.frameHeight - 20);
+    //this.boundingBox = new BoundingBox(this.x + 25, this.y, this.standAnimation.frameWidth - 40, this.standAnimation.frameHeight - 20);
 
     // Game engine stuff:
     //this.game = game;
     //this.ctx = game.ctx;
 
-    Entity.call(this, game, 0, this.ground);
+    Entity.call(this, game, 0, this.ground, this.width, this.height);
 }
 
 Goat.prototype = new Entity();
@@ -66,19 +66,19 @@ Goat.prototype.constructor = Goat;
 
 Goat.prototype.reset = function () {
     this.right      = true;
-    this.standing   = true;
-    this.idle       = false;
-    this.jumping    = false;
-    this.falling    = false;
-    this.running    = false;
-    this.charging   = false;
-    this.attacking  = false;
-    this.stunned    = false;
+    this.standing = true;
+    this.idle = false;
+    this.jumping = false;
+    this.falling = false;
+    this.running = false;
+    this.charging = false;
+    this.attacking = false;
+    this.stunned = false;
 
     this.x = 0;
     this.y = 0;
 
-    this.boundingbox = new BoundingBox(this.x, this.y, this.standRightAnimation.frameWidth, this.standRightAnimation.frameHeight);
+    //this.boundingbox = new BoundingBox(this.x, this.y, this.standAnimation.frameWidth, this.standAnimation.frameHeight);
 };
 
 Goat.prototype.update = function () {
@@ -131,11 +131,11 @@ Goat.prototype.update = function () {
     var platforms = this.game.platforms;
 
     for (var i = 0; i < platforms.length; i++) {
-        if(platforms[i]!==this) { // Prevents collision with self! ~Duy
+        if (platforms[i] !== this) { // Prevents collision with self! ~Duy
             if (this.boundingBox.collide(platforms[i].boundingBox)) {
                 console.log("COLLISION WITH " + platforms[i]);
                 this.collided = platforms[i].collided = true;
-            } else{
+            } else {
                 this.collide = false;
                 platforms[i].collided = false;
             }
@@ -166,9 +166,9 @@ Goat.prototype.draw = function (ctx) {
             this.standLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
     }
 
-    Entity.prototype.draw.call(this);
+    Entity.prototype.draw.call(this, ctx);
 };
 
-Goat.prototype.toString = function goatToString() {
+Goat.prototype.toString = function () {
     return 'Goat';
 };

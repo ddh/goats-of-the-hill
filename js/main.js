@@ -16,6 +16,7 @@ ASSET_MANAGER.downloadAll(function () {
     var canvas = document.getElementById('gameWorld');
     var ctx = canvas.getContext('2d');
     var gameEngine = new GameEngine();
+    gameEngine.init(ctx);
 
     /* === Game Logistics === */
     var roundNumber = document.getElementById('roundNumber');
@@ -53,7 +54,6 @@ ASSET_MANAGER.downloadAll(function () {
     gameEngine.addEntity(goat);
 
     /* === START GAME === */
-    gameEngine.init(ctx);
     gameEngine.start();
     
 });

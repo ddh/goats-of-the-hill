@@ -88,11 +88,12 @@ Goat.prototype.reset = function () {
 Goat.prototype.update = function () {
 
     // Jumping:
-    if (this.game.space) {
+    if (this.game.space && !this.jumping && !this.falling) {
         this.jumping = true;
         this.lastPlatform = this.currentPlatform;
         this.currentPlatform = null;
         console.log("Jumped");
+        this.base = this.y;
     }
     if (this.game.right) {
         this.right = true;
@@ -124,7 +125,7 @@ Goat.prototype.update = function () {
         var height = totalHeight * (-2 * (jumpDistance * jumpDistance - jumpDistance));
 
         this.lastY = this.y;
-        this.y = this.lastPlatform.startY - height;
+        this.y = this.base - height;
     }
 
     // Running right and left:

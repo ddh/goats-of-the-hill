@@ -148,6 +148,7 @@ Goat.prototype.update = function () {
         }
     }
 
+    // Handles when dropping off of platforms triggers falling animation
     if (!this.jumping && !this.falling) {
         var standingAnimation = this.right ? this.standRightAnimation : this.standLeftAnimation;
         this.boundingBox = new BoundingBox(this.x, this.y, standingAnimation.frameWidth, standingAnimation.frameHeight);
@@ -164,6 +165,7 @@ Goat.prototype.update = function () {
         if (this.game.left && this.x > 0) this.x -= this.speed;
     }
 
+    // Handles keeping goat above the ground if it's falling down
     if (this.y > this.ground) this.y = this.ground;
 
     Entity.prototype.update.call(this);

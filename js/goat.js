@@ -118,14 +118,15 @@ Goat.prototype.update = function () {
 
         var totalHeight = 250;
 
-        if (jumpDistance > 0.5)
-            jumpDistance = 1 - jumpDistance;
+        if (jumpDistance > 0.5) jumpDistance = 1 - jumpDistance;
 
         //var height = jumpDistance * 2 * totalHeight;
         var height = totalHeight * (-2 * (jumpDistance * jumpDistance - jumpDistance));
 
         this.lastY = this.y;
         this.y = this.base - height;
+
+        if (this.lastY < this.y) this.y = this.base + 55;
     }
 
     // Running right and left:
@@ -136,7 +137,6 @@ Goat.prototype.update = function () {
     if (this.running) {
         if (this.game.right && this.x < this.game.surfaceWidth - this.width) this.x += this.speed;
         if (this.game.left && this.x > 0) this.x -= this.speed;
-        //TODO: Fix floating when running off of platforms
     }
 
     // Collisions with platforms:

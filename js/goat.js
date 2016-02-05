@@ -76,9 +76,9 @@ Goat.prototype.reset = function () {
     this.stunned = false;
 
     this.x = 0;
-    this.y = 0;
+    this.y = this.ground;
 
-    this.platform = game.platforms[0];
+    this.platform = this.game.platforms[0];
 
     //this.boundingbox = new BoundingBox(this.x, this.y, this.standAnimation.frameWidth, this.standAnimation.frameHeight);
 };
@@ -134,14 +134,14 @@ Goat.prototype.update = function () {
 
         this.lastY = this.boundingBox.bottom;
         this.y += this.game.clockTick / jumpDescendAnimation.totalTime * 4 * this.jumpHeight;
-        this.boundingBox = new BoundingBox(this.x + 32, this.y - 32, jumpDescendAnimation.frameWidth, jumpDescendAnimation.frameHeight);
+        this.boundingBox = new BoundingBox(this.x, this.y, jumpDescendAnimation.frameWidth, jumpDescendAnimation.frameHeight);
 
         for (var i = 0; i < this.game.platforms.length; i++) {
             var pf = this.game.platforms[i];
             if (this.boundingBox.collide(pf.boundingBox) && this.lastY < pf.boundingBox.top) {
                 console.log("LANDING COLLISION WITH " + pf);
                 this.falling = false;
-                this.y = pf.boundingBox.top - jumpAscendAnimation.frameHeight;
+                this.y = pf.boundingBox.top - jumpDescendAnimation.frameHeight;
                 this.platform = pf;
                 jumpDescendAnimation.elapsedTime = 0;
             }
@@ -162,6 +162,8 @@ Goat.prototype.update = function () {
         if (this.game.right && this.x < this.game.surfaceWidth - this.width) this.x += this.speed;
         if (this.game.left && this.x > 0) this.x -= this.speed;
     }
+
+    if (this.y > this.ground) this.y = this.ground;
 
     Entity.prototype.update.call(this);
 };

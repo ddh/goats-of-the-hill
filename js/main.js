@@ -5,6 +5,8 @@
 ASSET_MANAGER.queueDownload("./img/farm.png");
 ASSET_MANAGER.queueDownload("./img/mountain.png");
 ASSET_MANAGER.queueDownload("./img/hay.png");
+ASSET_MANAGER.queueDownload("./img/hay2.png");
+ASSET_MANAGER.queueDownload("./img/hay3.png");
 ASSET_MANAGER.queueDownload("./img/smb_mountain.png"); // temporary background image for testing
 ASSET_MANAGER.queueDownload("./img/spaz_frames.png"); // temporary entity sprites for testing
 ASSET_MANAGER.queueDownload("./img/WhiteGoatLeft.png");
@@ -30,7 +32,6 @@ ASSET_MANAGER.downloadAll(function () {
     gameEngine.addEntity(bg);
 
     /* === Platforms === */
-    /* Creates platforms */
     var platforms = [];
 
     /* ground */
@@ -39,22 +40,32 @@ ASSET_MANAGER.downloadAll(function () {
     gameEngine.addEntity(groundPlatform);
     platforms.push(groundPlatform);
 
-    var plats = function(x, y) {                                                        //w, h
-        var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay.png"), x, y, 85, 55);
+    var plats = function(size, x, y) {
+        var pf = null;
+        if(size == 's') {                                                                   
+            //one-hay                                                                       //w, h
+            var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay.png"), x, y, 85, 50);
+        } else if (size == 'm') {
+            //two-hay
+            var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay2.png"), x, y, 155, 50);
+        } else if (size == 'l') {
+            //three-hay
+            var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay3.png"), x, y, 240, 50);
+        }                                           
         pf.oneWayCollision = true; // indicates top down collision but not bottom up
         gameEngine.addEntity(pf);
         platforms.push(pf);
     };
-    /* bottom row */
-    plats(202, 480);
-    plats(560, 480);
-    /* second row */
-    plats(283, 427);
-    plats(357, 427);
-    plats(428, 427);
-    plats(500, 427);
-    /* top row */
-    plats(400, 373);
+    /*** Rows in Bottom-up fashion ***/
+    /* row 1 */
+    plats('l', -2, 480);
+    /* row 2 */
+    plats('m', 300, 375);
+    /* row 3 */
+    plats('m', -2, 300);
+    plats('l', 562, 300);
+    /* row 4 */
+    plats('m',325, 130)
 
     gameEngine.platforms = platforms;
 

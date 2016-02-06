@@ -48,6 +48,18 @@ function Goat(game) {
     //this.stunnedLeftAnimation       = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
     //this.stunnedRightAnimation      = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
 
+    // Audio:
+    this.soundFX = new Howl({
+        autoplay: false,
+        urls:['./audio/goat_sfx.wav'],
+        sprite:{
+            jump: [0,154],
+            land: [154,143]
+        }
+    });
+
+
+
     // Action states
     this.right = true; // Facing right (true) or left (false)
     this.standing = true;
@@ -110,6 +122,7 @@ Goat.prototype.update = function () {
     // The goat begins a JUMP:
     if (this.game.space && !this.jumping && !this.falling) {
         this.jumping = true;
+        this.soundFX.play('jump');
         console.log("Jumped");
         this.base = this.y; // Keep track of the goat's last bottom-y value
     }
@@ -135,6 +148,7 @@ Goat.prototype.update = function () {
             if (this.boundingBox.collide(pf.boundingBox) && this.lastY < pf.boundingBox.top) {
                 console.log("JUMPING COLLISION WITH " + pf);
                 this.jumping = false;
+                this.soundFX.play('land');
                 this.y = pf.boundingBox.top - jumpAscendAnimation.frameHeight;
                 this.platform = pf;
                 jumpAscendAnimation.elapsedTime = 0;
@@ -156,6 +170,7 @@ Goat.prototype.update = function () {
             if (this.boundingBox.collide(pf.boundingBox) && this.lastY < pf.boundingBox.top) {
                 console.log("LANDING COLLISION WITH " + pf);
                 this.falling = false;
+                this.soundFX.play('land');
                 this.y = pf.boundingBox.top - jumpDescendAnimation.frameHeight;
                 this.platform = pf;
                 jumpDescendAnimation.elapsedTime = 0;

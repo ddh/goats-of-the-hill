@@ -2,6 +2,8 @@
 
 // asset manager is now constructed after class is defined (bottom of assetmanager.js)
 
+
+// Use asset manager to download images
 ASSET_MANAGER.queueDownload("./img/farm.png");
 ASSET_MANAGER.queueDownload("./img/mountain.png");
 ASSET_MANAGER.queueDownload("./img/hay.png");
@@ -21,6 +23,14 @@ ASSET_MANAGER.downloadAll(function () {
     var ctx = canvas.getContext('2d');
     var gameEngine = new GameEngine();
     gameEngine.init(ctx);
+
+    /* === Game Audio ===*/
+    // bgMusic sourced from http://www.bensound.com/
+    var bgMusic = new Howl({
+        urls: ['./audio/bensound-jazzyfrenchy.mp3'],
+        loop: true,
+        volume: 0.5
+    }).play();
 
     /* === Game Logistics === */
     var roundNumber = document.getElementById('roundNumber');

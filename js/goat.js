@@ -54,7 +54,7 @@ function Goat(game) {
     this.charging = false;
     this.attacking = false;
     this.stunned = false;
-    this.king = true; // debug by setting it to true to see crown be drawn above
+    this.king = false;
 
     //this.boundingBox = new BoundingBox(this.x + 25, this.y, this.standAnimation.frameWidth - 40, this.standAnimation.frameHeight - 20);
 
@@ -94,6 +94,8 @@ Goat.prototype.update = function () {
     } else if (this.game.left) {
         this.right = false;
     }
+
+    this.king = this.game.kKey;
 
     // The goat begins a JUMP:
     if (this.game.space && !this.jumping && !this.falling) {

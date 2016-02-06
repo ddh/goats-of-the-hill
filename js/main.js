@@ -36,23 +36,23 @@ ASSET_MANAGER.downloadAll(function () {
     var platforms = [];
 
     /* ground */
-    var groundPlatform = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/transparent_pixel.png"), 0, 530, 800, 70);
+    var groundPlatform = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/transparent_pixel.png"), 0, 530, 800, 70, 'stationary');
     groundPlatform.oneWayCollision = false;
     gameEngine.addEntity(groundPlatform);
     platforms.push(groundPlatform);
 
-    var plats = function(size, x, y) {
+    var plats = function (size, x, y) {
         var pf = null;
-        if(size == 's') {                                                                   
+        if (size == 's') {
             //one-hay                                                                       //w, h
-            var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay.png"), x, y, 85, 50);
+            var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay.png"), x, y, 85, 50, 'horizontal');
         } else if (size == 'm') {
             //two-hay
-            var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay2.png"), x, y, 155, 50);
+            var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay2.png"), x, y, 155, 50, 'diagonal');
         } else if (size == 'l') {
             //three-hay
-            var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay3.png"), x, y, 240, 50);
-        }                                           
+            var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay3.png"), x, y, 240, 50, 'vertical');
+        }
         pf.oneWayCollision = true; // indicates top down collision but not bottom up
         gameEngine.addEntity(pf);
         platforms.push(pf);
@@ -66,7 +66,15 @@ ASSET_MANAGER.downloadAll(function () {
     plats('m', -2, 300);
     plats('l', 562, 300);
     /* row 4 */
-    plats('m',325, 130)
+    plats('m', 325, 130)
+    /* row 5 */
+    plats('s', 100, 400);
+    plats('s', 400, 200);
+    /* row 6 */
+    var bouncePF = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay.png"), 200, 200, 85, 50, 'bouncing');
+    bouncePF.oneWayCollision = true;
+    gameEngine.addEntity(bouncePF);
+    platforms.push(bouncePF);
 
     gameEngine.platforms = platforms;
 
@@ -76,7 +84,7 @@ ASSET_MANAGER.downloadAll(function () {
 
     /* === START GAME === */
     gameEngine.start();
-    
+
 });
 
 

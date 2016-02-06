@@ -35,7 +35,7 @@ ASSET_MANAGER.downloadAll(function () {
     var platforms = [];
 
     /* ground */
-    var groundPlatform = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/transparent_pixel.png"), 0, 530, 800, 70);
+    var groundPlatform = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/transparent_pixel.png"), 0, 530, 800, 70, 'stationary');
     groundPlatform.oneWayCollision = false;
     gameEngine.addEntity(groundPlatform);
     platforms.push(groundPlatform);

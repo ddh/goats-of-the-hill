@@ -21,6 +21,7 @@ Platform.prototype.update = function () {
 
     switch (this.movement) {
         case 'vertical':
+            this.velocity.x = 0;
             this.y += this.velocity.y;
             if (this.y <= 0 || this.y + this.height >= this.game.ctx.canvas.height) {
                 this.velocity.y *= -1;
@@ -28,6 +29,7 @@ Platform.prototype.update = function () {
             break;
         case 'horizontal':
             this.x += this.velocity.x;
+            this.velocity.y = 0;
             if (this.x <= 0 || this.x + this.width >= this.game.ctx.canvas.width) {
                 this.velocity.x *= -1;
             }
@@ -54,6 +56,8 @@ Platform.prototype.update = function () {
             }
 
         default: // Stationary
+            this.velocity.x = 0;
+            this.velocity.y = 0;
             break;
     }
     Entity.prototype.update.call(this);

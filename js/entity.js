@@ -6,7 +6,6 @@ function Entity(game, x, y, width, height) {
     this.collided = false;
     this.removeFromWorld = false;
     this.boundingBox = new BoundingBox(x, y, width, height);
-    this.trim = {top: 0, bottom: 0, left: 0, right: 0};
 }
 
 // TODO: Marriott has this empty in his code, do we need to add anything to this???
@@ -69,8 +68,30 @@ BoundingBox.prototype.draw = function (ctx) {
 };
 
 BoundingBox.prototype.update = function (entity) {
+    // Handles initializing the goat's trim field correctly given which animation is currently taking place
+    if (entity.toString() === "Goat") {
+        if (entity.right) {
+            if (entity.running) {
+                entity.trim = {top: 10, bottom: 10, left: 10, right: 15};
+            } else {
+                entity.trim = {top: 10, bottom: 10, left: 10, right: 18};
+            }
+        } else {
+            if (entity.running) {
+                entity.trim = {top: 10, bottom: 10, left: 5, right: 20};
+            } else {
+                entity.trim = {top: 10, bottom: 10, left: 8, right: 20};
+            }
+        }
+    } else { // ie. for platforms, etc.
+        entity.trim = {top: 0, bottom: 0, left: 0, right: 0};
+    }
+
     this.x = entity.x + entity.trim.left;
     this.y = entity.y + entity.trim.top;
+
+    this.width -= entity.trim.right;
+    this.height -= entity.trim.bottom;
 
     this.left = entity.x;
     this.top = entity.y;
@@ -78,28 +99,3 @@ BoundingBox.prototype.update = function (entity) {
     this.bottom = this.top + this.height - entity.trim.bottom;
 
 };
-
-//// Used if you want to shrink from both sides some pixels on the bounding box
-//BoundingBox.prototype.trim = function(width, height) {
-//    this.x += (width / 2);
-//    this.y += (height / 2);
-//
-//    this.width -= (width / 2);
-//    this.height -= (height / 2);
-//
-//    this.left = this.x;
-//    this.top = this.y;
-//    this.right = this.left + this.width - (width / 2);
-//    this.bottom = this.top + this.height - (height / 2);
-//};
-//
-//// Used if you want to take off pixels off the top, bottom, left, right on the bounding box
-//BoundingBox.prototype.shave = function(top, bottom, left, right) {
-//    this.x += left;
-//    this.y += top;
-//
-//    this.left = this.x;
-//    this.top = this.y;
-//    this.right = this.left + this.width - right;
-//    this.bottom = this.top + this.height - bottom;
-//};

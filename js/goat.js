@@ -19,6 +19,8 @@ function Goat(game) {
     this.speed = 5;
     this.jumpHeight = 200;
 
+    this.trim = {top: 50, bottom: 50, left: 50, right: 50};
+
     // Platforms
     this.platform = game.platforms[0]; // Ground platform to start
 
@@ -30,8 +32,8 @@ function Goat(game) {
 
     this.jumpLeftAscendAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 0, 0, 96, 95, 0.1, 4, false, true);
     this.jumpRightAscendAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 768, 0, 96, 95, 0.1, 4, false, false);
-    this.jumpLeftDescendAnimation   = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 0, 0, 96, 95, 0.1, 4, false, true);
-    this.jumpRightDescendAnimation   = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 768, 0, 96, 95, 0.1, 4, false, false);
+    this.jumpLeftDescendAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 0, 0, 96, 95, 0.1, 4, false, true);
+    this.jumpRightDescendAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 768, 0, 96, 95, 0.1, 4, false, false);
 
     this.runLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 384, 0, 96, 95, 0.1, 4, true, true);
     this.runRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 385, 0, 96, 95, 0.1, 4, true, false);
@@ -85,6 +87,7 @@ Goat.prototype.reset = function () {
 
 // Based off of Chris Marriott's Unicorn's update method: https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 Goat.prototype.update = function () {
+
     // Update goat's facing direction (LEFT or RIGHT)
     if (this.game.right) {
         this.right = true;
@@ -167,7 +170,6 @@ Goat.prototype.update = function () {
 
     // Handles keeping goat above the ground if it's falling down
     if (this.y > this.ground) this.y = this.ground;
-
     Entity.prototype.update.call(this);
 };
 

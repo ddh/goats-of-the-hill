@@ -77,3 +77,25 @@ BoundingBox.prototype.update = function (entity) {
     this.bottom = this.top + this.height;
 
 };
+
+// Used if you want to shrink from both sides some pixels on the bounding box
+BoundingBox.prototype.trim = function(width, height) {
+    this.x += (width / 2);
+    this.y += (height / 2);
+
+    this.left = this.x;
+    this.top = this.y;
+    this.right = this.left + this.width - (width / 2);
+    this.bottom = this.top + this.height - (height / 2);
+};
+
+// Used if you want to take off pixels off the top, bottom, left, right on the bounding box
+BoundingBox.prototype.shave = function(top, bottom, left, right) {
+    this.x += left;
+    this.y += top;
+
+    this.left = this.x;
+    this.top = this.y;
+    this.right = this.left + this.width - right;
+    this.bottom = this.top + this.height - bottom;
+};

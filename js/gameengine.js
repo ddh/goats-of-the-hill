@@ -58,6 +58,10 @@ GameEngine.prototype.startInput = function () {
         if (e.which === 32) that.space = true;
         if (e.which === 39) that.right = true;
         if (e.which === 37) that.left = true;
+        if (e.which === 75) {
+            that.kKey ^= true;
+            console.log("king turned " + (that.kKey ? "on" : "off"));
+        }
         if (e.which === 68) {
             that.enableDebug ^= true; // 'D' key to toggle debug
             console.log("debugging turned " + (that.enableDebug ? "on" : "off"));

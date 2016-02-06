@@ -68,12 +68,34 @@ BoundingBox.prototype.draw = function (ctx) {
 };
 
 BoundingBox.prototype.update = function (entity) {
-    this.x = entity.x;
-    this.y = entity.y;
+    // Handles initializing the goat's trim field correctly given which animation is currently taking place
+    if (entity.toString() === "Goat") {
+        if (entity.right) {
+            if (entity.running) {
+                entity.trim = {top: 10, bottom: 10, left: 10, right: 15};
+            } else {
+                entity.trim = {top: 10, bottom: 10, left: 10, right: 18};
+            }
+        } else {
+            if (entity.running) {
+                entity.trim = {top: 10, bottom: 10, left: 5, right: 20};
+            } else {
+                entity.trim = {top: 10, bottom: 10, left: 8, right: 20};
+            }
+        }
+    } else { // ie. for platforms, etc.
+        entity.trim = {top: 0, bottom: 0, left: 0, right: 0};
+    }
+
+    this.x = entity.x + entity.trim.left;
+    this.y = entity.y + entity.trim.top;
+
+    this.width -= entity.trim.right;
+    this.height -= entity.trim.bottom;
 
     this.left = entity.x;
     this.top = entity.y;
-    this.right = this.left + this.width;
-    this.bottom = this.top + this.height;
+    this.right = this.left + this.width - entity.trim.right;
+    this.bottom = this.top + this.height - entity.trim.bottom;
 
 };

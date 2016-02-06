@@ -47,7 +47,7 @@ ASSET_MANAGER.downloadAll(function () {
             var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay.png"), x, y, 85, 50, 'vertical');
         } else if (size == 'm') {
             //two-hay
-            var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay2.png"), x, y, 155, 50, 'horizontal');
+            var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay2.png"), x, y, 155, 50, 'diagonal');
         } else if (size == 'l') {
             //three-hay
             var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay3.png"), x, y, 240, 50, 'stationary');

@@ -5,7 +5,7 @@ function Platform(game, image, x, y, width, height, movement) {
     this.height = height;
     this.startX = x;
     this.startY = y;
-    this.velocity = 3;
+    this.velocity = {x: 3, y: 3};
     this.movement = movement;
     Entity.call(this, game, x, y, width, height);
 }
@@ -16,36 +16,46 @@ Platform.prototype.constructor = Platform;
 Platform.prototype.reset = function () {
 };
 
-// don't need to update our platforms as their state won't change after the game is initialized
+
 Platform.prototype.update = function () {
 
     switch (this.movement) {
         case 'vertical':
-            this.y += this.velocity;
-            if (this.y <= 0 || this.y >= this.game.ctx.canvas.height) {
-                this.velocity *= -1;
+            this.y += this.velocity.y;
+            if (this.y <= 0 || this.y + this.height >= this.game.ctx.canvas.height) {
+                this.velocity.y *= -1;
             }
             break;
         case 'horizontal':
-            this.x += this.velocity;
-            if (this.x <= 0 || this.x + 100 >= this.game.ctx.canvas.width) {
-                this.velocity *= -1;
+            this.x += this.velocity.x;
+            if (this.x <= 0 || this.x + this.width >= this.game.ctx.canvas.width) {
+                this.velocity.x *= -1;
             }
             break;
         case 'elliptical':
             break;
         case 'diagonal':
+            this.x += this.velocity.x;
+            this.y += this.velocity.y;
+            if (this.y <= 0 || this.y + this.height >= this.game.ctx.canvas.height || this.x <= 0 || this.x + this.width >= this.game.ctx.canvas.width) {
+                this.velocity.x *= -1;
+                this.velocity.y *= -1;
+
+            }
             break;
-        case 'stationary':
+        case 'bouncing':
+            this.x += this.velocity.x;
+            this.y += this.velocity.y;
+            if (this.y <= 0 || this.y + this.height >= this.game.ctx.canvas.height) {
+                this.velocity.y *= -1;
+            }
+            if (this.x <= 0 || this.x + this.width >= this.game.ctx.canvas.width) {
+                this.velocity.x *= -1;
+            }
+
+        default: // Stationary
             break;
     }
-
-    // Sample code to make platforms move back and forth
-    //this.x += this.velocity;
-    //if (this.x <= 0 || this.x + 100 >= this.game.ctx.canvas.width) {
-    //    this.velocity *= -1;
-    //}
-    //this.boundingBox = new BoundingBox(this.x, this.y, this.width, this.height);
     Entity.prototype.update.call(this);
 };
 

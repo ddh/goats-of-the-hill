@@ -54,6 +54,7 @@ Platform.prototype.update = function () {
             if (this.x <= 0 || this.x + this.width >= this.game.ctx.canvas.width) {
                 this.velocity.x *= -1;
             }
+            break;
 
         default: // Stationary
             this.velocity.x = 0;

@@ -12,6 +12,7 @@ ASSET_MANAGER.queueDownload("./img/spaz_frames.png"); // temporary entity sprite
 ASSET_MANAGER.queueDownload("./img/WhiteGoatLeft.png");
 ASSET_MANAGER.queueDownload("./img/WhiteGoatRight.png");
 ASSET_MANAGER.queueDownload("./img/transparent_pixel.png");
+ASSET_MANAGER.queueDownload("./img/smallest-king-crown.png");
 
 ASSET_MANAGER.downloadAll(function () {
 

@@ -20,6 +20,8 @@ function Goat(game) {
     this.jumpHeight = 200;
     this.platform = null;
 
+    this.trim = {top: 50, bottom: 50, left: 50, right: 50};
+
     // Platforms
     this.platform = game.platforms[0]; // Ground platform to start
 
@@ -31,11 +33,13 @@ function Goat(game) {
 
     this.jumpLeftAscendAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 0, 0, 96, 95, 0.1, 4, false, true);
     this.jumpRightAscendAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 768, 0, 96, 95, 0.1, 4, false, false);
-    this.jumpLeftDescendAnimation   = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 0, 0, 96, 95, 0.1, 4, false, true);
-    this.jumpRightDescendAnimation   = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 768, 0, 96, 95, 0.1, 4, false, false);
+    this.jumpLeftDescendAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 0, 0, 96, 95, 0.1, 4, false, true);
+    this.jumpRightDescendAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 768, 0, 96, 95, 0.1, 4, false, false);
 
     this.runLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 384, 0, 96, 95, 0.1, 4, true, true);
     this.runRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 385, 0, 96, 95, 0.1, 4, true, false);
+
+    this.crownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/smallest-king-crown.png"), 0, 0, 40, 32, 0.1, 1, true, false);
 
     //this.chargingLeftAnimation      = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
     //this.chargingRightAnimation     = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
@@ -53,6 +57,7 @@ function Goat(game) {
     this.charging = false;
     this.attacking = false;
     this.stunned = false;
+    this.king = false;
 
     //this.boundingBox = new BoundingBox(this.x + 25, this.y, this.standAnimation.frameWidth - 40, this.standAnimation.frameHeight - 20);
 
@@ -87,7 +92,6 @@ Goat.prototype.reset = function () {
 // Based off of Chris Marriott's Unicorn's update method: https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 Goat.prototype.update = function () {
 
-
     // Update goat's velocities if it's on a platform
     if(this.platform) {
         this.x += this.platform.velocity.x;
@@ -100,6 +104,8 @@ Goat.prototype.update = function () {
     } else if (this.game.left) {
         this.right = false;
     }
+
+    this.king = this.game.kKey;
 
     // The goat begins a JUMP:
     if (this.game.space && !this.jumping && !this.falling) {
@@ -176,11 +182,19 @@ Goat.prototype.update = function () {
 
     // Handles keeping goat above the ground if it's falling down
     if (this.y > this.ground) this.y = this.ground;
-
     Entity.prototype.update.call(this);
 };
 
 Goat.prototype.draw = function (ctx) {
+
+    // For drawing CROWN:
+    if (this.king) {
+        if (this.right) { // drawn crown above right-turned head
+            this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + 42, this.y - 20);
+        } else { // draw crown above left-turned head
+            this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + 13, this.y - 20);
+        }
+    }
 
     if (this.jumping) {
         if (this.right)

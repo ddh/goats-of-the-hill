@@ -38,20 +38,20 @@ ASSET_MANAGER.downloadAll(function () {
     var groundPlatform = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/transparent_pixel.png"), 0, 530, 800, 70);
     groundPlatform.oneWayCollision = false;
     gameEngine.addEntity(groundPlatform);
-    platforms.push(groundPlatform);
+    //platforms.push(groundPlatform);
 
-    var plats = function(size, x, y) {
+    var plats = function (size, x, y) {
         var pf = null;
-        if(size == 's') {                                                                   
+        if (size == 's') {
             //one-hay                                                                       //w, h
-            var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay.png"), x, y, 85, 50);
+            var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay.png"), x, y, 85, 50, 'vertical');
         } else if (size == 'm') {
             //two-hay
-            var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay2.png"), x, y, 155, 50);
+            var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay2.png"), x, y, 155, 50, 'horizontal');
         } else if (size == 'l') {
             //three-hay
-            var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay3.png"), x, y, 240, 50);
-        }                                           
+            var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay3.png"), x, y, 240, 50, 'stationary');
+        }
         pf.oneWayCollision = true; // indicates top down collision but not bottom up
         gameEngine.addEntity(pf);
         platforms.push(pf);
@@ -65,7 +65,7 @@ ASSET_MANAGER.downloadAll(function () {
     plats('m', -2, 300);
     plats('l', 562, 300);
     /* row 4 */
-    plats('m',325, 130)
+    plats('m', 325, 130)
 
     gameEngine.platforms = platforms;
 
@@ -75,7 +75,7 @@ ASSET_MANAGER.downloadAll(function () {
 
     /* === START GAME === */
     gameEngine.start();
-    
+
 });
 
 

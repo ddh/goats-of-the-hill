@@ -36,6 +36,8 @@ function Goat(game) {
     this.runLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 384, 0, 96, 95, 0.1, 4, true, true);
     this.runRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 385, 0, 96, 95, 0.1, 4, true, false);
 
+    this.crownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/smallest-king-crown.png"), 0, 0, 40, 32, 0.1, 1, true, false);
+
     //this.chargingLeftAnimation      = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
     //this.chargingRightAnimation     = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
     //this.attackLeftAnimation        = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
@@ -52,6 +54,7 @@ function Goat(game) {
     this.charging = false;
     this.attacking = false;
     this.stunned = false;
+    this.king = true; // debug by setting it to true to see crown be drawn above
 
     //this.boundingBox = new BoundingBox(this.x + 25, this.y, this.standAnimation.frameWidth - 40, this.standAnimation.frameHeight - 20);
 
@@ -172,6 +175,15 @@ Goat.prototype.update = function () {
 };
 
 Goat.prototype.draw = function (ctx) {
+
+    // For drawing CROWN:
+    if (this.king) {
+        if (this.right) { // drawn crown above right-turned head
+            this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + 42, this.y - 20);
+        } else { // draw crown above left-turned head
+            this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + 13, this.y - 20);
+        }
+    }
 
     if (this.jumping) {
         if (this.right)

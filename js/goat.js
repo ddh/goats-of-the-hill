@@ -17,8 +17,9 @@ function Goat(game) {
     this.lastY = this.y; // TODO: to be used for animation drawing calculations when jumping btwn platforms
     this.velocity = {x: 0, y: 0};
     this.speed = 5;
-    this.jumpHeight = 200;
+    this.jumpHeight = 100;
     this.platform = null;
+    this.scale = 0.65;
 
     this.trim = {top: 50, bottom: 50, left: 50, right: 50};
 
@@ -57,8 +58,6 @@ function Goat(game) {
             land: [154,143]
         }
     });
-
-
 
     // Action states
     this.right = true; // Facing right (true) or left (false)
@@ -140,7 +139,7 @@ Goat.prototype.update = function () {
         var height = (4 * duration - 4 * duration * duration) * this.jumpHeight;
         this.lastY = this.boundingBox.bottom;
         this.y = this.base - height;
-        this.boundingBox = new BoundingBox(this.x, this.y, jumpAscendAnimation.frameWidth, jumpAscendAnimation.frameHeight);
+        this.boundingBox = new BoundingBox(this.x, this.y, jumpAscendAnimation.frameWidth * this.scale, jumpAscendAnimation.frameHeight * this.scale);
 
         var idx;
         for (idx = 0; idx < this.game.platforms.length; idx++) {
@@ -149,7 +148,7 @@ Goat.prototype.update = function () {
                 console.log("JUMPING COLLISION WITH " + pf);
                 this.jumping = false;
                 this.soundFX.play('land');
-                this.y = pf.boundingBox.top - jumpAscendAnimation.frameHeight;
+                this.y = pf.boundingBox.top - jumpAscendAnimation.frameHeight * this.scale;
                 this.platform = pf;
                 jumpAscendAnimation.elapsedTime = 0;
             }
@@ -163,7 +162,7 @@ Goat.prototype.update = function () {
 
         this.lastY = this.boundingBox.bottom;
         this.y += this.game.clockTick / jumpDescendAnimation.totalTime * 4 * this.jumpHeight;
-        this.boundingBox = new BoundingBox(this.x, this.y, jumpDescendAnimation.frameWidth, jumpDescendAnimation.frameHeight);
+        this.boundingBox = new BoundingBox(this.x, this.y, jumpDescendAnimation.frameWidth * this.scale, jumpDescendAnimation.frameHeight * this.scale);
 
         for (var i = 0; i < this.game.platforms.length; i++) {
             var pf = this.game.platforms[i];
@@ -171,7 +170,7 @@ Goat.prototype.update = function () {
                 console.log("LANDING COLLISION WITH " + pf);
                 this.falling = false;
                 this.soundFX.play('land');
-                this.y = pf.boundingBox.top - jumpDescendAnimation.frameHeight;
+                this.y = pf.boundingBox.top - jumpDescendAnimation.frameHeight * this.scale;
                 this.platform = pf;
                 jumpDescendAnimation.elapsedTime = 0;
             }
@@ -181,7 +180,7 @@ Goat.prototype.update = function () {
     // Handles when dropping off of platforms triggers falling animation
     if (!this.jumping && !this.falling) {
         var standingAnimation = this.right ? this.standRightAnimation : this.standLeftAnimation;
-        this.boundingBox = new BoundingBox(this.x, this.y, standingAnimation.frameWidth, standingAnimation.frameHeight);
+        this.boundingBox = new BoundingBox(this.x, this.y, standingAnimation.frameWidth * this.scale, standingAnimation.frameHeight * this.scale);
         if (this.boundingBox.left > this.platform.boundingBox.right) this.falling = true;
         if (this.boundingBox.right < this.platform.boundingBox.left) this.falling = true;
     }
@@ -205,28 +204,28 @@ Goat.prototype.draw = function (ctx) {
     // For drawing CROWN:
     if (this.king) {
         if (this.right) { // drawn crown above right-turned head
-            this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + 42, this.y - 20);
+            this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + this.scale * 42, this.y - this.scale * 20, this.scale);
         } else { // draw crown above left-turned head
-            this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + 13, this.y - 20);
+            this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + this.scale * 13, this.y - this.scale * 20, this.scale);
         }
     }
 
     if (this.jumping) {
         if (this.right)
-            this.jumpRightAscendAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+            this.jumpRightAscendAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else
-            this.jumpLeftAscendAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+            this.jumpLeftAscendAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
     } else if (this.running) {
         if (this.right)
-            this.runRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+            this.runRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else
-            this.runLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+            this.runLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
 
     } else {
         if (this.right)
-            this.standRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+            this.standRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else
-            this.standLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+            this.standLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
     }
 
     Entity.prototype.draw.call(this, ctx);

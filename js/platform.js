@@ -1,4 +1,4 @@
-function Platform(game, image, x, y, width, height, movement) {
+function Platform(game, image, x, y, width, height, movement, isHill) {
     this.game = game;
     this.image = image;
     this.width = width;
@@ -7,6 +7,7 @@ function Platform(game, image, x, y, width, height, movement) {
     this.startY = y;
     this.velocity = {x: 3, y: 3};
     this.movement = movement;
+    this.isHill = isHill;
     Entity.call(this, game, x, y, width, height);
 }
 
@@ -28,11 +29,20 @@ Platform.prototype.update = function () {
             }
             break;
         case 'horizontal':
-            this.x += this.velocity.x;
-            this.velocity.y = 0;
-            if (this.x <= 0 || this.x + this.width >= this.game.ctx.canvas.width) {
-                this.velocity.x *= -1;
+            if(this.isHill) { // the target platform to win points 
+                this.x += this.velocity.x;
+                this.velocity.y = 0;
+                if (this.x <= 0 || this.x + this.width >= this.game.ctx.canvas.width) {
+                    this.velocity.x *= -1;
+                }   
+            } else {
+                this.x += this.velocity.x;
+                this.velocity.y = 0;
+                if (this.x <= 0 || this.x + this.width >= this.game.ctx.canvas.width) {
+                    this.velocity.x *= -1;
+                }    
             }
+            
             break;
         case 'elliptical':
             break;
@@ -66,7 +76,14 @@ Platform.prototype.update = function () {
 
 
 Platform.prototype.draw = function (ctx) {
-    ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+    
+    if(this.isHill) {
+        ctx.drawImage(ASSET_MANAGER.getAsset("./img/glitterTest.png"), this.x, this.y - 40, this.width, this.height);
+        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+    } else {
+        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+    }
+    //ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     Entity.prototype.draw.call(this, ctx);
 };
 

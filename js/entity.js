@@ -69,7 +69,8 @@ BoundingBox.prototype.draw = function (ctx) {
 
 BoundingBox.prototype.update = function (entity) {
     // Handles initializing the goat's trim field correctly given which animation is currently taking place
-    if (entity.toString() === "Goat") {
+    if (entity.toString() === "Goat 0" || entity.toString() === "Goat 1"  
+            || entity.toString() === "Goat 2" || entity.toString() === "Goat 3") {
         if (entity.right) {
             if (entity.running) {
                 entity.trim = {top: 10, bottom: 10, left: 10, right: 15};

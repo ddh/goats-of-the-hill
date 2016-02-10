@@ -2,7 +2,6 @@
 
 // asset manager is now constructed after class is defined (bottom of assetmanager.js)
 
-
 // Use asset manager to download images
 ASSET_MANAGER.queueDownload("./img/farm.png");
 ASSET_MANAGER.queueDownload("./img/mountain.png");
@@ -13,6 +12,8 @@ ASSET_MANAGER.queueDownload("./img/smb_mountain.png"); // temporary background i
 ASSET_MANAGER.queueDownload("./img/spaz_frames.png"); // temporary entity sprites for testing
 ASSET_MANAGER.queueDownload("./img/WhiteGoatLeft.png");
 ASSET_MANAGER.queueDownload("./img/WhiteGoatRight.png");
+ASSET_MANAGER.queueDownload("./img/WhiteGoatLeft1.png");
+ASSET_MANAGER.queueDownload("./img/WhiteGoatRight1.png");
 ASSET_MANAGER.queueDownload("./img/transparent_pixel.png");
 ASSET_MANAGER.queueDownload("./img/smallest-king-crown.png");
 
@@ -47,9 +48,10 @@ ASSET_MANAGER.downloadAll(function () {
     gameEngine.platforms = gameEngine.sceneSelector.getFirstScene().platforms;
 
     /* === Goats === */
-    var goat1 = new Goat(gameEngine);
-    var goat2 = new Goat(gameEngine);
-    gameEngine.addEntity(goat1);
+    var goat = new Goat(gameEngine, 0);
+    gameEngine.addEntity(goat);
+
+    var goat2 = new Goat(gameEngine, 1);
     gameEngine.addEntity(goat2);
 
     /* === START GAME === */

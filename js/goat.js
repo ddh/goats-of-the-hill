@@ -6,9 +6,10 @@ function maxSpeedEnforcement(speed, maxSpeed) {
     }
 }
 
-function Goat(game) {
+function Goat(game, playerNumber) {
 
     // Game physics:
+    this.playerNumber = playerNumber;
     this.ground = 480; // changed value from 400
     this.x = 0;
     this.y = this.ground;
@@ -17,8 +18,9 @@ function Goat(game) {
     this.lastY = this.y; // TODO: to be used for animation drawing calculations when jumping btwn platforms
     this.velocity = {x: 0, y: 0};
     this.speed = 5;
-    this.jumpHeight = 200;
+    this.jumpHeight = 100;
     this.platform = null;
+    this.scale = 0.65;
 
     this.trim = {top: 50, bottom: 50, left: 50, right: 50};
 
@@ -28,16 +30,23 @@ function Goat(game) {
     // TODO: took out idle animation and status boolean b/c standing anim and bool serves that purpose already
 
     // Animations:
-    this.standLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 0, 0, 96, 95, 0.1, 4, true, true);
-    this.standRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 768, 0, 96, 95, 0.1, 4, true, false);
+    var leftAsset = ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png");
+    var rightAsset = ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png");
+    if (this.playerNumber === 1) {
+        leftAsset = ASSET_MANAGER.getAsset("./img/WhiteGoatLeft1.png");
+        rightAsset = ASSET_MANAGER.getAsset("./img/WhiteGoatRight1.png");
+    }
+    
+    this.standLeftAnimation = new Animation(leftAsset, 0, 0, 96, 95, 0.1, 4, true, true);
+    this.standRightAnimation = new Animation(rightAsset, 768, 0, 96, 95, 0.1, 4, true, false);
 
-    this.jumpLeftAscendAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 0, 0, 96, 95, 0.1, 4, false, true);
-    this.jumpRightAscendAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 768, 0, 96, 95, 0.1, 4, false, false);
-    this.jumpLeftDescendAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 0, 0, 96, 95, 0.1, 4, false, true);
-    this.jumpRightDescendAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 768, 0, 96, 95, 0.1, 4, false, false);
+    this.jumpLeftAscendAnimation = new Animation(leftAsset, 0, 0, 96, 95, 0.1, 4, false, true);
+    this.jumpRightAscendAnimation = new Animation(rightAsset, 768, 0, 96, 95, 0.1, 4, false, false);
+    this.jumpLeftDescendAnimation = new Animation(leftAsset, 0, 0, 96, 95, 0.1, 4, false, true);
+    this.jumpRightDescendAnimation = new Animation(rightAsset, 768, 0, 96, 95, 0.1, 4, false, false);
 
-    this.runLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 384, 0, 96, 95, 0.1, 4, true, true);
-    this.runRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 385, 0, 96, 95, 0.1, 4, true, false);
+    this.runLeftAnimation = new Animation(leftAsset, 384, 0, 96, 95, 0.1, 4, true, true);
+    this.runRightAnimation = new Animation(rightAsset, 385, 0, 96, 95, 0.1, 4, true, false);
 
     this.crownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/smallest-king-crown.png"), 0, 0, 40, 32, 0.1, 1, true, false);
 
@@ -57,8 +66,6 @@ function Goat(game) {
             land: [154,143]
         }
     });
-
-
 
     // Action states
     this.right = true; // Facing right (true) or left (false)
@@ -111,16 +118,29 @@ Goat.prototype.update = function () {
     }
 
     // Update goat's facing direction (LEFT or RIGHT)
-    if (this.game.right) {
+    if (this.playerNumber === 0 && this.game.right0) {
         this.right = true;
-    } else if (this.game.left) {
+    } else if (this.playerNumber === 0 && this.game.left0) {
         this.right = false;
     }
+    if (this.playerNumber === 1 && this.game.right1) {
+        this.right = true;
+    } else if (this.playerNumber === 1 && this.game.left1) {
+        this.right = false;
+    }
+    
 
-    this.king = this.game.kKey;
+    if (this.playerNumber === 0)
+        this.king = this.game.kKey;
 
     // The goat begins a JUMP:
-    if (this.game.space && !this.jumping && !this.falling) {
+    if (this.playerNumber === 0 && this.game.jump0 && !this.jumping && !this.falling) {
+        this.jumping = true;
+        this.soundFX.play('jump');
+        console.log("Jumped");
+        this.base = this.y; // Keep track of the goat's last bottom-y value
+    }
+    if (this.playerNumber === 1 && this.game.jump1 && !this.jumping && !this.falling) {
         this.jumping = true;
         this.soundFX.play('jump');
         console.log("Jumped");
@@ -140,7 +160,7 @@ Goat.prototype.update = function () {
         var height = (4 * duration - 4 * duration * duration) * this.jumpHeight;
         this.lastY = this.boundingBox.bottom;
         this.y = this.base - height;
-        this.boundingBox = new BoundingBox(this.x, this.y, jumpAscendAnimation.frameWidth, jumpAscendAnimation.frameHeight);
+        this.boundingBox = new BoundingBox(this.x, this.y, jumpAscendAnimation.frameWidth * this.scale, jumpAscendAnimation.frameHeight * this.scale);
 
         var idx;
         for (idx = 0; idx < this.game.platforms.length; idx++) {
@@ -149,7 +169,7 @@ Goat.prototype.update = function () {
                 console.log("JUMPING COLLISION WITH " + pf);
                 this.jumping = false;
                 this.soundFX.play('land');
-                this.y = pf.boundingBox.top - jumpAscendAnimation.frameHeight;
+                this.y = pf.boundingBox.top - jumpAscendAnimation.frameHeight * this.scale;
                 this.platform = pf;
                 jumpAscendAnimation.elapsedTime = 0;
             }
@@ -163,7 +183,7 @@ Goat.prototype.update = function () {
 
         this.lastY = this.boundingBox.bottom;
         this.y += this.game.clockTick / jumpDescendAnimation.totalTime * 4 * this.jumpHeight;
-        this.boundingBox = new BoundingBox(this.x, this.y, jumpDescendAnimation.frameWidth, jumpDescendAnimation.frameHeight);
+        this.boundingBox = new BoundingBox(this.x, this.y, jumpDescendAnimation.frameWidth * this.scale, jumpDescendAnimation.frameHeight * this.scale);
 
         for (var i = 0; i < this.game.platforms.length; i++) {
             var pf = this.game.platforms[i];
@@ -171,7 +191,7 @@ Goat.prototype.update = function () {
                 console.log("LANDING COLLISION WITH " + pf);
                 this.falling = false;
                 this.soundFX.play('land');
-                this.y = pf.boundingBox.top - jumpDescendAnimation.frameHeight;
+                this.y = pf.boundingBox.top - jumpDescendAnimation.frameHeight * this.scale;
                 this.platform = pf;
                 jumpDescendAnimation.elapsedTime = 0;
             }
@@ -181,18 +201,25 @@ Goat.prototype.update = function () {
     // Handles when dropping off of platforms triggers falling animation
     if (!this.jumping && !this.falling) {
         var standingAnimation = this.right ? this.standRightAnimation : this.standLeftAnimation;
-        this.boundingBox = new BoundingBox(this.x, this.y, standingAnimation.frameWidth, standingAnimation.frameHeight);
+        this.boundingBox = new BoundingBox(this.x, this.y, standingAnimation.frameWidth * this.scale, standingAnimation.frameHeight * this.scale);
         if (this.boundingBox.left > this.platform.boundingBox.right) this.falling = true;
         if (this.boundingBox.right < this.platform.boundingBox.left) this.falling = true;
     }
 
     // Update running state:
-    this.game.right || this.game.left ? this.running = true : this.running = false;
+    if (this.playerNumber === 0)
+        this.game.right0 || this.game.left0 ? this.running = true : this.running = false;
+    if (this.playerNumber === 1)
+        this.game.right1 || this.game.left1 ? this.running = true : this.running = false;
 
     // Running and boundary collisions:
-    if (this.running) {
-        if (this.game.right && this.x < this.game.surfaceWidth - this.width) this.x += this.speed;
-        if (this.game.left && this.x > 0) this.x -= this.speed;
+    if (this.playerNumber === 0 && this.running) {
+        if (this.game.right0 && this.x < this.game.surfaceWidth - this.width) this.x += this.speed;
+        if (this.game.left0 && this.x > 0) this.x -= this.speed;
+    }
+    if (this.playerNumber === 1 && this.running) {
+        if (this.game.right1 && this.x < this.game.surfaceWidth - this.width) this.x += this.speed;
+        if (this.game.left1 && this.x > 0) this.x -= this.speed;
     }
 
     // Handles keeping goat above the ground if it's falling down
@@ -205,33 +232,33 @@ Goat.prototype.draw = function (ctx) {
     // For drawing CROWN:
     if (this.king) {
         if (this.right) { // drawn crown above right-turned head
-            this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + 42, this.y - 20);
+            this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + this.scale * 42, this.y - this.scale * 20, this.scale);
         } else { // draw crown above left-turned head
-            this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + 13, this.y - 20);
+            this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + this.scale * 13, this.y - this.scale * 20, this.scale);
         }
     }
 
     if (this.jumping) {
         if (this.right)
-            this.jumpRightAscendAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+            this.jumpRightAscendAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else
-            this.jumpLeftAscendAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+            this.jumpLeftAscendAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
     } else if (this.running) {
         if (this.right)
-            this.runRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+            this.runRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else
-            this.runLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+            this.runLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
 
     } else {
         if (this.right)
-            this.standRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+            this.standRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else
-            this.standLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y);
+            this.standLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
     }
 
     Entity.prototype.draw.call(this, ctx);
 };
 
 Goat.prototype.toString = function () {
-    return 'Goat';
+    return 'Goat ' + this.playerNumber;
 };

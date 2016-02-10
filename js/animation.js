@@ -16,7 +16,7 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y, scaleBy) {
     var scaleBy = scaleBy || 1;
     this.elapsedTime += tick;
     if (this.loop) {
-        if (this.isDone()) {
+        if (this.isDone()) { // TODO: if last frame, hold it (@duy's question)
             this.elapsedTime = 0;
         }
     } else if (this.isDone()) {
@@ -49,5 +49,6 @@ Animation.prototype.currentFrame = function () {
 };
 
 Animation.prototype.isDone = function () {
+    // TODO: change this method / add another method that is for holding last frame (@duy's question)
     return (this.elapsedTime >= this.totalTime);
 };

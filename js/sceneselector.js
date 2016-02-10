@@ -10,6 +10,10 @@ Scene.prototype.draw = function() {};
 
 Scene.prototype.update = function() {};
 
+Scene.prototype.toString = function() {
+    return "Scene";
+};
+
 function SceneSelector() {
     this.scenes = [];
     this.currentScene = 0;
@@ -33,3 +37,7 @@ SceneSelector.prototype.getNextScene = function() {
 SceneSelector.prototype.draw = function() {};
 
 SceneSelector.prototype.update = function() {};
+
+SceneSelector.prototype.toString = function() {
+    return "SceneSelector";
+};

@@ -51,14 +51,14 @@ GameEngine.prototype.startInput = function () {
     // http://stackoverflow.com/questions/8916620/disable-arrow-key-scrolling-in-users-browser
     this.ctx.canvas.addEventListener("keydown", function (e) {
         // space and arrow keys (32:spacebar, 37:left, 38:up, 39:right, 40:down)
-        if ([32, 37, 38, 39, 40, 87, 65, 68].indexOf(e.keyCode) > -1) e.preventDefault();
+        if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) e.preventDefault();
     }, false);
 
     this.ctx.canvas.addEventListener("keydown", function (e) {
-        if (e.which === 32) that.space0 = true;
+        if (e.which === 38) that.jump0 = true;
         if (e.which === 39) that.right0 = true;
         if (e.which === 37) that.left0 = true;
-        if (e.which === 87) that.space1 = true;
+        if (e.which === 87) that.jump1 = true;
         if (e.which === 65) that.left1 = true;
         if (e.which === 68) that.right1 = true;
         if (e.which === 75) {
@@ -77,8 +77,8 @@ GameEngine.prototype.startInput = function () {
         if (e.which === 37) that.left0 = false;
         if (e.which === 65) that.left1 = false;
         if (e.which === 68) that.right1 = false;
-        if (e.which === 87) that.space1 = false;
-        if (e.which === 32) that.space0 = false;
+        if (e.which === 87) that.jump1 = false;
+        if (e.which === 38) that.jump0 = false;
     });
 
     /* === MOUSE SETTINGS === */

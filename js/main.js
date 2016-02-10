@@ -13,6 +13,8 @@ ASSET_MANAGER.queueDownload("./img/smb_mountain.png"); // temporary background i
 ASSET_MANAGER.queueDownload("./img/spaz_frames.png"); // temporary entity sprites for testing
 ASSET_MANAGER.queueDownload("./img/WhiteGoatLeft.png");
 ASSET_MANAGER.queueDownload("./img/WhiteGoatRight.png");
+ASSET_MANAGER.queueDownload("./img/WhiteGoatLeft1.png");
+ASSET_MANAGER.queueDownload("./img/WhiteGoatRight1.png");
 ASSET_MANAGER.queueDownload("./img/transparent_pixel.png");
 ASSET_MANAGER.queueDownload("./img/smallest-king-crown.png");
 

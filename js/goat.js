@@ -30,16 +30,23 @@ function Goat(game, playerNumber) {
     // TODO: took out idle animation and status boolean b/c standing anim and bool serves that purpose already
 
     // Animations:
-    this.standLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 0, 0, 96, 95, 0.1, 4, true, true);
-    this.standRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 768, 0, 96, 95, 0.1, 4, true, false);
+    var leftAsset = ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png");
+    var rightAsset = ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png");
+    if (this.playerNumber === 1) {
+        leftAsset = ASSET_MANAGER.getAsset("./img/WhiteGoatLeft1.png");
+        rightAsset = ASSET_MANAGER.getAsset("./img/WhiteGoatRight1.png");
+    }
+    
+    this.standLeftAnimation = new Animation(leftAsset, 0, 0, 96, 95, 0.1, 4, true, true);
+    this.standRightAnimation = new Animation(rightAsset, 768, 0, 96, 95, 0.1, 4, true, false);
 
-    this.jumpLeftAscendAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 0, 0, 96, 95, 0.1, 4, false, true);
-    this.jumpRightAscendAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 768, 0, 96, 95, 0.1, 4, false, false);
-    this.jumpLeftDescendAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 0, 0, 96, 95, 0.1, 4, false, true);
-    this.jumpRightDescendAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 768, 0, 96, 95, 0.1, 4, false, false);
+    this.jumpLeftAscendAnimation = new Animation(leftAsset, 0, 0, 96, 95, 0.1, 4, false, true);
+    this.jumpRightAscendAnimation = new Animation(rightAsset, 768, 0, 96, 95, 0.1, 4, false, false);
+    this.jumpLeftDescendAnimation = new Animation(leftAsset, 0, 0, 96, 95, 0.1, 4, false, true);
+    this.jumpRightDescendAnimation = new Animation(rightAsset, 768, 0, 96, 95, 0.1, 4, false, false);
 
-    this.runLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png"), 384, 0, 96, 95, 0.1, 4, true, true);
-    this.runRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png"), 385, 0, 96, 95, 0.1, 4, true, false);
+    this.runLeftAnimation = new Animation(leftAsset, 384, 0, 96, 95, 0.1, 4, true, true);
+    this.runRightAnimation = new Animation(rightAsset, 385, 0, 96, 95, 0.1, 4, true, false);
 
     this.crownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/smallest-king-crown.png"), 0, 0, 40, 32, 0.1, 1, true, false);
 
@@ -127,13 +134,13 @@ Goat.prototype.update = function () {
         this.king = this.game.kKey;
 
     // The goat begins a JUMP:
-    if (this.playerNumber === 0 && this.game.space0 && !this.jumping && !this.falling) {
+    if (this.playerNumber === 0 && this.game.jump0 && !this.jumping && !this.falling) {
         this.jumping = true;
         this.soundFX.play('jump');
         console.log("Jumped");
         this.base = this.y; // Keep track of the goat's last bottom-y value
     }
-    if (this.playerNumber === 1 && this.game.space1 && !this.jumping && !this.falling) {
+    if (this.playerNumber === 1 && this.game.jump1 && !this.jumping && !this.falling) {
         this.jumping = true;
         this.soundFX.play('jump');
         console.log("Jumped");

@@ -47,9 +47,9 @@ GameEngine.prototype.start = function () {
 
 GameEngine.prototype.loadFirstScene = function () {
     this.scene = this.sceneSelector.scenes[0];
-    this.entities.push(this.sceneSelector.scenes[0].background);
-    for (var i = 0; i < this.sceneSelector.scenes[0].platforms.length; i++) {
-        var pf = this.sceneSelector.scenes[0].platforms[i];
+    this.entities.push(this.scene.background);
+    for (var i = 0; i < this.scene.platforms.length; i++) {
+        var pf = this.scene.platforms[i];
         this.entities.push(pf);
         this.platforms.push(pf);
     }

@@ -222,6 +222,31 @@ Goat.prototype.update = function () {
         if (this.game.left1 && this.x > 0) this.x -= this.speed;
     }
 
+    //check goat on goat collision 
+    if (this.playerNumber === 0) {
+        //console.log("in the ifffffffffffffffffff");
+        for (var i = 0; i < this.game.entities.length; i++) {
+            //console.log("in the loop entities = " + this.game.entities[i].toString());
+            if (this.game.entities[i].toString() === "Goat 1") {
+                var goat = this.game.entities[i];    
+                if (this.boundingBox.collide(goat.boundingBox)) {
+                    console.log("BATTLLEEE 1");
+                }
+            }
+        }
+    }
+
+    if (this.playerNumber === 1) {
+        for (var i = 0; i < this.game.entities.length; i++) {
+            if (this.game.entities[i].toString() === "Goat 0") {
+                var goat = this.game.entities[i];    
+                if (this.boundingBox.collide(goat.boundingBox)) {
+                console.log("BATTLLEEE 2");
+                }
+            }
+        }
+    }
+    
     // Handles keeping goat above the ground if it's falling down
     if (this.y > this.ground) this.y = this.ground;
     Entity.prototype.update.call(this);

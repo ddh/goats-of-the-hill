@@ -44,8 +44,7 @@ ASSET_MANAGER.downloadAll(function () {
 
     gameEngine.sceneSelector = makeSceneSelector(bg, gameEngine); // also initializes Scenes
 
-    // TODO: perhaps figure out whether we need to move the line below elsewhere...
-    gameEngine.platforms = gameEngine.sceneSelector.getFirstScene().platforms;
+    gameEngine.loadFirstScene();
 
     /* === Goats === */
     var goat = new Goat(gameEngine, 0);
@@ -91,7 +90,14 @@ var makeSceneSelector = function(background, gameEngine) {
     bouncePF.oneWayCollision = true;
     platforms.push(bouncePF);
 
-    return new SceneSelector(scenes);
+    scenes.push(new Scene(platforms, background));
+
+    /* === /END FOR SCENE #1 ONLY === */
+
+    var ss = new SceneSelector();
+    ss.addScene(scenes[0]);
+
+    return ss;
 };
 
 var makePlatform = function (size, x, y, gameEngine) {

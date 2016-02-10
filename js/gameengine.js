@@ -22,6 +22,9 @@ function GameEngine() {
     this.surfaceHeight = null;
     this.running = false; // boolean used by playgame.js
     this.keys = {}; // TODO: use map to correlate certain e.which's or keys to booleans or elapsed times
+    this.sceneSelector = null;
+    this.platforms = [];
+    this.scene = null;
 }
 
 GameEngine.prototype.init = function (ctx) {
@@ -40,6 +43,16 @@ GameEngine.prototype.start = function () {
         that.loop();
         requestAnimFrame(gameLoop, that.ctx.canvas);
     })();
+};
+
+GameEngine.prototype.loadFirstScene = function () {
+    this.scene = this.sceneSelector.scenes[0];
+    this.entities.push(this.sceneSelector.scenes[0].background);
+    for (var i = 0; i < this.sceneSelector.scenes[0].platforms.length; i++) {
+        var pf = this.sceneSelector.scenes[0].platforms[i];
+        this.entities.push(pf);
+        this.platforms.push(pf);
+    }
 };
 
 GameEngine.prototype.startInput = function () {

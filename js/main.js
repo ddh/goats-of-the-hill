@@ -89,8 +89,11 @@ ASSET_MANAGER.downloadAll(function () {
     gameEngine.platforms = platforms;
 
     /* === Goats === */
-    var goat = new Goat(gameEngine);
+    var goat = new Goat(gameEngine, 0);
     gameEngine.addEntity(goat);
+
+    var goat2 = new Goat(gameEngine, 1);
+    gameEngine.addEntity(goat2);
 
     /* === START GAME === */
     gameEngine.start();

@@ -6,9 +6,10 @@ function maxSpeedEnforcement(speed, maxSpeed) {
     }
 }
 
-function Goat(game) {
+function Goat(game, playerNumber) {
 
     // Game physics:
+    this.playerNumber = playerNumber;
     this.ground = 480; // changed value from 400
     this.x = 0;
     this.y = this.ground;
@@ -110,16 +111,29 @@ Goat.prototype.update = function () {
     }
 
     // Update goat's facing direction (LEFT or RIGHT)
-    if (this.game.right) {
+    if (this.playerNumber === 0 && this.game.right0) {
         this.right = true;
-    } else if (this.game.left) {
+    } else if (this.playerNumber === 0 && this.game.left0) {
         this.right = false;
     }
+    if (this.playerNumber === 1 && this.game.right1) {
+        this.right = true;
+    } else if (this.playerNumber === 1 && this.game.left1) {
+        this.right = false;
+    }
+    
 
-    this.king = this.game.kKey;
+    if (this.playerNumber === 0)
+        this.king = this.game.kKey;
 
     // The goat begins a JUMP:
-    if (this.game.space && !this.jumping && !this.falling) {
+    if (this.playerNumber === 0 && this.game.space0 && !this.jumping && !this.falling) {
+        this.jumping = true;
+        this.soundFX.play('jump');
+        console.log("Jumped");
+        this.base = this.y; // Keep track of the goat's last bottom-y value
+    }
+    if (this.playerNumber === 1 && this.game.space1 && !this.jumping && !this.falling) {
         this.jumping = true;
         this.soundFX.play('jump');
         console.log("Jumped");
@@ -186,12 +200,19 @@ Goat.prototype.update = function () {
     }
 
     // Update running state:
-    this.game.right || this.game.left ? this.running = true : this.running = false;
+    if (this.playerNumber === 0)
+        this.game.right0 || this.game.left0 ? this.running = true : this.running = false;
+    if (this.playerNumber === 1)
+        this.game.right1 || this.game.left1 ? this.running = true : this.running = false;
 
     // Running and boundary collisions:
-    if (this.running) {
-        if (this.game.right && this.x < this.game.surfaceWidth - this.width) this.x += this.speed;
-        if (this.game.left && this.x > 0) this.x -= this.speed;
+    if (this.playerNumber === 0 && this.running) {
+        if (this.game.right0 && this.x < this.game.surfaceWidth - this.width) this.x += this.speed;
+        if (this.game.left0 && this.x > 0) this.x -= this.speed;
+    }
+    if (this.playerNumber === 1 && this.running) {
+        if (this.game.right1 && this.x < this.game.surfaceWidth - this.width) this.x += this.speed;
+        if (this.game.left1 && this.x > 0) this.x -= this.speed;
     }
 
     // Handles keeping goat above the ground if it's falling down
@@ -232,5 +253,5 @@ Goat.prototype.draw = function (ctx) {
 };
 
 Goat.prototype.toString = function () {
-    return 'Goat';
+    return 'Goat ' + this.playerNumber;
 };

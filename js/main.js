@@ -40,61 +40,70 @@ ASSET_MANAGER.downloadAll(function () {
 
     /* === Background === */
     var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/farm.png"), 800, 600);
-    gameEngine.addEntity(bg);
 
-    /* === Platforms === */
-    var platforms = [];
+    gameEngine.sceneSelector = makeSceneSelector(bg, gameEngine); // also initializes Scenes
 
-    /* ground */
-    var groundPlatform = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/transparent_pixel.png"), 0, 530, 800, 70, 'stationary');
-    groundPlatform.oneWayCollision = false;
-    gameEngine.addEntity(groundPlatform);
-    platforms.push(groundPlatform);
-
-    var plats = function (size, x, y) {
-        var pf = null;
-        if (size == 's') {
-            //one-hay                                                                       //w, h
-            var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay.png"), x, y, 85, 50, 'horizontal');
-        } else if (size == 'm') {
-            //two-hay
-            var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay2.png"), x, y, 155, 50, 'diagonal');
-        } else if (size == 'l') {
-            //three-hay
-            var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay3.png"), x, y, 240, 50, 'vertical');
-        }
-        pf.oneWayCollision = true; // indicates top down collision but not bottom up
-        gameEngine.addEntity(pf);
-        platforms.push(pf);
-    };
-    /*** Rows in Bottom-up fashion ***/
-    /* row 1 */
-    plats('l', -2, 480);
-    /* row 2 */
-    plats('m', 300, 375);
-    /* row 3 */
-    plats('m', -2, 300);
-    plats('l', 562, 300);
-    /* row 4 */
-    plats('m', 325, 130)
-    /* row 5 */
-    plats('s', 100, 400);
-    plats('s', 400, 200);
-    /* row 6 */
-    var bouncePF = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay.png"), 200, 200, 85, 50, 'bouncing');
-    bouncePF.oneWayCollision = true;
-    gameEngine.addEntity(bouncePF);
-    platforms.push(bouncePF);
-
-    gameEngine.platforms = platforms;
+    // TODO: perhaps figure out whether we need to move the line below elsewhere...
+    gameEngine.platforms = gameEngine.sceneSelector.getFirstScene().platforms;
 
     /* === Goats === */
-    var goat = new Goat(gameEngine);
-    gameEngine.addEntity(goat);
+    var goat1 = new Goat(gameEngine);
+    var goat2 = new Goat(gameEngine);
+    gameEngine.addEntity(goat1);
+    gameEngine.addEntity(goat2);
 
     /* === START GAME === */
     gameEngine.start();
-
 });
 
+// TODO: add more scenes in once first scene is working correctly
+var makeSceneSelector = function(background, gameEngine) {
+    var scenes = [];
 
+    var platforms = [];
+
+    /* === FOR SCENE #1 ONLY === */
+
+    // handle ground platform
+    var groundPlatform = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/transparent_pixel.png"), 0, 530, 800, 70, 'stationary');
+    groundPlatform.oneWayCollision = false;
+    platforms.push(groundPlatform);
+
+    // handle all other platforms (use existing platforms below to build other scenes' platforms later)
+
+    /*** Rows in Bottom-up fashion ***/
+    /* row 1 */
+    platforms.push(makePlatform('l', -2, 480, gameEngine));
+    /* row 2 */
+    platforms.push(makePlatform('m', 300, 375, gameEngine));
+    /* row 3 */
+    platforms.push(makePlatform('m', -2, 300, gameEngine));
+    platforms.push(makePlatform('l', 562, 300, gameEngine));
+    /* row 4 */
+    platforms.push(makePlatform('m', 325, 130, gameEngine));
+    /* row 5 */
+    platforms.push(makePlatform('s', 100, 400, gameEngine));
+    platforms.push(makePlatform('s', 400, 200, gameEngine));
+    /* row 6 */
+    var bouncePF = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay.png"), 200, 200, 85, 50, 'bouncing');
+    bouncePF.oneWayCollision = true;
+    platforms.push(bouncePF);
+
+    return new SceneSelector(scenes);
+};
+
+var makePlatform = function (size, x, y, gameEngine) {
+    var pf = null;
+    if (size == 's') {
+        //one-hay                                                                       //w, h
+        var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay.png"), x, y, 85, 50, 'horizontal');
+    } else if (size == 'm') {
+        //two-hay
+        var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay2.png"), x, y, 155, 50, 'diagonal');
+    } else if (size == 'l') {
+        //three-hay
+        var pf = new Platform(gameEngine, ASSET_MANAGER.getAsset("./img/hay3.png"), x, y, 240, 50, 'vertical');
+    }
+    pf.oneWayCollision = true; // indicates top down collision but not bottom up
+    return pf;
+};

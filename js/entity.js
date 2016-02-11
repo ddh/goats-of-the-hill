@@ -20,7 +20,6 @@ Entity.prototype.reset = function () {
 
 Entity.prototype.draw = function (ctx) {
     if (this.game.enableDebug) this.boundingBox.draw(ctx);
-
 };
 
 Entity.prototype.rotateAndCache = function (image, angle) {

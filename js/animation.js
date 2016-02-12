@@ -40,7 +40,7 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y, scaleBy) {
         index * this.frameWidth + offset, vindex*this.frameHeight + this.startY,  // source from sheet
         this.frameWidth, this.frameHeight,
         locX, locY,
-        this.frameWidth * scaleBy,
+        (this.frameWidth * scaleBy),
         this.frameHeight * scaleBy);
 }
 

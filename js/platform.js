@@ -1,14 +1,32 @@
-function Platform(game, image, x, y, width, height, movement, isHill) {
+function Platform(game, size, x, y, movement, platType, isHill) {
+    var obj = helper(size, platType);
+    
     this.game = game;
-    this.image = image;
-    this.width = width;
-    this.height = height;
+    this.size = size;    
+    this.image = obj.img;
+    this.width = obj.width;
+    this.height = obj.height;
     this.startX = x;
     this.startY = y;
     this.velocity = {x: 3, y: 3};
     this.movement = movement;
     this.isHill = isHill;
-    Entity.call(this, game, x, y, width, height);
+    this.hillAnimation = new Animation(ASSET_MANAGER.getAsset("./img/sparkles.png"), 10, 0, 193, 180, .1, 29, true, true);
+    Entity.call(this, game, x, y, obj.width, obj.height);
+}
+
+// Function below capable for different plat images and sizes for different stages 
+function helper(size, platType) {
+    if (size === 's' && platType === 'hay') {
+        return {img: ASSET_MANAGER.getAsset("./img/hay.png"), width: 85, height: 50};
+    } else if (size === 'm' && platType === 'hay') {
+        console.log("returned helper");
+        return {img: ASSET_MANAGER.getAsset("./img/hay2.png"), width: 155, height: 50};
+    } else if (size === 'l' && platType === 'hay') {
+        return {img: ASSET_MANAGER.getAsset("./img/hay3.png"), width: 240, height: 50};  
+    } else if (size === 'ground') {
+        return {img: ASSET_MANAGER.getAsset("./img/transparent_pixel.png"), width: 800, height: 70};
+    }
 }
 
 Platform.prototype = new Entity();
@@ -78,12 +96,14 @@ Platform.prototype.update = function () {
 Platform.prototype.draw = function (ctx) {
     
     if(this.isHill) {
-        ctx.drawImage(ASSET_MANAGER.getAsset("./img/glitterTest.png"), this.x, this.y - 40, this.width, this.height);
+        var scaleBy = .6;                                       
+        var centerAlignX = this.x + ((this.width/2) - (this.width/4));
+        
+        this.hillAnimation.drawFrame(this.game.clockTick, ctx, centerAlignX, this.y - 70, scaleBy); //draws sparkles parallel with platform
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     } else {
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     }
-    //ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     Entity.prototype.draw.call(this, ctx);
 };
 

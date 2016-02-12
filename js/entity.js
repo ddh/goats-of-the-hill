@@ -68,7 +68,7 @@ BoundingBox.prototype.draw = function (ctx) {
 
 BoundingBox.prototype.update = function (entity) {
     // Handles initializing the goat's trim field correctly given which animation is currently taking place
-    if (entity.toString() === "Goat") {
+    if (entity instanceof Goat) {
         if (entity.right) {
             if (entity.running) {
                 entity.trim = {top: 10, bottom: 10, left: 10, right: 15};
@@ -82,7 +82,10 @@ BoundingBox.prototype.update = function (entity) {
                 entity.trim = {top: 10, bottom: 10, left: 8, right: 20};
             }
         }
-    } else { // ie. for platforms, etc.
+    } else if (entity instanceof Platform) { // ie. for platforms, etc.
+        entity.trim = {top: 0, bottom: 0, left: 0, right: 0};
+    } else{
+        //TODO: This needs fixing. Without this else statement, game crashes, trying to find the entity's trim properties when it might not have any to begin with (eg PlayGame).
         entity.trim = {top: 0, bottom: 0, left: 0, right: 0};
     }
 

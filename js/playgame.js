@@ -8,7 +8,7 @@ function PlayGame(game, x, y) {
     this.game = game;
     this.x = x;
     this.y = y;
-    this.game.roundNumber.innerHTML = "Round #" + (ROUNDS_PLAYED + 1);
+    //this.game.roundNumber.innerHTML = "Round #" + (ROUNDS_PLAYED + 1); // don't think this is necessary ~Reid
 
     Entity.call(this, game, x, y, 0, 0);
 }
@@ -23,7 +23,8 @@ PlayGame.prototype.reset = function () {
 };
 
 PlayGame.prototype.update = function () {
-    if (this.game.click && this.game.timer.gameTime < ROUND_TIME_LIMIT) this.game.running = true;
+    // TODO: need to change how we're keeping track of round time vs. total game time
+    this.game.running = (this.game.click && this.game.timer.gameTime < ROUND_TIME_LIMIT);
     Entity.prototype.update.call(this);
 };
 

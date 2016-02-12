@@ -2,7 +2,6 @@
 
 // asset manager is now constructed after class is defined (bottom of assetmanager.js)
 
-
 // Use asset manager to download images
 ASSET_MANAGER.queueDownload("./img/farm.png");
 ASSET_MANAGER.queueDownload("./img/mountain.png");
@@ -43,43 +42,10 @@ ASSET_MANAGER.downloadAll(function () {
 
     /* === Background === */
     var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/farm.png"), 800, 600);
-    gameEngine.addEntity(bg);
 
-    /* === Platforms === */
-    var platforms = [];
+    gameEngine.sceneSelector = makeSceneSelector(bg, gameEngine); // also initializes Scenes
 
-    /* ground */                                                           
-    var groundPlatform = new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'hay', false);
-    groundPlatform.oneWayCollision = false;
-    gameEngine.addEntity(groundPlatform);
-    platforms.push(groundPlatform);
-
-    var plats = function (size, x, y, movement, platType, isHill) {
-        //Note: width, height, and images have been moved to a helper function in platform.js
-        var pf = new Platform(gameEngine, size, x, y, movement, platType, isHill);
-
-        console.log("pf = " + pf);
-        pf.oneWayCollision = true; // indicates top down collision but not bottom up
-        gameEngine.addEntity(pf);
-        platforms.push(pf);
-    };
-    /*** Rows in Bottom-up fashion ***/
-    /* row 1 */
-    plats('l', -2, 480, 'vertical', 'hay', true);
-    /* row 2 */
-    plats('m', 300, 375, 'diagonal', 'hay', true);
-    /* row 3 */
-    plats('m', -2, 300, 'diagonal', 'hay', false);
-    plats('l', 562, 300, 'vertical', 'hay', false);
-    /* row 4 */
-    plats('m', 325, 130, 'diagonal', 'hay', false);
-    /* row 5 */
-    plats('s', 100, 400, 'horizontal', 'hay', false);
-    plats('s', 400, 200, 'horizontal', 'hay', false);
-    /* row 6 */
-    plats('s', 200, 200, 'bouncing', 'hay', true);
-
-    gameEngine.platforms = platforms;
+    gameEngine.loadFirstScene();
 
     /* === Goats === */
     var goat = new Goat(gameEngine, 0);
@@ -90,7 +56,51 @@ ASSET_MANAGER.downloadAll(function () {
 
     /* === START GAME === */
     gameEngine.start();
-
 });
 
+// TODO: add more scenes in once first scene is working correctly
+var makeSceneSelector = function(background, gameEngine) {
+    var scenes = [];
+    var platforms = [];
 
+    /* === FOR SCENE #1 ONLY === */
+
+    // handle ground platform
+    var groundPlatform = new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'hay', false);
+    groundPlatform.oneWayCollision = false;
+    platforms.push(groundPlatform);
+    
+    // handle all other platforms (use existing platforms below to build other scenes' platforms later)
+
+    /*** Rows in Bottom-up fashion ***/
+    /* row 1 */
+    platforms.push(makePlatform(gameEngine, 'l', -2, 480, 'vertical', 'hay', true));
+    /* row 2 */
+    platforms.push(makePlatform(gameEngine, 'm', 300, 375, 'diagonal', 'hay', false));
+    /* row 3 */
+    platforms.push(makePlatform(gameEngine, 'm', -2, 300, 'diagonal', 'hay', false));
+    platforms.push(makePlatform(gameEngine, 'l', 562, 300, 'vertical', 'hay', false));
+    /* row 4 */
+    platforms.push(makePlatform(gameEngine, 'm', 325, 130, 'diagonal', 'hay', false));
+    /* row 5 */
+    platforms.push(makePlatform(gameEngine, 's', 100, 400, 'horizontal', 'hay', false));
+    platforms.push(makePlatform(gameEngine, 's', 400, 200, 'horizontal', 'hay', false));
+    /* row 6 */
+    platforms.push(makePlatform(gameEngine, 's', 200, 200, 'bouncing', 'hay', false));
+
+    scenes.push(new Scene(platforms, background));
+
+    /* === /END FOR SCENE #1 ONLY === */
+
+    var ss = new SceneSelector();
+    ss.addScene(scenes[0]);
+
+    return ss;
+};
+
+var makePlatform = function (gameEngine, size, x, y, movement, platType, isHill) {
+    var pf = null;
+    pf = new Platform(gameEngine, size, x, y, movement, platType, isHill);
+    pf.oneWayCollision = true; // indicates top down collision but not bottom up
+    return pf;
+};

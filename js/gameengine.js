@@ -21,6 +21,10 @@ function GameEngine() {
     this.surfaceWidth = null;
     this.surfaceHeight = null;
     this.running = false; // boolean used by playgame.js
+    this.keys = {}; // TODO: use map to correlate certain e.which's or keys to booleans or elapsed times
+    this.sceneSelector = null;
+    this.platforms = [];
+    this.scene = null;
 }
 
 GameEngine.prototype.init = function (ctx) {
@@ -39,6 +43,16 @@ GameEngine.prototype.start = function () {
         that.loop();
         requestAnimFrame(gameLoop, that.ctx.canvas);
     })();
+};
+
+GameEngine.prototype.loadFirstScene = function () {
+    this.scene = this.sceneSelector.scenes[0];
+    this.entities.push(this.scene.background);
+    for (var i = 0; i < this.scene.platforms.length; i++) {
+        var pf = this.scene.platforms[i];
+        this.entities.push(pf);
+        this.platforms.push(pf);
+    }
 };
 
 GameEngine.prototype.startInput = function () {
@@ -116,6 +130,7 @@ GameEngine.prototype.startInput = function () {
     console.log('Input started');
 };
 
+// TODO: need to tweak how we're adding entities to the game engine, ie. have separate field arrays for each entity type
 GameEngine.prototype.addEntity = function (entity) {
     console.log('added ' + entity.toString());
     this.entities.push(entity);

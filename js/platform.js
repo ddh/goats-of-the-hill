@@ -92,12 +92,12 @@ Platform.prototype.update = function () {
     Entity.prototype.update.call(this);
 };
 
-
 Platform.prototype.draw = function (ctx) {
     
     if(this.isHill) {
-        var scaleBy = .6;                                       
-        var centerAlignX = this.x + ((this.width/2) - (this.width/4));
+        var scaleBy = .6;
+        var offsetFromLeftEdge = (this.width - 115) / 2; // this offset is used with centerAlignX
+        var centerAlignX = this.x + offsetFromLeftEdge;
         
         this.hillAnimation.drawFrame(this.game.clockTick, ctx, centerAlignX, this.y - 70, scaleBy); //draws sparkles parallel with platform
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);

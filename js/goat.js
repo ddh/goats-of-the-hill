@@ -175,7 +175,7 @@ Goat.prototype.update = function () {
             }
         }
         
-           // Goat ON TOP of another goat
+        // Goat ON TOP of another goat
         if (this.playerNumber === 0) {
             console.log("IN IFFF");
             for (var i = 0; i < this.game.entities.length; i++) {

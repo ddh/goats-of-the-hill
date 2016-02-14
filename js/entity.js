@@ -57,6 +57,11 @@ BoundingBox.prototype.collide = function (other) {
     return false;
 };
 
+// if another bounding box is on top of this one
+BoundingBox.prototype.collideTop = function (other) {
+    return this.collide(other) && this.top < other.bottom;
+};
+
 BoundingBox.prototype.draw = function (ctx) {
     ctx.beginPath();
     ctx.lineWidth = "2";

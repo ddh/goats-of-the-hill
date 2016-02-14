@@ -174,6 +174,39 @@ Goat.prototype.update = function () {
                 jumpAscendAnimation.elapsedTime = 0;
             }
         }
+        
+        // Goat ON TOP of another goat
+        if (this.playerNumber === 0) {
+            console.log("IN IFFF");
+            for (var i = 0; i < this.game.entities.length; i++) {
+                if (this.game.entities[i].toString() === "Goat 1") {
+                    var goat = this.game.entities[i];    
+                    if (this.boundingBox.collide(goat.boundingBox) && this.lastY < goat.boundingBox.top) {
+                        console.log("ON TOP OF GOAT");
+                        this.jumping = false;
+                        this.y = goat.boundingBox.top - jumpAscendAnimation.frameHeight * this.scale;
+                        this.platform = goat;
+                        jumpAscendAnimation.elapsedTime = 0;
+                    }
+                }
+            }
+        } 
+        if (this.playerNumber === 1) {
+            console.log("IN IFFF");
+            for (var i = 0; i < this.game.entities.length; i++) {
+                if (this.game.entities[i].toString() === "Goat 0") {
+                    var goat = this.game.entities[i];    
+                    if (this.boundingBox.collide(goat.boundingBox) && this.lastY < goat.boundingBox.top) {
+                        console.log("ON TOP OF GOAT");
+                        this.jumping = false;
+                        this.y = goat.boundingBox.top - jumpAscendAnimation.frameHeight * this.scale;
+                        this.platform = goat;
+                        jumpAscendAnimation.elapsedTime = 0;
+                    }
+                }
+            }
+        }
+             
     }
 
     // While the goat is FALLING:
@@ -195,7 +228,7 @@ Goat.prototype.update = function () {
                 this.platform = pf;
                 jumpDescendAnimation.elapsedTime = 0;
             }
-        }
+        } 
     }
 
     // Handles when dropping off of platforms triggers falling animation
@@ -222,6 +255,31 @@ Goat.prototype.update = function () {
         if (this.game.left1 && this.x > 0) this.x -= this.speed;
     }
 
+    // //check goat on goat collision 
+    // if (this.playerNumber === 0) {
+    //     for (var i = 0; i < this.game.entities.length; i++) {
+    //         if (this.game.entities[i].toString() === "Goat 1") {
+    //             var goat = this.game.entities[i];    
+    //             if (this.boundingBox.collide(goat.boundingBox)) {
+    //                 console.log("BATTLLEEE 1");
+    //             }
+    //         }
+    //     }
+    // }
+
+    // if (this.playerNumber === 1) {
+    //     for (var i = 0; i < this.game.entities.length; i++) {
+    //         if (this.game.entities[i].toString() === "Goat 0") {
+    //             var goat = this.game.entities[i];    
+    //             if (this.boundingBox.collide(goat.boundingBox)) {
+    //             console.log("BATTLLEEE 2");
+    //             }
+    //         }
+    //     }
+    // }
+    
+    
+    
     // Handles keeping goat above the ground if it's falling down
     if (this.y > this.ground) this.y = this.ground;
     Entity.prototype.update.call(this);

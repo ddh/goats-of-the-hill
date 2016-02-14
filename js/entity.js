@@ -68,6 +68,7 @@ BoundingBox.prototype.draw = function (ctx) {
 
 BoundingBox.prototype.update = function (entity) {
     // Handles initializing the goat's trim field correctly given which animation is currently taking place
+
     if (entity instanceof Goat) {
         if (entity.right) {
             if (entity.running) {

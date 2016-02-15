@@ -172,8 +172,8 @@ Goat.prototype.update = function () {
         
         // Goat ON TOP of another goat
         for (var i = 0; i < this.game.goats.length; i++) {
-            var goat = this.game.goats[i];    
-            if (this.boundingBox.collide(goat.boundingBox) && this.lastY < goat.boundingBox.top) {
+            var goat = this.game.goats[i];  
+            if (goat != this && this.boundingBox.collide(goat.boundingBox) && this.lastY < goat.boundingBox.top) {
                 console.log("ON TOP OF GOAT");
                 this.jumping = false;
                 this.y = goat.boundingBox.top - jumpAscendAnimation.frameHeight * this.scale;

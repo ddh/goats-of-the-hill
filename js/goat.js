@@ -6,10 +6,16 @@ function maxSpeedEnforcement(speed, maxSpeed) {
     }
 }
 
-function Goat(game, playerNumber) {
+function Goat(game, playerNumber, controls) {
+    this.playerNumber = playerNumber;
+    this.controls = controls;
+    
+    // Control keys:
+    this.jumpKey = false;
+    this.leftKey = false;
+    this.rightKey = false;
 
     // Game physics:
-    this.playerNumber = playerNumber;
     this.ground = 480; // changed value from 400
     this.x = 0;
     this.y = this.ground;
@@ -118,29 +124,18 @@ Goat.prototype.update = function () {
     }
 
     // Update goat's facing direction (LEFT or RIGHT)
-    if (this.playerNumber === 0 && this.game.right0) {
+    if (this.rightKey) {
         this.right = true;
-    } else if (this.playerNumber === 0 && this.game.left0) {
+    } else if (this.leftKey) {
         this.right = false;
-    }
-    if (this.playerNumber === 1 && this.game.right1) {
-        this.right = true;
-    } else if (this.playerNumber === 1 && this.game.left1) {
-        this.right = false;
-    }
-    
+    }    
 
+    // Just to place a crown manually on top of player 1's goat.
     if (this.playerNumber === 0)
         this.king = this.game.kKey;
 
     // The goat begins a JUMP:
-    if (this.playerNumber === 0 && this.game.jump0 && !this.jumping && !this.falling) {
-        this.jumping = true;
-        this.soundFX.play('jump');
-        console.log("Jumped");
-        this.base = this.y; // Keep track of the goat's last bottom-y value
-    }
-    if (this.playerNumber === 1 && this.game.jump1 && !this.jumping && !this.falling) {
+    if (this.jumpKey && !this.jumping && !this.falling) {
         this.jumping = true;
         this.soundFX.play('jump');
         console.log("Jumped");
@@ -176,37 +171,16 @@ Goat.prototype.update = function () {
         }
         
         // Goat ON TOP of another goat
-        if (this.playerNumber === 0) {
-            console.log("IN IFFF");
-            for (var i = 0; i < this.game.entities.length; i++) {
-                if (this.game.entities[i].toString() === "Goat 1") {
-                    var goat = this.game.entities[i];    
-                    if (this.boundingBox.collide(goat.boundingBox) && this.lastY < goat.boundingBox.top) {
-                        console.log("ON TOP OF GOAT");
-                        this.jumping = false;
-                        this.y = goat.boundingBox.top - jumpAscendAnimation.frameHeight * this.scale;
-                        this.platform = goat;
-                        jumpAscendAnimation.elapsedTime = 0;
-                    }
-                }
-            }
-        } 
-        if (this.playerNumber === 1) {
-            console.log("IN IFFF");
-            for (var i = 0; i < this.game.entities.length; i++) {
-                if (this.game.entities[i].toString() === "Goat 0") {
-                    var goat = this.game.entities[i];    
-                    if (this.boundingBox.collide(goat.boundingBox) && this.lastY < goat.boundingBox.top) {
-                        console.log("ON TOP OF GOAT");
-                        this.jumping = false;
-                        this.y = goat.boundingBox.top - jumpAscendAnimation.frameHeight * this.scale;
-                        this.platform = goat;
-                        jumpAscendAnimation.elapsedTime = 0;
-                    }
-                }
+        for (var i = 0; i < this.game.goats.length; i++) {
+            var goat = this.game.goats[i];  
+            if (goat != this && this.boundingBox.collide(goat.boundingBox) && this.lastY < goat.boundingBox.top) {
+                console.log("ON TOP OF GOAT");
+                this.jumping = false;
+                this.y = goat.boundingBox.top - jumpAscendAnimation.frameHeight * this.scale;
+                this.platform = goat;
+                jumpAscendAnimation.elapsedTime = 0;
             }
         }
-             
     }
 
     // While the goat is FALLING:
@@ -240,45 +214,11 @@ Goat.prototype.update = function () {
     }
 
     // Update running state:
-    if (this.playerNumber === 0)
-        this.game.right0 || this.game.left0 ? this.running = true : this.running = false;
-    if (this.playerNumber === 1)
-        this.game.right1 || this.game.left1 ? this.running = true : this.running = false;
+    this.rightKey || this.leftKey ? this.running = true : this.running = false;
 
     // Running and boundary collisions:
-    if (this.playerNumber === 0 && this.running) {
-        if (this.game.right0 && this.x < this.game.surfaceWidth - this.width) this.x += this.speed;
-        if (this.game.left0 && this.x > 0) this.x -= this.speed;
-    }
-    if (this.playerNumber === 1 && this.running) {
-        if (this.game.right1 && this.x < this.game.surfaceWidth - this.width) this.x += this.speed;
-        if (this.game.left1 && this.x > 0) this.x -= this.speed;
-    }
-
-    // //check goat on goat collision 
-    // if (this.playerNumber === 0) {
-    //     for (var i = 0; i < this.game.entities.length; i++) {
-    //         if (this.game.entities[i].toString() === "Goat 1") {
-    //             var goat = this.game.entities[i];    
-    //             if (this.boundingBox.collide(goat.boundingBox)) {
-    //                 console.log("BATTLLEEE 1");
-    //             }
-    //         }
-    //     }
-    // }
-
-    // if (this.playerNumber === 1) {
-    //     for (var i = 0; i < this.game.entities.length; i++) {
-    //         if (this.game.entities[i].toString() === "Goat 0") {
-    //             var goat = this.game.entities[i];    
-    //             if (this.boundingBox.collide(goat.boundingBox)) {
-    //             console.log("BATTLLEEE 2");
-    //             }
-    //         }
-    //     }
-    // }
-    
-    
+    if (this.rightKey && this.x < this.game.surfaceWidth - this.width) this.x += this.speed;
+    if (this.leftKey && this.x > 0) this.x -= this.speed;
     
     // Handles keeping goat above the ground if it's falling down
     if (this.y > this.ground) this.y = this.ground;

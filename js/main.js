@@ -47,15 +47,6 @@ ASSET_MANAGER.downloadAll(function () {
 
     gameEngine.loadFirstScene();
 
-    // /* === Goats === */
-    // var playerOneControls = {jump: 38, left: 37, right: 39};
-    // var goat = new Goat(gameEngine, 0, playerOneControls);
-    // gameEngine.addEntity(goat);
-
-    // var playerTwoControls = {jump: 87, left: 65, right: 68};
-    // var goat2 = new Goat(gameEngine, 1, playerTwoControls);
-    // gameEngine.addEntity(goat2);
-
     /* === START GAME === */
     gameEngine.start();
 });

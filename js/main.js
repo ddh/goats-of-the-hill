@@ -47,12 +47,14 @@ ASSET_MANAGER.downloadAll(function () {
 
     gameEngine.loadFirstScene();
 
-    /* === Goats === */
-    var goat = new Goat(gameEngine, 0);
-    gameEngine.addEntity(goat);
+    // /* === Goats === */
+    // var playerOneControls = {jump: 38, left: 37, right: 39};
+    // var goat = new Goat(gameEngine, 0, playerOneControls);
+    // gameEngine.addEntity(goat);
 
-    var goat2 = new Goat(gameEngine, 1);
-    gameEngine.addEntity(goat2);
+    // var playerTwoControls = {jump: 87, left: 65, right: 68};
+    // var goat2 = new Goat(gameEngine, 1, playerTwoControls);
+    // gameEngine.addEntity(goat2);
 
     /* === START GAME === */
     gameEngine.start();
@@ -62,6 +64,7 @@ ASSET_MANAGER.downloadAll(function () {
 var makeSceneSelector = function(background, gameEngine) {
     var scenes = [];
     var platforms = [];
+    var goats = [];
 
     /* === FOR SCENE #1 ONLY === */
 
@@ -88,7 +91,14 @@ var makeSceneSelector = function(background, gameEngine) {
     /* row 6 */
     platforms.push(makePlatform(gameEngine, 's', 200, 200, 'bouncing', 'hay', false));
 
-    scenes.push(new Scene(platforms, background));
+    /* === Goats === */
+    var playerOneControls = {jump: 38, left: 37, right: 39};
+    goats.push(new Goat(gameEngine, 0, playerOneControls));
+
+    var playerTwoControls = {jump: 87, left: 65, right: 68};
+    goats.push(new Goat(gameEngine, 1, playerTwoControls));
+
+    scenes.push(new Scene(platforms, background, goats));
 
     /* === /END FOR SCENE #1 ONLY === */
 

@@ -1,6 +1,7 @@
-function Scene(platforms, background) {
+function Scene(platforms, background, goats) {
     this.platforms = platforms;
     this.background = background;
+    this.goats = goats;
 }
 
 Scene.prototype = new Entity();

@@ -13,6 +13,8 @@ window.requestAnimFrame = (function () {
 
 function GameEngine() {
     this.entities = [];
+    this.platforms = [];
+    this.goats = [];
     this.enableDebug = false; // debugging flag for drawing bounding boxes
     this.ctx = null;
     this.click = null;
@@ -23,7 +25,6 @@ function GameEngine() {
     this.running = false; // boolean used by playgame.js
     this.keys = {}; // TODO: use map to correlate certain e.which's or keys to booleans or elapsed times
     this.sceneSelector = null;
-    this.platforms = [];
     this.scene = null;
 }
 
@@ -53,6 +54,26 @@ GameEngine.prototype.loadFirstScene = function () {
         this.entities.push(pf);
         this.platforms.push(pf);
     }
+    for (var i = 0; i < this.scene.goats.length; i++) {
+        var goat = this.scene.goats[i];
+        goat.reset(); // Reset so goat's initial platform is the ground
+        this.entities.push(goat);
+        this.goats.push(goat);
+        // Add key listeners associated with goat
+        // "closure" is needed so listener knows what element to refer to
+        (function(goat, gameEngine) {
+            gameEngine.ctx.canvas.addEventListener("keydown", function (e) {
+                if (e.which === goat.controls.jump) goat.jumpKey = true;
+                if (e.which === goat.controls.right) goat.rightKey = true;
+                if (e.which === goat.controls.left) goat.leftKey = true;
+            }, false);
+            gameEngine.ctx.canvas.addEventListener("keyup", function (e) {
+                if (e.which === goat.controls.jump) goat.jumpKey = false;
+                if (e.which === goat.controls.right) goat.rightKey = false;
+                if (e.which === goat.controls.left) goat.leftKey = false;
+            });
+        })(goat, this);
+    }
 };
 
 GameEngine.prototype.startInput = function () {
@@ -69,12 +90,6 @@ GameEngine.prototype.startInput = function () {
     }, false);
 
     this.ctx.canvas.addEventListener("keydown", function (e) {
-        if (e.which === 38) that.jump0 = true;
-        if (e.which === 39) that.right0 = true;
-        if (e.which === 37) that.left0 = true;
-        if (e.which === 87) that.jump1 = true;
-        if (e.which === 65) that.left1 = true;
-        if (e.which === 68) that.right1 = true;
         if (e.which === 75) {
             that.kKey ^= true;
             console.log("king turned " + (that.kKey ? "on" : "off"));
@@ -85,15 +100,6 @@ GameEngine.prototype.startInput = function () {
 
         }
     }, false);
-
-    this.ctx.canvas.addEventListener("keyup", function (e) {
-        if (e.which === 39) that.right0 = false;
-        if (e.which === 37) that.left0 = false;
-        if (e.which === 65) that.left1 = false;
-        if (e.which === 68) that.right1 = false;
-        if (e.which === 87) that.jump1 = false;
-        if (e.which === 38) that.jump0 = false;
-    });
 
     /* === MOUSE SETTINGS === */
 

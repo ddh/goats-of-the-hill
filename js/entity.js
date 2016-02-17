@@ -72,34 +72,22 @@ BoundingBox.prototype.draw = function (ctx) {
 };
 
 BoundingBox.prototype.update = function (entity) {
-    // Handles initializing the goat's trim field correctly given which animation is currently taking place
 
+    // Set the trim of each entity, depending on its animation if need be.
     if (entity instanceof Goat) {
-        if (entity.right) {
-            if (entity.running) {
-                entity.trim = {top: 10, bottom: 10, left: 10, right: 15};
-            } else {
-                entity.trim = {top: 10, bottom: 10, left: 10, right: 18};
-            }
-        } else {
-            if (entity.running) {
-                entity.trim = {top: 10, bottom: 10, left: 5, right: 20};
-            } else {
-                entity.trim = {top: 10, bottom: 10, left: 8, right: 20};
-            }
-        }
+        entity.trim = {top: 10, bottom: 50, left: 10, right: 50};
     } else if (entity instanceof Platform) { // ie. for platforms, etc.
-        entity.trim = {top: 0, bottom: 0, left: 0, right: 0};
-    } else{
-        //TODO: This needs fixing. Without this else statement, game crashes, trying to find the entity's trim properties when it might not have any to begin with (eg PlayGame).
+        entity.trim = {top: 10, bottom: 15, left: 5, right: 10};
+    } else {
+        // Must keep this statement here or else game crashes. This sets trim all other objects.
         entity.trim = {top: 0, bottom: 0, left: 0, right: 0};
     }
 
     this.x = entity.x + entity.trim.left;
     this.y = entity.y + entity.trim.top;
 
-    this.width -= entity.trim.right;
-    this.height -= entity.trim.bottom;
+    this.width = entity.width - entity.trim.right;
+    this.height = entity.height - entity.trim.bottom;
 
     this.left = entity.x;
     this.top = entity.y;

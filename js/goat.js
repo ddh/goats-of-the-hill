@@ -28,9 +28,11 @@ function Goat(game, playerNumber, controls, sprite) {
     this.lastY = this.y;
     this.velocity = {x: 0, y: 0};
     this.acceleration = {x: 0, y: 0};
-    this.speed = 5;
+    this.gravity = 5;
+    this.friction = 0.92;
+    this.speed = 2;
     this.jumpHeight = 100;
-    //this.platform = this.game.platforms[0];
+    this.entity = this.game.platforms[0];
     this.standingOn = null;
     this.scale = 0.65;
 
@@ -46,8 +48,8 @@ function Goat(game, playerNumber, controls, sprite) {
     this.runLeftAnimation = new Animation(leftAsset, 376, 0, 94, 90, 0.1, 4, true, false);
     this.runRightAnimation = new Animation(rightAsset, 376, 0, 94, 90, 0.1, 4, true, false);
 
-    this.skidLeftAnimation = new Animation(leftAsset, 752, 0, 94, 90, 0.1, 4, true, false);
-    this.skidRightAnimation = new Animation(rightAsset, 752, 0, 94, 90, 0.1, 4, true, false);
+    this.skidLeftAnimation = new Animation(leftAsset, 752, 0, 94, 90, 0.1, 1, true, false);
+    this.skidRightAnimation = new Animation(rightAsset, 752, 0, 94, 90, 0.1, 1, true, false);
 
     this.jumpLeftAnimation = new Animation(leftAsset, 846, 0, 94, 90, 0.1, 4, true, false);
     this.jumpRightAnimation = new Animation(rightAsset, 846, 0, 94, 90, 0.1, 4, true, false);
@@ -86,6 +88,7 @@ function Goat(game, playerNumber, controls, sprite) {
     // Action states:
     this.right = true; // Facing right (true) or left (false)
     this.standing = true;
+    this.skidding = false;
     this.jumping = false;
     this.falling = false;
     this.running = false;
@@ -106,6 +109,7 @@ Goat.prototype.constructor = Goat;
 Goat.prototype.reset = function () {
     this.right = true;
     this.standing = true;
+    this.skidding = false
     this.jumping = false;
     this.falling = false;
     this.running = false;
@@ -116,7 +120,7 @@ Goat.prototype.reset = function () {
     this.x = 0;
     this.y = this.game.platforms[0].y - this.height;
 
-    this.platform = this.game.platforms[0];
+    this.entity = this.game.platforms[0];
 
     //this.boundingbox = new BoundingBox(this.x, this.y, this.standAnimation.frameWidth, this.standAnimation.frameHeight);
 };
@@ -129,16 +133,40 @@ Goat.prototype.update = function () {
      *              Collisions              *
      ****************************************/
 
+    // Update goat's velocities if it's on a platform
+    if (this.entity) {
+        this.x += this.entity.velocity.x;
+        this.y += this.entity.velocity.y;
+    }
+
     /****************************************
      *              Movement                *
      ****************************************/
 
     // Update Goat's facing direction state:
     if (this.rightKey) {
+        this.skidding = false;
         this.right = true;
+        this.velocity.x = this.speed;
     } else if (this.leftKey) {
+        this.skidding = false;
+        this.velocity.x = -this.speed;
+        console.log(this.boundingBox);
         this.right = false;
     }
+
+    // Apply friction on running after letting go of run keys
+    if (!this.rightKey && !this.leftKey) {
+        this.skidding = true; // TODO: dunno a good place to turn off skidding
+        this.velocity.x *= this.friction;
+    }
+
+    if (this.skidLeftAnimation.isDone() || this.skidRightAnimation.isDone()) {
+        this.skidding = false;
+    }
+
+    // Apply gravity if falling or jumping
+    if (this.falling || this.jumping) this.y += this.gravity;
 
     // Update running state:
     this.rightKey || this.leftKey ? this.running = true : this.running = false;
@@ -151,32 +179,6 @@ Goat.prototype.update = function () {
      *              Jumping                 *
      ****************************************/
 
-    /****************************************
-     *              Falling                 *
-     ****************************************/
-
-    if(new BoundingBox())
-
-    /****************************************
-     *              Attacking               *
-     ****************************************/
-
-    // Update goat's velocities if it's on a platform
-    if (this.platform) {
-        this.x += this.platform.velocity.x;
-        this.y += this.platform.velocity.y;
-    }
-
-
-
-
-
-
-
-    // Just to place a crown manually on top of player 1's goat.
-    if (this.playerNumber === 0)
-        this.king = this.game.kKey;
-
     // Update Jump state:
     if (this.jumpKey && !this.jumping && !this.falling) {
         this.jumping = true;
@@ -185,7 +187,46 @@ Goat.prototype.update = function () {
         this.base = this.y; // Keep track of the goat's last bottom-y value
     }
 
+    /****************************************
+     *              Falling                 *
+     ****************************************/
 
+
+    if (this.falling) {
+        this.entity = null;
+
+    }
+
+    // Setup temp bounding boxes to check for corner collisions:
+    var leftCornerBB = new BoundingBox(this.boundingBox.x, this.boundingBox.bottom, 5, 5);
+    var rightCornerBB = new BoundingBox(this.boundingBox.x + this.boundingBox.width, this.boundingBox.bottom, 5, 5);
+
+    for (var i = 0; i < this.game.entities.length; i++) {
+        if (leftCornerBB.collide(this.game.entities[i].boundingBox) && rightCornerBB.collide(this.game.entities[i].boundingBox)) {
+            console.log("Left corner Collided with" + this.game.entities[i]);
+            if (this.boundingBox.y < this.game.entities[i].boundingBox.y) {
+                this.entity = this.game.entities[i];
+                this.falling = false;
+            }
+            else {
+                this.falling = true
+                console.log("Falling!");
+            }
+        }
+
+    }
+
+
+    /****************************************
+     *              Attacking               *
+     ****************************************/
+
+    /****************************************
+     *              Misc.                   *
+     ****************************************/
+    // Just to place a crown manually on top of player 1's goat.
+    if (this.playerNumber === 0)
+        this.king = this.game.kKey;
 
     //// WHILE the goat is JUMPING:
     //if (this.jumping) {
@@ -262,8 +303,8 @@ Goat.prototype.update = function () {
     //if (this.y > this.game.platforms[0].y) this.y = this.game.platforms[0].y - 1;
 
 
-
-
+    this.x += this.velocity.x;
+    this.y += this.velocity.y;
     Entity.prototype.update.call(this);
 };
 
@@ -283,7 +324,12 @@ Goat.prototype.draw = function (ctx) {
             this.jumpRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else
             this.jumpLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
-    } else if (this.running) {
+    }
+    //else if (this.skidding) {
+    //    if (this.right) this.skidRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+    //    else this.skidLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+    //}
+    else if (this.running) {
         if (this.right)
             this.runRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else

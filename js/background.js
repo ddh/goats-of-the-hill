@@ -4,7 +4,7 @@ function Background(game, image, width, height) {
     this.image = image;
     this.width = width;
     this.height = height;
-    Entity.call(this, game, 0, 530, 800, 100); // changed last param from 400
+    Entity.call(this, game, -1000, -1000, 800, 100); // changed last param from 400
 }
 
 Background.prototype = new Entity();

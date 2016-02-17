@@ -147,11 +147,8 @@ Goat.prototype.update = function () {
     if (this.rightKey) {
         this.skidding = false;
         this.right = true;
-        this.velocity.x = this.speed;
     } else if (this.leftKey) {
         this.skidding = false;
-        this.velocity.x = -this.speed;
-        console.log(this.boundingBox);
         this.right = false;
     }
 
@@ -172,8 +169,11 @@ Goat.prototype.update = function () {
     this.rightKey || this.leftKey ? this.running = true : this.running = false;
 
     // Running and boundary collisions:
-    if (this.rightKey && this.x < this.game.surfaceWidth - this.width) this.x += this.speed; // Running right
-    if (this.leftKey && this.x > 0) this.x -= this.speed; // Running left
+    if (this.rightKey && this.x < this.game.surfaceWidth - this.width) this.velocity.x += this.speed; // Running right
+    if (this.leftKey && this.x > 0) this.velocity.x -= this.speed; // Running left
+
+    this.x += this.velocity.x;
+    this.y += this.velocity.y;
 
     /****************************************
      *              Jumping                 *
@@ -194,6 +194,7 @@ Goat.prototype.update = function () {
 
     if (this.falling) {
         this.entity = null;
+        this.y += this.gravity;
 
     }
 

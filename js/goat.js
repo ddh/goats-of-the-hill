@@ -52,14 +52,14 @@ function Goat(game, playerNumber, controls, sprite) {
     this.skidLeftAnimation = new Animation(leftAsset, 752, 0, 94, 90, 0.1, 1, true, false);
     this.skidRightAnimation = new Animation(rightAsset, 752, 0, 94, 90, 0.1, 1, true, false);
 
-    this.jumpLeftAnimation = new Animation(leftAsset, 846, 0, 94, 90, 0.1, 4, true, false);
-    this.jumpRightAnimation = new Animation(rightAsset, 846, 0, 94, 90, 0.1, 4, true, false);
+    this.jumpLeftAnimation = new Animation(leftAsset, 846, 0, 94, 90, 0.1, 4, false, false);
+    this.jumpRightAnimation = new Animation(rightAsset, 846, 0, 94, 90, 0.1, 4, false, false);
 
-    this.fallLeftAnimation = new Animation(leftAsset, 1222, 0, 94, 90, 0.1, 4, true, false);
-    this.fallRightAnimation = new Animation(leftAsset, 1222, 0, 94, 90, 0.1, 4, true, false);
+    this.fallLeftAnimation = new Animation(leftAsset, 1222, 0, 94, 90, 0.1, 4, false, false);
+    this.fallRightAnimation = new Animation(leftAsset, 1222, 0, 94, 90, 0.1, 4, false, false);
 
-    this.landLeftAnimation = new Animation(leftAsset, 1504, 0, 94, 90, 0.1, 4, true, false);
-    this.landRightAnimation = new Animation(leftAsset, 1504, 0, 94, 90, 0.1, 4, true, false);
+    this.landLeftAnimation = new Animation(leftAsset, 1504, 0, 94, 90, 0.1, 4, false, false);
+    this.landRightAnimation = new Animation(leftAsset, 1504, 0, 94, 90, 0.1, 4, false, false);
 
     this.leftChargeAnimation = new Animation(leftAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
     this.rightChargeAnimation = new Animation(leftAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
@@ -67,8 +67,8 @@ function Goat(game, playerNumber, controls, sprite) {
     this.leftAttackAnimation = new Animation(leftAsset, 1974, 0, 94, 90, 0.1, 4, true, false);
     this.rightAttackAnimation = new Animation(leftAsset, 1974, 0, 94, 90, 0.1, 4, true, false);
 
-    this.leftHurtAnimation = new Animation(leftAsset, 2068, 0, 94, 90, 0.1, 4, true, false);
-    this.rightHurtAnimation = new Animation(leftAsset, 2068, 0, 94, 90, 0.1, 4, true, false);
+    this.leftHurtAnimation = new Animation(leftAsset, 2068, 0, 94, 90, 0.1, 4, false, false);
+    this.rightHurtAnimation = new Animation(leftAsset, 2068, 0, 94, 90, 0.1, 4, false, false);
 
     this.leftStunnedAnimation = new Animation(leftAsset, 2538, 0, 94, 90, 0.1, 4, true, false);
     this.rightStunnedAnimation = new Animation(leftAsset, 2538, 0, 94, 90, 0.1, 4, true, false);

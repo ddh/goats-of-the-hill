@@ -41,7 +41,7 @@ function Goat(game, playerNumber, controls, sprite) {
 
     // Animations:
 
-    this.standLeftAnimation     = new Animation(leftAsset, 0, 0, 94, 90, 0.1, 4, false, false);
+    this.standLeftAnimation     = new Animation(leftAsset, 0, 0, 94, 90, 0.1, 4, true, false);
     this.standRightAnimation    = new Animation(rightAsset, 0, 0, 94, 90, 0.1, 4, true, false);
 
     this.runLeftAnimation       = new Animation(leftAsset, 376, 0, 94, 90, 0.1, 4, true, false);

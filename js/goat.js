@@ -346,16 +346,21 @@ Goat.prototype.draw = function (ctx) {
     }
 
     if (this.jumping) {
+
         if (this.right)
             this.jumpRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else
             this.jumpLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+        this.fallLeftAnimation.elapsedTime = 0;
+        this.fallRightAnimation.elapsedTime = 0;
     } 
      else if (this.falling) {
          if (this.right)
              this.fallRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
          else
              this.fallLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+        this.jumpLeftAnimation.elapsedTime = 0;
+        this.jumpRightAnimation.elapsedTime = 0;
      }
     //else if (this.skidding) {
     //    if (this.right) this.skidRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);

@@ -6,10 +6,10 @@ function maxSpeedEnforcement(speed, maxSpeed) {
     }
 }
 
-function Goat(game, playerNumber, controls) {
+function Goat(game, playerNumber, controls, sprite) {
     this.playerNumber = playerNumber;
     this.controls = controls;
-    
+
     // Control keys:
     this.jumpKey = false;
     this.leftKey = false;
@@ -35,41 +35,52 @@ function Goat(game, playerNumber, controls) {
 
     // TODO: took out idle animation and status boolean b/c standing anim and bool serves that purpose already
 
+    // Assign assets for Animations:
+    var leftAsset = ASSET_MANAGER.getAsset("./img/" + sprite + "-left.png");
+    var rightAsset = ASSET_MANAGER.getAsset("./img/" + sprite + "-right.png");
+
     // Animations:
-    var leftAsset = ASSET_MANAGER.getAsset("./img/WhiteGoatLeft.png");
-    var rightAsset = ASSET_MANAGER.getAsset("./img/WhiteGoatRight.png");
-    if (this.playerNumber === 1) {
-        leftAsset = ASSET_MANAGER.getAsset("./img/WhiteGoatLeft1.png");
-        rightAsset = ASSET_MANAGER.getAsset("./img/WhiteGoatRight1.png");
-    }
-    
-    this.standLeftAnimation = new Animation(leftAsset, 0, 0, 96, 95, 0.1, 4, true, true);
-    this.standRightAnimation = new Animation(rightAsset, 768, 0, 96, 95, 0.1, 4, true, false);
 
-    this.jumpLeftAscendAnimation = new Animation(leftAsset, 0, 0, 96, 95, 0.1, 4, false, true);
-    this.jumpRightAscendAnimation = new Animation(rightAsset, 768, 0, 96, 95, 0.1, 4, false, false);
-    this.jumpLeftDescendAnimation = new Animation(leftAsset, 0, 0, 96, 95, 0.1, 4, false, true);
-    this.jumpRightDescendAnimation = new Animation(rightAsset, 768, 0, 96, 95, 0.1, 4, false, false);
+    this.standLeftAnimation     = new Animation(leftAsset, 0, 0, 94, 90, 0.1, 4, false, false);
+    this.standRightAnimation    = new Animation(rightAsset, 0, 0, 94, 90, 0.1, 4, true, false);
 
-    this.runLeftAnimation = new Animation(leftAsset, 384, 0, 96, 95, 0.1, 4, true, true);
-    this.runRightAnimation = new Animation(rightAsset, 385, 0, 96, 95, 0.1, 4, true, false);
+    this.runLeftAnimation       = new Animation(leftAsset, 376, 0, 94, 90, 0.1, 4, true, false);
+    this.runRightAnimation      = new Animation(rightAsset, 376, 0, 94, 90, 0.1, 4, true, false);
+
+    this.skidLeftAnimation      = new Animation(leftAsset, 752, 0, 94, 90, 0.1, 4, true, false);
+    this.skidRightAnimation     = new Animation(rightAsset, 752, 0, 94, 90, 0.1, 4, true, false);
+
+    this.jumpLeftAnimation      = new Animation(leftAsset, 846, 0, 94, 90, 0.1, 4, true, false);
+    this.jumpRightAnimation     = new Animation(rightAsset, 846, 0, 94, 90, 0.1, 4, true, false);
+
+    this.fallLeftAnimation      = new Animation(leftAsset, 1222, 0, 94, 90, 0.1, 4, true, false);
+    this.fallRightAnimation     = new Animation(leftAsset, 1222, 0, 94, 90, 0.1, 4, true, false);
+
+    this.landLeftAnimation      = new Animation(leftAsset, 1504, 0, 94, 90, 0.1, 4, true, false);
+    this.landRightAnimation     = new Animation(leftAsset, 1504, 0, 94, 90, 0.1, 4, true, false);
+
+    this.leftChargeAnimation    = new Animation(leftAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
+    this.rightChargeAnimation   = new Animation(leftAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
+
+    this.leftAttackAnimation    = new Animation(leftAsset, 1974, 0, 94, 90, 0.1, 4, true, false);
+    this.rightAttackAnimation   = new Animation(leftAsset, 1974, 0, 94, 90, 0.1, 4, true, false);
+
+    this.leftHurtAnimation      = new Animation(leftAsset, 2068, 0, 94, 90, 0.1, 4, true, false);
+    this.rightHurtAnimation     = new Animation(leftAsset, 2068, 0, 94, 90, 0.1, 4, true, false);
+
+    this.leftStunnedAnimation   = new Animation(leftAsset, 2538, 0, 94, 90, 0.1, 4, true, false);
+    this.rightStunnedAnimation  = new Animation(leftAsset, 2538, 0, 94, 90, 0.1, 4, true, false);
+
 
     this.crownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/smallest-king-crown.png"), 0, 0, 40, 32, 0.1, 1, true, false);
-
-    //this.chargingLeftAnimation      = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
-    //this.chargingRightAnimation     = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
-    //this.attackLeftAnimation        = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
-    //this.attackRightAnimation       = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
-    //this.stunnedLeftAnimation       = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
-    //this.stunnedRightAnimation      = new Animation(ASSET_MANAGER.getAsset("./img/RobotUnicorn.png"), 0, 0, 206, 110, 0.02, 30, true, true);
 
     // Audio:
     this.soundFX = new Howl({
         autoplay: false,
-        urls:['./audio/goat_sfx.wav'],
-        sprite:{
-            jump: [0,154],
-            land: [154,143]
+        urls: ['./audio/goat_sfx.wav'],
+        sprite: {
+            jump: [0, 154],
+            land: [154, 143]
         }
     });
 
@@ -118,7 +129,7 @@ Goat.prototype.reset = function () {
 Goat.prototype.update = function () {
 
     // Update goat's velocities if it's on a platform
-    if(this.platform) {
+    if (this.platform) {
         this.x += this.platform.velocity.x;
         this.y += this.platform.velocity.y;
     }
@@ -128,7 +139,7 @@ Goat.prototype.update = function () {
         this.right = true;
     } else if (this.leftKey) {
         this.right = false;
-    }    
+    }
 
     // Just to place a crown manually on top of player 1's goat.
     if (this.playerNumber === 0)
@@ -145,7 +156,7 @@ Goat.prototype.update = function () {
     // WHILE the goat is JUMPING:
     if (this.jumping) {
         // Figure out which jump animation (left or right) to use
-        var jumpAscendAnimation = this.right ? this.jumpRightAscendAnimation : this.jumpLeftAscendAnimation;
+        var jumpAscendAnimation = this.right ? this.jumpRightAnimation : this.jumpLeftAnimation;
 
         var duration = jumpAscendAnimation.elapsedTime + this.game.clockTick;
         if (duration > jumpAscendAnimation.totalTime / 2) duration = jumpAscendAnimation.totalTime - duration;
@@ -169,10 +180,10 @@ Goat.prototype.update = function () {
                 jumpAscendAnimation.elapsedTime = 0;
             }
         }
-        
+
         // Goat ON TOP of another goat
         for (var i = 0; i < this.game.goats.length; i++) {
-            var goat = this.game.goats[i];  
+            var goat = this.game.goats[i];
             if (goat != this && this.boundingBox.collide(goat.boundingBox) && this.lastY < goat.boundingBox.top) {
                 console.log("ON TOP OF GOAT");
                 this.jumping = false;
@@ -186,7 +197,7 @@ Goat.prototype.update = function () {
     // While the goat is FALLING:
     if (this.falling) {
         // Figure out which falling animation (left or right) to use
-        var jumpDescendAnimation = this.right ? this.jumpRightDescendAnimation : this.jumpLeftDescendAnimation;
+        var jumpDescendAnimation = this.right ? this.fallRightAnimation : this.fallLeftAnimation;
 
         this.lastY = this.boundingBox.bottom;
         this.y += this.game.clockTick / jumpDescendAnimation.totalTime * 4 * this.jumpHeight;
@@ -202,7 +213,7 @@ Goat.prototype.update = function () {
                 this.platform = pf;
                 jumpDescendAnimation.elapsedTime = 0;
             }
-        } 
+        }
     }
 
     // Handles when dropping off of platforms triggers falling animation
@@ -219,7 +230,7 @@ Goat.prototype.update = function () {
     // Running and boundary collisions:
     if (this.rightKey && this.x < this.game.surfaceWidth - this.width) this.x += this.speed;
     if (this.leftKey && this.x > 0) this.x -= this.speed;
-    
+
     // Handles keeping goat above the ground if it's falling down
     if (this.y > this.ground) this.y = this.ground;
     Entity.prototype.update.call(this);
@@ -238,9 +249,9 @@ Goat.prototype.draw = function (ctx) {
 
     if (this.jumping) {
         if (this.right)
-            this.jumpRightAscendAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+            this.jumpRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else
-            this.jumpLeftAscendAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+            this.jumpLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
     } else if (this.running) {
         if (this.right)
             this.runRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);

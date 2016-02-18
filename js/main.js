@@ -9,12 +9,14 @@ ASSET_MANAGER.queueDownload("./img/hay.png");
 ASSET_MANAGER.queueDownload("./img/hay2.png");
 ASSET_MANAGER.queueDownload("./img/hay3.png");
 ASSET_MANAGER.queueDownload("./img/sparkles.png"); 
-ASSET_MANAGER.queueDownload("./img/smb_mountain.png"); // temporary background image for testing
-ASSET_MANAGER.queueDownload("./img/spaz_frames.png"); // temporary entity sprites for testing
-ASSET_MANAGER.queueDownload("./img/WhiteGoatLeft.png");
-ASSET_MANAGER.queueDownload("./img/WhiteGoatRight.png");
-ASSET_MANAGER.queueDownload("./img/WhiteGoatLeft1.png");
-ASSET_MANAGER.queueDownload("./img/WhiteGoatRight1.png");
+ASSET_MANAGER.queueDownload("./img/blue-goat-left.png");
+ASSET_MANAGER.queueDownload("./img/blue-goat-right.png");
+ASSET_MANAGER.queueDownload("./img/green-goat-left.png");
+ASSET_MANAGER.queueDownload("./img/green-goat-right.png");
+ASSET_MANAGER.queueDownload("./img/yellow-goat-left.png");
+ASSET_MANAGER.queueDownload("./img/yellow-goat-right.png");
+ASSET_MANAGER.queueDownload("./img/red-goat-left.png");
+ASSET_MANAGER.queueDownload("./img/red-goat-right.png");
 ASSET_MANAGER.queueDownload("./img/transparent_pixel.png");
 ASSET_MANAGER.queueDownload("./img/smallest-king-crown.png");
 
@@ -84,10 +86,10 @@ var makeSceneSelector = function(background, gameEngine) {
 
     /* === Goats === */
     var playerOneControls = {jump: 38, left: 37, right: 39};
-    goats.push(new Goat(gameEngine, 0, playerOneControls));
+    goats.push(new Goat(gameEngine, 0, playerOneControls, "blue-goat"));
 
     var playerTwoControls = {jump: 87, left: 65, right: 68};
-    goats.push(new Goat(gameEngine, 1, playerTwoControls));
+    goats.push(new Goat(gameEngine, 1, playerTwoControls, "green-goat"));
 
     scenes.push(new Scene(platforms, background, goats));
 

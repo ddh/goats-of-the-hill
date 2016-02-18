@@ -56,22 +56,22 @@ function Goat(game, playerNumber, controls, sprite) {
     this.jumpRightAnimation = new Animation(rightAsset, 846, 0, 94, 90, 0.1, 4, false, false);
 
     this.fallLeftAnimation = new Animation(leftAsset, 1222, 0, 94, 90, 0.1, 4, false, false);
-    this.fallRightAnimation = new Animation(leftAsset, 1222, 0, 94, 90, 0.1, 4, false, false);
+    this.fallRightAnimation = new Animation(rightAsset, 1222, 0, 94, 90, 0.1, 4, false, false);
 
     this.landLeftAnimation = new Animation(leftAsset, 1504, 0, 94, 90, 0.1, 4, false, false);
-    this.landRightAnimation = new Animation(leftAsset, 1504, 0, 94, 90, 0.1, 4, false, false);
+    this.landRightAnimation = new Animation(rightAsset, 1504, 0, 94, 90, 0.1, 4, false, false);
 
     this.leftChargeAnimation = new Animation(leftAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
-    this.rightChargeAnimation = new Animation(leftAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
+    this.rightChargeAnimation = new Animation(rightAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
 
     this.leftAttackAnimation = new Animation(leftAsset, 1974, 0, 94, 90, 0.1, 4, true, false);
-    this.rightAttackAnimation = new Animation(leftAsset, 1974, 0, 94, 90, 0.1, 4, true, false);
+    this.rightAttackAnimation = new Animation(rightAsset, 1974, 0, 94, 90, 0.1, 4, true, false);
 
     this.leftHurtAnimation = new Animation(leftAsset, 2068, 0, 94, 90, 0.1, 4, false, false);
-    this.rightHurtAnimation = new Animation(leftAsset, 2068, 0, 94, 90, 0.1, 4, false, false);
+    this.rightHurtAnimation = new Animation(rightAsset, 2068, 0, 94, 90, 0.1, 4, false, false);
 
     this.leftStunnedAnimation = new Animation(leftAsset, 2538, 0, 94, 90, 0.1, 4, true, false);
-    this.rightStunnedAnimation = new Animation(leftAsset, 2538, 0, 94, 90, 0.1, 4, true, false);
+    this.rightStunnedAnimation = new Animation(rightAsset, 2538, 0, 94, 90, 0.1, 4, true, false);
 
 
     this.crownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/smallest-king-crown.png"), 0, 0, 40, 32, 0.1, 1, true, false);
@@ -351,12 +351,12 @@ Goat.prototype.draw = function (ctx) {
         else
             this.jumpLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
     } 
-    // else if (this.falling) {
-    //     if (this.right)
-    //         this.fallRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
-    //     else
-    //         this.fallLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
-    // }
+     else if (this.falling) {
+         if (this.right)
+             this.fallRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+         else
+             this.fallLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+     }
     //else if (this.skidding) {
     //    if (this.right) this.skidRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
     //    else this.skidLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);

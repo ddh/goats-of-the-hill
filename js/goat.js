@@ -27,6 +27,7 @@ function Goat(game, playerNumber, controls, sprite) {
     this.jumpHeight = 100;
     this.platform = null;
     this.scale = 0.65;
+    this.score = 0;
 
     this.trim = {top: 50, bottom: 50, left: 50, right: 50};
 
@@ -116,6 +117,7 @@ Goat.prototype.reset = function () {
     this.charging = false;
     this.attacking = false;
     this.stunned = false;
+    this.score = 0;
 
     this.x = 0;
     this.y = this.ground;
@@ -234,6 +236,26 @@ Goat.prototype.update = function () {
     // Handles keeping goat above the ground if it's falling down
     if (this.y > this.ground) this.y = this.ground;
     Entity.prototype.update.call(this);
+    
+    // Increments goat's score count:  
+    if (this.platform.isHill && !isMounted(this.game.goats)) {
+        for (var i = 0; i < this.game.goats.length; i++) {
+            var goat = this.game.goats[i];
+            if (this.platform != goat.platform) {
+                this.score += 1;
+                console.log("score = " + this.score);
+            }
+        }
+    }
+    // helper function to prevent goat on goat on hill from gaining points
+    function isMounted(goats) {
+        for (var i = 0; i < goats.length; i++) {
+            var goat = goats[i];
+            if (goat.platform === this.goat) return true;
+        }
+        return false;
+    }
+    
 };
 
 Goat.prototype.draw = function (ctx) {

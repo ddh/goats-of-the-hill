@@ -29,8 +29,9 @@ function Goat(game, playerNumber, controls, sprite) {
     this.velocity = {x: 0, y: 0};
     this.acceleration = {x: 0, y: 0};
     this.gravity = 5;
-    this.friction = 0.92;
-    this.speed = 2;
+    this.friction = 0.75;
+    this.speed = 0.1;
+    this.maxVelocity = 3.0;
     this.jumpHeight = 100;
     this.entity = this.game.platforms[0];
     this.standingOn = null;
@@ -146,9 +147,15 @@ Goat.prototype.update = function () {
     // Update Goat's facing direction state:
     if (this.rightKey) {
         this.skidding = false;
+        if (this.right == false) {
+            this.velocity.x *= Math.pow(this.friction, 4);
+        }
         this.right = true;
     } else if (this.leftKey) {
         this.skidding = false;
+        if (this.right == true) {
+            this.velocity.x *= Math.pow(this.friction, 4);
+        }
         this.right = false;
     }
 
@@ -169,8 +176,9 @@ Goat.prototype.update = function () {
     this.rightKey || this.leftKey ? this.running = true : this.running = false;
 
     // Running and boundary collisions:
-    if (this.rightKey && this.x < this.game.surfaceWidth - this.width) this.velocity.x += this.speed; // Running right
-    if (this.leftKey && this.x > 0) this.velocity.x -= this.speed; // Running left
+    if (this.rightKey && this.x < this.game.surfaceWidth - this.width) this.velocity.x = Math.min(this.velocity.x + this.speed, this.maxVelocity); // Running right
+    if (this.leftKey && this.x > 0) this.velocity.x = Math.max(this.velocity.x - this.speed, -1 * this.maxVelocity); // Running left
+    console.log(this.velocity.x);
 
     this.x += this.velocity.x;
     this.y += this.velocity.y;

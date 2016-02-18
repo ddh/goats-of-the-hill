@@ -53,10 +53,10 @@ function Goat(game, playerNumber, controls, sprite) {
     this.skidRightAnimation = new Animation(rightAsset, 752, 0, 94, 90, 0.1, 1, true, false);
 
     this.jumpLeftAnimation = new Animation(leftAsset, 846, 0, 94, 90, 0.1, 4, false, false);
-    this.jumpRightAnimation = new Animation(rightAsset, 846, 0, 94, 90, 0.1, 4, false, false);
+    this.jumpRightAnimation = new Animation(rightAsset, 1128, 0, 94, 90, 0.1, 1, true, false);
 
     this.fallLeftAnimation = new Animation(leftAsset, 1222, 0, 94, 90, 0.1, 4, false, false);
-    this.fallRightAnimation = new Animation(rightAsset, 1222, 0, 94, 90, 0.1, 4, false, false);
+    this.fallRightAnimation = new Animation(rightAsset, 1410, 0, 94, 90, 0.1, 1, true, false);
 
     this.landLeftAnimation = new Animation(leftAsset, 1504, 0, 94, 90, 0.1, 4, false, false);
     this.landRightAnimation = new Animation(rightAsset, 1504, 0, 94, 90, 0.1, 4, false, false);
@@ -145,13 +145,11 @@ Goat.prototype.update = function () {
 
     // Update Goat's facing direction state:
     if (this.rightKey) {
-        this.skidding = false;
         if (this.right == false) {
-            this.velocity.x *= Math.pow(this.friction, 4);
+            this.velocity.x *= Math.pow(this.friction, 10);
         }
         this.right = true;
     } else if (this.leftKey) {
-        this.skidding = false;
         if (this.right == true) {
             this.velocity.x *= Math.pow(this.friction, 4);
         }
@@ -160,12 +158,7 @@ Goat.prototype.update = function () {
 
     // Apply friction on running after letting go of run keys
     if (!this.rightKey && !this.leftKey) {
-        this.skidding = true; // TODO: dunno a good place to turn off skidding
         this.velocity.x *= this.friction;
-    }
-
-    if (this.skidLeftAnimation.isDone() || this.skidRightAnimation.isDone()) {
-        this.skidding = false;
     }
 
     // Update running state:
@@ -189,17 +182,17 @@ Goat.prototype.update = function () {
         console.log("Jumped");
         this.base = this.y; // Keep track of the goat's last bottom-y value
     }
-    
+
     if (this.jumping) {
         if (this.ramping)
             this.velocity.y -= 1.5; // To adjust how quickly goat reaches max jump velocity
-            
+
         if (this.velocity.y < -7) // To adjust the max jump velocity
-            this.ramping = false; 
-            
+            this.ramping = false;
+
         this.velocity.y += this.gravity;
         this.y += this.velocity.y;
-        
+
         if (!this.ramping && Math.abs(this.velocity.y) < 0.1) { // If jump is at/near peak
             // this.velocity.y = 0;
             this.jumping = false;
@@ -215,7 +208,7 @@ Goat.prototype.update = function () {
     if (this.falling) {
         this.velocity.y += this.gravity;
         this.y += this.velocity.y;
-        
+
         if (this.y > this.base) { // Should change to case where goat lands on a platform/goat
             this.falling = false;
             this.velocity.y = 0;
@@ -351,21 +344,15 @@ Goat.prototype.draw = function (ctx) {
             this.jumpRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else
             this.jumpLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
-        this.fallLeftAnimation.elapsedTime = 0;
-        this.fallRightAnimation.elapsedTime = 0;
-    } 
-     else if (this.falling) {
-         if (this.right)
-             this.fallRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
-         else
-             this.fallLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
-        this.jumpLeftAnimation.elapsedTime = 0;
-        this.jumpRightAnimation.elapsedTime = 0;
-     }
-    //else if (this.skidding) {
-    //    if (this.right) this.skidRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
-    //    else this.skidLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
-    //}
+        this.fallLeftAnimation.elapsedTime = this.fallRightAnimation.elapsedTime = 0;
+    }
+    else if (this.falling) {
+        if (this.right)
+            this.fallRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+        else
+            this.fallLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+        this.jumpLeftAnimation.elapsedTime = this.jumpRightAnimation.elapsedTime = 0;
+    }
     else if (this.running) {
         if (this.right)
             this.runRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);

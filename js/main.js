@@ -39,8 +39,6 @@ ASSET_MANAGER.downloadAll(function () {
     /* === Game Logistics === */
     var roundNumber = document.getElementById('roundNumber');
     gameEngine.roundNumber = roundNumber;
-    var pg = new PlayGame(gameEngine, 320, 250);
-    gameEngine.addEntity(pg);
 
     /* === Background === */
     var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/farm.png"), 800, 600);
@@ -48,6 +46,9 @@ ASSET_MANAGER.downloadAll(function () {
     gameEngine.sceneSelector = makeSceneSelector(bg, gameEngine); // also initializes Scenes
 
     gameEngine.loadFirstScene();
+
+    var pg = new PlayGame(gameEngine, 320, 250);
+    gameEngine.addEntity(pg);
 
     /* === START GAME === */
     gameEngine.start();

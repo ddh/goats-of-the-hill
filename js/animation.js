@@ -19,9 +19,10 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y, scaleBy) {
         if (this.isDone()) { // TODO: if last frame, hold it (@duy's question)
             this.elapsedTime = 0;
         }
-    } else if (this.isDone()) {
-        return;
     }
+    //else if (this.isDone()) {
+    //    return;
+    //}
     var index = this.reverse ? this.frames - this.currentFrame() - 1 : this.currentFrame();
     var vindex = 0;
     if ((index+1) * this.frameWidth + this.startX > this.spriteSheet.width) {
@@ -36,6 +37,9 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y, scaleBy) {
     var locX = x;
     var locY = y;
     var offset = vindex === 0 ? this.startX : 0;
+    if(this.isDone() && !this.loop) {
+        index = this.frames - 1;
+    }
     ctx.drawImage(this.spriteSheet,
         index * this.frameWidth + offset, vindex*this.frameHeight + this.startY,  // source from sheet
         this.frameWidth, this.frameHeight,

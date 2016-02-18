@@ -28,7 +28,7 @@ function Goat(game, playerNumber, controls, sprite) {
     this.lastY = this.y;
     this.velocity = {x: 0, y: 0};
     this.acceleration = {x: 0, y: 0};
-    this.gravity = 5;
+    this.gravity = 0.5;
     this.friction = 0.75;
     this.speed = 0.1;
     this.maxVelocity = 3.0;
@@ -46,8 +46,8 @@ function Goat(game, playerNumber, controls, sprite) {
     this.standLeftAnimation = new Animation(leftAsset, 0, 0, 94, 90, 0.1, 4, true, false);
     this.standRightAnimation = new Animation(rightAsset, 0, 0, 94, 90, 0.1, 4, true, false);
 
-    this.runLeftAnimation = new Animation(leftAsset, 376, 0, 94, 90, 0.1, 4, true, false);
-    this.runRightAnimation = new Animation(rightAsset, 376, 0, 94, 90, 0.1, 4, true, false);
+    this.runLeftAnimation = new Animation(leftAsset, 376, 0, 94, 90, 0.075, 4, true, false);
+    this.runRightAnimation = new Animation(rightAsset, 376, 0, 94, 90, 0.075, 4, true, false);
 
     this.skidLeftAnimation = new Animation(leftAsset, 752, 0, 94, 90, 0.1, 1, true, false);
     this.skidRightAnimation = new Animation(rightAsset, 752, 0, 94, 90, 0.1, 1, true, false);
@@ -129,7 +129,6 @@ Goat.prototype.reset = function () {
 // Based off of Chris Marriott's Unicorn's update method: https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 Goat.prototype.update = function () {
 
-
     /****************************************
      *              Collisions              *
      ****************************************/
@@ -169,19 +168,14 @@ Goat.prototype.update = function () {
         this.skidding = false;
     }
 
-    // Apply gravity if falling or jumping
-    if (this.falling || this.jumping) this.y += this.gravity;
-
     // Update running state:
     this.rightKey || this.leftKey ? this.running = true : this.running = false;
 
     // Running and boundary collisions:
     if (this.rightKey && this.x < this.game.surfaceWidth - this.width) this.velocity.x = Math.min(this.velocity.x + this.speed, this.maxVelocity); // Running right
     if (this.leftKey && this.x > 0) this.velocity.x = Math.max(this.velocity.x - this.speed, -1 * this.maxVelocity); // Running left
-    console.log(this.velocity.x);
 
     this.x += this.velocity.x;
-    this.y += this.velocity.y;
 
     /****************************************
      *              Jumping                 *
@@ -190,9 +184,27 @@ Goat.prototype.update = function () {
     // Update Jump state:
     if (this.jumpKey && !this.jumping && !this.falling) {
         this.jumping = true;
+        this.ramping = true; // ramp up velocity instead of immediate impulse
         this.soundFX.play('jump');
         console.log("Jumped");
         this.base = this.y; // Keep track of the goat's last bottom-y value
+    }
+    
+    if (this.jumping) {
+        if (this.ramping)
+            this.velocity.y -= 1.5; // To adjust how quickly goat reaches max jump velocity
+            
+        if (this.velocity.y < -7) // To adjust the max jump velocity
+            this.ramping = false; 
+            
+        this.velocity.y += this.gravity;
+        this.y += this.velocity.y;
+        
+        if (!this.ramping && Math.abs(this.velocity.y) < 0.1) { // If jump is at/near peak
+            // this.velocity.y = 0;
+            this.jumping = false;
+            this.falling = true;
+        }
     }
 
     /****************************************
@@ -201,9 +213,14 @@ Goat.prototype.update = function () {
 
 
     if (this.falling) {
-        this.entity = null;
-        this.y += this.gravity;
-
+        this.velocity.y += this.gravity;
+        this.y += this.velocity.y;
+        
+        if (this.y > this.base) { // Should change to case where goat lands on a platform/goat
+            this.falling = false;
+            this.velocity.y = 0;
+            this.y = this.base;
+        }
     }
 
     // Setup temp bounding boxes to check for corner collisions:
@@ -218,7 +235,7 @@ Goat.prototype.update = function () {
                 this.falling = false;
             }
             else {
-                this.falling = true
+                this.falling = true;
                 console.log("Falling!");
             }
         }
@@ -333,7 +350,13 @@ Goat.prototype.draw = function (ctx) {
             this.jumpRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else
             this.jumpLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
-    }
+    } 
+    // else if (this.falling) {
+    //     if (this.right)
+    //         this.fallRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+    //     else
+    //         this.fallLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+    // }
     //else if (this.skidding) {
     //    if (this.right) this.skidRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
     //    else this.skidLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);

@@ -21,21 +21,21 @@ function Goat(game, playerNumber, controls, sprite) {
     this.chargeKey = false;
 
     // Game physics:
+    this.scale = 0.65;
     this.x = 200;   // game.ctx.canvas.width/height
     this.y = 200;   // game.platforms[0].y // Ground platforms' y
-    this.width = 96;
-    this.height = 95;
+    this.width = 96 * this.scale;
+    this.height = 95 * this.scale;
     this.lastY = this.y;
     this.velocity = {x: 0, y: 0};
     this.acceleration = {x: 0, y: 0};
     this.gravity = 0.5;
     this.friction = 0.75;
-    this.speed = 0.1;
-    this.maxVelocity = 3.0;
+    this.speed = 0.5;
+    this.maxVelocityX = 3.0;
     this.jumpHeight = 100;
     this.entity = this.game.platforms[0];
     this.standingOn = null;
-    this.scale = 0.65;
 
     // Animations:
     this.trim = {top: 50, bottom: 50, left: 50, right: 50}; //
@@ -53,10 +53,10 @@ function Goat(game, playerNumber, controls, sprite) {
     this.skidRightAnimation = new Animation(rightAsset, 752, 0, 94, 90, 0.1, 1, true, false);
 
     this.jumpLeftAnimation = new Animation(leftAsset, 846, 0, 94, 90, 0.1, 4, false, false);
-    this.jumpRightAnimation = new Animation(rightAsset, 1128, 0, 94, 90, 0.1, 1, true, false);
+    this.jumpRightAnimation = new Animation(rightAsset, 1128, 0, 94, 90, 0.1, 1, false, false);
 
     this.fallLeftAnimation = new Animation(leftAsset, 1222, 0, 94, 90, 0.1, 4, false, false);
-    this.fallRightAnimation = new Animation(rightAsset, 1410, 0, 94, 90, 0.1, 1, true, false);
+    this.fallRightAnimation = new Animation(rightAsset, 1410, 0, 94, 90, 0.1, 1, false, false);
 
     this.landLeftAnimation = new Animation(leftAsset, 1504, 0, 94, 90, 0.1, 4, false, false);
     this.landRightAnimation = new Animation(rightAsset, 1504, 0, 94, 90, 0.1, 4, false, false);
@@ -98,7 +98,7 @@ function Goat(game, playerNumber, controls, sprite) {
     this.stunned = false;
     this.king = false;
 
-    //this.boundingBox = new BoundingBox(this.x + 25, this.y, this.standAnimation.frameWidth - 40, this.standAnimation.frameHeight - 20);
+    // this.boundingBox = new BoundingBox(this.x, this.y, this.width, this.height);
 
 
     Entity.call(this, game, 0, this.y, this.width, this.height);
@@ -123,11 +123,13 @@ Goat.prototype.reset = function () {
 
     this.entity = this.game.platforms[0];
 
-    //this.boundingbox = new BoundingBox(this.x, this.y, this.standAnimation.frameWidth, this.standAnimation.frameHeight);
+    // this.boundingbox = new BoundingBox(this.x, this.y, this.standAnimation.frameWidth, this.standAnimation.frameHeight);
 };
 
 // Based off of Chris Marriott's Unicorn's update method: https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 Goat.prototype.update = function () {
+    // if (this.playerNumber === 0)
+        // console.log(this.boundingBox);
 
     /****************************************
      *              Collisions              *
@@ -165,8 +167,11 @@ Goat.prototype.update = function () {
     this.rightKey || this.leftKey ? this.running = true : this.running = false;
 
     // Running and boundary collisions:
-    if (this.rightKey && this.x < this.game.surfaceWidth - this.width) this.velocity.x = Math.min(this.velocity.x + this.speed, this.maxVelocity); // Running right
-    if (this.leftKey && this.x > 0) this.velocity.x = Math.max(this.velocity.x - this.speed, -1 * this.maxVelocity); // Running left
+    if (this.rightKey && this.x < this.game.surfaceWidth - this.width) this.velocity.x = Math.min(this.velocity.x + this.speed, this.maxVelocityX); // Running right
+    if (this.leftKey && this.x > 0) this.velocity.x = Math.max(this.velocity.x - this.speed, -1 * this.maxVelocityX); // Running left
+    
+    // if (Math.abs(this.velocity.x) < this.speed / 3) // If velocity is negligible 
+    //     this.velocity.x = 0; // Set velocity to 0 so we don't have really small values that are basically 0.
 
     this.x += this.velocity.x;
 
@@ -178,20 +183,20 @@ Goat.prototype.update = function () {
     if (this.jumpKey && !this.jumping && !this.falling) {
         this.jumping = true;
         this.ramping = true; // ramp up velocity instead of immediate impulse
+        this.entity = null;
         this.soundFX.play('jump');
         console.log("Jumped");
-        this.base = this.y; // Keep track of the goat's last bottom-y value
+        // this.base = 500; // Keep track of the goat's last bottom-y value
     }
 
     if (this.jumping) {
         if (this.ramping)
-            this.velocity.y -= 1.5; // To adjust how quickly goat reaches max jump velocity
+            this.velocity.y -= 3.0; // To adjust how quickly goat reaches max jump velocity
 
-        if (this.velocity.y < -7) // To adjust the max jump velocity
+        if (this.velocity.y < -9) // To adjust the max jump velocity
             this.ramping = false;
 
         this.velocity.y += this.gravity;
-        this.y += this.velocity.y;
 
         if (!this.ramping && Math.abs(this.velocity.y) < 0.1) { // If jump is at/near peak
             // this.velocity.y = 0;
@@ -204,35 +209,49 @@ Goat.prototype.update = function () {
      *              Falling                 *
      ****************************************/
 
-
     if (this.falling) {
         this.velocity.y += this.gravity;
-        this.y += this.velocity.y;
-
-        if (this.y > this.base) { // Should change to case where goat lands on a platform/goat
+        
+        if (this.y > this.base || this.entity) { // Should change to case where goat lands on a platform/goat
             this.falling = false;
             this.velocity.y = 0;
-            this.y = this.base;
+            this.y = this.entity? this.entity.boundingBox.top - this.boundingBox.height : this.base;
         }
     }
+    
+    var lastBB = this.boundingBox;
+    this.y += this.velocity.y;
+    this.boundingBox.update(this);
+
+    /****************************************
+     *             Collision                *
+     ****************************************/
 
     // Setup temp bounding boxes to check for corner collisions:
-    var leftCornerBB = new BoundingBox(this.boundingBox.x, this.boundingBox.bottom, 5, 5);
-    var rightCornerBB = new BoundingBox(this.boundingBox.x + this.boundingBox.width, this.boundingBox.bottom, 5, 5);
-
+    var leftCornerBB = new BoundingBox(this.boundingBox.left, this.boundingBox.top + this.boundingBox.height / 2, 5, this.boundingBox.height / 2);
+    var rightCornerBB = new BoundingBox(this.boundingBox.right - 5, this.boundingBox.top + this.boundingBox.height / 2, 5, this.boundingBox.height / 2);
+    
+    // Jumping onto an entity 
     for (var i = 0; i < this.game.entities.length; i++) {
-        if (leftCornerBB.collide(this.game.entities[i].boundingBox) && rightCornerBB.collide(this.game.entities[i].boundingBox)) {
-            console.log("Left corner Collided with" + this.game.entities[i]);
-            if (this.boundingBox.y < this.game.entities[i].boundingBox.y) {
-                this.entity = this.game.entities[i];
-                this.falling = false;
-            }
-            else {
-                this.falling = true;
-                console.log("Falling!");
-            }
+        var entity = this.game.entities[i];
+        if (entity != this && this.falling && (leftCornerBB.collide(entity.boundingBox) ||
+            rightCornerBB.collide(entity.boundingBox)) && lastBB.top <= entity.boundingBox.top) {
+            
+            console.log(this + " collided with " + entity);
+            this.entity = entity;
+            this.y = entity.boundingBox.top - this.boundingBox.height;
+            this.x += entity.velocity.x;
+            this.y += entity.velocity.y;
         }
-
+    }
+    
+    // Walking off an entity
+    if (!this.jumping && !this.falling) {
+       if ((leftCornerBB.left > this.entity.boundingBox.right || leftCornerBB.right < this.entity.boundingBox.left) &&
+           (rightCornerBB.left > this.entity.boundingBox.right || rightCornerBB.right < this.entity.boundingBox.left)) {
+           this.falling = true;
+           this.entity = null;
+       }
     }
 
 
@@ -322,8 +341,6 @@ Goat.prototype.update = function () {
     //if (this.y > this.game.platforms[0].y) this.y = this.game.platforms[0].y - 1;
 
 
-    this.x += this.velocity.x;
-    this.y += this.velocity.y;
     Entity.prototype.update.call(this);
 };
 

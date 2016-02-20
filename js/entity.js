@@ -75,7 +75,7 @@ BoundingBox.prototype.update = function (entity) {
 
     // Set the trim of each entity, depending on its animation if need be.
     if (entity instanceof Goat) {
-        entity.trim = {top: 10, bottom: 50, left: 10, right: 50};
+        entity.trim = {top: 10, bottom: 17, left: 12, right: 19};
     } else if (entity instanceof Platform) { // ie. for platforms, etc.
         entity.trim = {top: 10, bottom: 15, left: 5, right: 10};
     } else {
@@ -91,7 +91,7 @@ BoundingBox.prototype.update = function (entity) {
 
     this.left = entity.x;
     this.top = entity.y;
-    this.right = this.left + this.width - entity.trim.right;
-    this.bottom = this.top + this.height - entity.trim.bottom;
+    this.right = this.left + this.width;
+    this.bottom = this.top + this.height;
 
 };

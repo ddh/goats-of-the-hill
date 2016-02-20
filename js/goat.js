@@ -136,9 +136,14 @@ Goat.prototype.update = function () {
      ****************************************/
 
     // Update goat's velocities if it's on a platform
+    
     if (this.entity) {
-        this.x += this.entity.velocity.x;
-        this.y += this.entity.velocity.y;
+        var ent = this.entity;
+        while (ent) {
+            this.x += ent.velocity.x;
+            this.y += ent.velocity.y;
+            ent = ent.entity;
+        }
     }
 
     /****************************************

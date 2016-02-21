@@ -91,7 +91,7 @@ BoundingBox.prototype.update = function (entity) {
 
     this.left = entity.x;
     this.top = entity.y;
-    this.right = this.left + this.width;
-    this.bottom = this.top + this.height;
+    this.right = this.x + this.width;
+    this.bottom = this.y + this.height;
 
 };

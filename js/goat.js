@@ -100,7 +100,6 @@ function Goat(game, playerNumber, controls, sprite) {
 
     // this.boundingBox = new BoundingBox(this.x, this.y, this.width, this.height);
 
-
     Entity.call(this, game, 0, this.y, this.width, this.height);
 }
 
@@ -128,16 +127,14 @@ Goat.prototype.reset = function () {
 
 // Based off of Chris Marriott's Unicorn's update method: https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 Goat.prototype.update = function () {
-    // if (this.playerNumber === 0)
-        // console.log(this.boundingBox);
 
     /****************************************
      *              Collisions              *
      ****************************************/
 
     // Update goat's velocities if it's on a platform
-    
     if (this.entity) {
+        this.y = this.entity.boundingBox.top - this.boundingBox.height;
         var ent = this.entity;
         while (ent) {
             this.x += ent.velocity.x;
@@ -191,7 +188,7 @@ Goat.prototype.update = function () {
         this.entity = null;
         this.soundFX.play('jump');
         console.log("Jumped");
-        // this.base = 500; // Keep track of the goat's last bottom-y value
+        this.base = 535; // Keep track of the goat's last bottom-y value
     }
 
     if (this.jumping) {
@@ -223,7 +220,6 @@ Goat.prototype.update = function () {
         }
     }
     
-    var lastBB = this.boundingBox;
     this.y += this.velocity.y;
     this.boundingBox.update(this);
 
@@ -232,36 +228,38 @@ Goat.prototype.update = function () {
      ****************************************/
 
     // Setup temp bounding boxes to check for corner collisions:    
-    var leftCornerBB = new BoundingBox(this.boundingBox.left + 10, this.boundingBox.top + this.boundingBox.height / 2, 15, this.boundingBox.height / 2);
-    var rightCornerBB = new BoundingBox(this.boundingBox.left + 25, this.boundingBox.top + this.boundingBox.height / 2, 15, this.boundingBox.height / 2);
+    var leftCornerBB = new BoundingBox(this.boundingBox.x + 3, this.boundingBox.y + this.boundingBox.height / 2, 15, this.boundingBox.height / 2);
+    var rightCornerBB = new BoundingBox(this.boundingBox.x + 17, this.boundingBox.y + this.boundingBox.height / 2, 15, this.boundingBox.height / 2);
     
     if (!this.right) {
-        leftCornerBB = new BoundingBox(this.boundingBox.left + 15, this.boundingBox.top + this.boundingBox.height / 2, 15, this.boundingBox.height / 2);
-        rightCornerBB = new BoundingBox(this.boundingBox.left + 30, this.boundingBox.top + this.boundingBox.height / 2, 15, this.boundingBox.height / 2);
+        leftCornerBB = new BoundingBox(this.boundingBox.x + 7, this.boundingBox.y + this.boundingBox.height / 2, 15, this.boundingBox.height / 2);
+        rightCornerBB = new BoundingBox(this.boundingBox.x + 22, this.boundingBox.y + this.boundingBox.height / 2, 15, this.boundingBox.height / 2);
     }
     
-    // Jumping onto an entity 
-    for (var i = 0; i < this.game.entities.length; i++) {
-        var entity = this.game.entities[i];
-        if (entity != this && this.falling && (leftCornerBB.collide(entity.boundingBox) &&
-            rightCornerBB.collide(entity.boundingBox)) && lastBB.top <= entity.boundingBox.top) {
-            
-            console.log(this + " collided with " + entity);
-            this.entity = entity;
-            this.y = entity.boundingBox.top - this.boundingBox.height;
-            this.x += entity.velocity.x;
-            this.y += entity.velocity.y;
+    // Jumping onto an entity
+    if (this.falling) { 
+        for (var i = 0; i < this.game.entities.length; i++) {
+            var entity = this.game.entities[i];
+            if (entity != this && this.falling && (leftCornerBB.collide(entity.boundingBox) ||
+                rightCornerBB.collide(entity.boundingBox)) && (this.boundingBox.bottom - this.velocity.y * 1.5 <= entity.boundingBox.y)) {
+                
+                console.log(this + " collided with " + entity);
+                this.entity = entity;
+                this.y = entity.boundingBox.top - this.boundingBox.height;
+                this.x += entity.velocity.x;
+                this.y += entity.velocity.y;
+            }
         }
     }
     
     // Walking off an entity
-    if (!this.jumping && !this.falling) {
-       if ((leftCornerBB.left > this.entity.boundingBox.right || leftCornerBB.right < this.entity.boundingBox.left) &&
-           (rightCornerBB.left > this.entity.boundingBox.right || rightCornerBB.right < this.entity.boundingBox.left)) {
+    if (!this.jumping && !this.falling && this.entity) {
+       if ((leftCornerBB.left > this.entity.boundingBox.right || leftCornerBB.right < this.entity.boundingBox.x) &&
+           (rightCornerBB.left > this.entity.boundingBox.right || rightCornerBB.right < this.entity.boundingBox.x)) {
            console.log("FALLING");
            this.falling = true;
-           this.entity = null;
            this.y += 2; // To prevent bug where goat alternates between falling and landing on same platform
+           this.entity = null;
        }
     }
 

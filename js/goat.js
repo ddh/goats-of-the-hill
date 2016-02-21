@@ -232,18 +232,18 @@ Goat.prototype.update = function () {
      ****************************************/
 
     // Setup temp bounding boxes to check for corner collisions:    
-    var leftCornerBB = new BoundingBox(this.boundingBox.left + 5, this.boundingBox.top + this.boundingBox.height / 2, 18, this.boundingBox.height / 2);
-    var rightCornerBB = new BoundingBox(this.boundingBox.left + 18 , this.boundingBox.top + this.boundingBox.height / 2, 18, this.boundingBox.height / 2);
+    var leftCornerBB = new BoundingBox(this.boundingBox.left + 10, this.boundingBox.top + this.boundingBox.height / 2, 15, this.boundingBox.height / 2);
+    var rightCornerBB = new BoundingBox(this.boundingBox.left + 25, this.boundingBox.top + this.boundingBox.height / 2, 15, this.boundingBox.height / 2);
     
     if (!this.right) {
-        leftCornerBB = new BoundingBox(this.boundingBox.left + 8, this.boundingBox.top + this.boundingBox.height / 2, 15, this.boundingBox.height / 2);
-        rightCornerBB = new BoundingBox(this.boundingBox.left + 15, this.boundingBox.top + this.boundingBox.height / 2, 15, this.boundingBox.height / 2);
+        leftCornerBB = new BoundingBox(this.boundingBox.left + 15, this.boundingBox.top + this.boundingBox.height / 2, 15, this.boundingBox.height / 2);
+        rightCornerBB = new BoundingBox(this.boundingBox.left + 30, this.boundingBox.top + this.boundingBox.height / 2, 15, this.boundingBox.height / 2);
     }
     
     // Jumping onto an entity 
     for (var i = 0; i < this.game.entities.length; i++) {
         var entity = this.game.entities[i];
-        if (entity != this && this.falling && (leftCornerBB.collide(entity.boundingBox) ||
+        if (entity != this && this.falling && (leftCornerBB.collide(entity.boundingBox) &&
             rightCornerBB.collide(entity.boundingBox)) && lastBB.top <= entity.boundingBox.top) {
             
             console.log(this + " collided with " + entity);
@@ -258,8 +258,10 @@ Goat.prototype.update = function () {
     if (!this.jumping && !this.falling) {
        if ((leftCornerBB.left > this.entity.boundingBox.right || leftCornerBB.right < this.entity.boundingBox.left) &&
            (rightCornerBB.left > this.entity.boundingBox.right || rightCornerBB.right < this.entity.boundingBox.left)) {
+           console.log("FALLING");
            this.falling = true;
            this.entity = null;
+           this.y += 2; // To prevent bug where goat alternates between falling and landing on same platform
        }
     }
 

@@ -204,7 +204,6 @@ Goat.prototype.update = function () {
         this.velocity.y += this.gravity;
 
         if (!this.ramping && Math.abs(this.velocity.y) < 0.1) { // If jump is at/near peak
-            // this.velocity.y = 0;
             this.jumping = false;
             this.falling = true;
         }
@@ -232,9 +231,14 @@ Goat.prototype.update = function () {
      *             Collision                *
      ****************************************/
 
-    // Setup temp bounding boxes to check for corner collisions:
-    var leftCornerBB = new BoundingBox(this.boundingBox.left, this.boundingBox.top + this.boundingBox.height / 2, 5, this.boundingBox.height / 2);
-    var rightCornerBB = new BoundingBox(this.boundingBox.right - 5, this.boundingBox.top + this.boundingBox.height / 2, 5, this.boundingBox.height / 2);
+    // Setup temp bounding boxes to check for corner collisions:    
+    var leftCornerBB = new BoundingBox(this.boundingBox.left + 5, this.boundingBox.top + this.boundingBox.height / 2, 18, this.boundingBox.height / 2);
+    var rightCornerBB = new BoundingBox(this.boundingBox.left + 18 , this.boundingBox.top + this.boundingBox.height / 2, 18, this.boundingBox.height / 2);
+    
+    if (!this.right) {
+        leftCornerBB = new BoundingBox(this.boundingBox.left + 8, this.boundingBox.top + this.boundingBox.height / 2, 15, this.boundingBox.height / 2);
+        rightCornerBB = new BoundingBox(this.boundingBox.left + 15, this.boundingBox.top + this.boundingBox.height / 2, 15, this.boundingBox.height / 2);
+    }
     
     // Jumping onto an entity 
     for (var i = 0; i < this.game.entities.length; i++) {

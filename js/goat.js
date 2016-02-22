@@ -37,19 +37,21 @@ function Goat(game, playerNumber, controls, sprite) {
     // Jump physics
     this.velocity = {x: 0, y: 0};
     this.gravity = 0.5;
-    this.terminalVelocity = 8;
-    this.maxVelocityY = -6.0;
-    this.airTime = 0; // How long the jump key is held
-    this.maxAirTime = 0.3; // The maximum time jump key
+    this.terminalVelocity = 8;  // Max falling velocity
+    this.maxVelocityY = -6.0;   // Max jump velocity
+    this.airTime = 0;           // How long the jump key is held
+    this.maxAirTime = 0.3;      // Max time the jump key can be held for variable jumping
     this.doubleJump = true;
     this.canDoubleJump = true;
 
     // Attack physics
-    this.chargeTime = 0; // Held charge time
-    this.chargeTimeMax = 5; // 5 seconds
-    this.chargeTick = 0.5; // Every 30sec = tick in charge power
-    this.chargePower = 0; // Currently held charge power
-    this.chargePowerMax = 10; // Maximum charge power (ticks)
+    this.chargeTime = 0;        // Held charge time
+    this.chargeTimeMax = 5;     // 5 seconds to obtain max charge
+    this.chargeDecayTime = 15;  // 15 secs before charge power starts decaying
+    this.chargeDecay = false;   // Whether charge power is decaying
+    this.chargeTick = 0.5;      // Every 30sec = tick in charge power
+    this.chargePower = 0;       // Currently held charge power
+    this.chargePowerMax = 10;   // Maximum charge power (ticks)
 
     // Animations:
     this.trim = {top: 50, bottom: 50, left: 50, right: 50}; //
@@ -304,24 +306,38 @@ Goat.prototype.update = function () {
      *              Attacking               *
      ****************************************/
 
+    /*TODO: Attacking takes precedence over all other movements such as falling, jumping, or movement.
+
+     */
+
     // When attack key is held down, charge.
     if (this.attackKey) {
         this.charging = true;
         this.attacking = false;
         this.chargeTime += this.game.clockTick;
-        if ((this.chargeTime % this.chargeTick) < 0.01) {
-            this.chargePower = Math.min(++this.chargePower, this.chargePowerMax);
-            console.log(this + " has Charge of: " + this.chargePower);
+        if (!this.chargeDecay) {
+            if ((this.chargeTime % this.chargeTick) < 0.01) {
+                this.chargePower = Math.min(++this.chargePower, this.chargePowerMax);
+                console.log(this + " has Charge of: " + this.chargePower);
+            }
         }
-    }
 
+    }
 
     // While charging...
     if (this.charging) {
 
+        // Decay charge power if held for too long
+        if (this.chargeTime >= this.chargeDecayTime && this.chargeTime % (this.chargeTick * 2) < 0.01) {
+            this.chargeDecay = true;
+            this.chargePower = Math.max(--this.chargePower, 1);
+            console.log(this + "'s charge power decayed to " + this.chargePower);
+        }
+
         // Once max charge time is met:
         if (this.chargeTime >= this.chargeTimeMax) {
             console.log("MAXIMUM CHARGE REACHED!");
+            // TODO: Do something here once max charge is met? Dunno what.
         }
 
         // On letting go of charging key, release an attack
@@ -330,6 +346,7 @@ Goat.prototype.update = function () {
             this.charging = false;
             this.chargePower = 0;
             this.chargeTime = 0;
+            this.chargeDecay = false;
             this.attacking = true;
             // TODO: Call attack(int power) function!
 

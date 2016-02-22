@@ -8,7 +8,7 @@ ASSET_MANAGER.queueDownload("./img/mountain.png");
 ASSET_MANAGER.queueDownload("./img/hay.png");
 ASSET_MANAGER.queueDownload("./img/hay2.png");
 ASSET_MANAGER.queueDownload("./img/hay3.png");
-ASSET_MANAGER.queueDownload("./img/sparkles.png"); 
+ASSET_MANAGER.queueDownload("./img/sparkles.png");
 ASSET_MANAGER.queueDownload("./img/blue-goat-left.png");
 ASSET_MANAGER.queueDownload("./img/blue-goat-right.png");
 ASSET_MANAGER.queueDownload("./img/green-goat-left.png");
@@ -55,7 +55,7 @@ ASSET_MANAGER.downloadAll(function () {
 });
 
 // TODO: add more scenes in once first scene is working correctly
-var makeSceneSelector = function(background, gameEngine) {
+var makeSceneSelector = function (background, gameEngine) {
     var scenes = [];
     var platforms = [];
     var goats = [];
@@ -66,12 +66,12 @@ var makeSceneSelector = function(background, gameEngine) {
     var groundPlatform = new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'hay', false);
     groundPlatform.oneWayCollision = false;
     platforms.push(groundPlatform);
-    
+
     // handle all other platforms (use existing platforms below to build other scenes' platforms later)
 
     /*** Rows in Bottom-up fashion ***/
     /* row 1 */
-    platforms.push(makePlatform(gameEngine, 'l', -2, 480, 'vertical', 'hay', true));
+    //platforms.push(makePlatform(gameEngine, 'l', -2, 480, 'vertical', 'hay', true));
     /* row 2 */
     //platforms.push(makePlatform(gameEngine, 'm', 300, 375, 'diagonal', 'hay', false));
     /* row 3 */
@@ -86,10 +86,10 @@ var makeSceneSelector = function(background, gameEngine) {
     //platforms.push(makePlatform(gameEngine, 's', 200, 200, 'bouncing', 'hay', false));
 
     /* === Goats === */
-    var playerOneControls = {jump: 38, left: 37, right: 39};
+    var playerOneControls = {jump: 38, left: 37, right: 39, attack: 40};
     goats.push(new Goat(gameEngine, 0, playerOneControls, "blue-goat"));
 
-    var playerTwoControls = {jump: 87, left: 65, right: 68};
+    var playerTwoControls = {jump: 87, left: 65, right: 68, attack: 83};
     goats.push(new Goat(gameEngine, 1, playerTwoControls, "green-goat"));
 
     scenes.push(new Scene(platforms, background, goats));

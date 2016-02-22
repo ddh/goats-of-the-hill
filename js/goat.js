@@ -342,7 +342,7 @@ Goat.prototype.update = function () {
 
         // On letting go of charging key, release an attack
         if (!this.attackKey) {
-            console.log(this + " stopped charging and held charge for " + this.chargeTime);
+            console.log(this + " stopped charging w/ power " + this.chargePower + " and held for " + this.chargeTime.toFixed(2) + "s.");
             this.charging = false;
             this.chargePower = 0;
             this.chargeTime = 0;

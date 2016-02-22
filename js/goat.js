@@ -53,7 +53,8 @@ function Goat(game, playerNumber, controls, sprite) {
     this.chargePower = 1;       // Currently held charge power
     this.chargePowerMax = 10;   // Maximum charge power (ticks)
     this.attackTimeCounter = 0;
-    this.attackVelocity = 5;
+    this.attackTimeMax = 10;    // How many UPDATES the attack lasts for
+    this.attackVelocity = 5;    // Initial attack velocity
 
     // Animations:
     this.trim = {top: 50, bottom: 50, left: 50, right: 50}; //
@@ -299,13 +300,15 @@ Goat.prototype.update = function () {
     }
 
     // Walking off an entity
-    if (!this.jumping && !this.falling && this.entity) {
-        if ((leftCornerBB.left > this.entity.boundingBox.right || leftCornerBB.right < this.entity.boundingBox.x) &&
-            (rightCornerBB.left > this.entity.boundingBox.right || rightCornerBB.right < this.entity.boundingBox.x)) {
-            console.log(this + " walked off " + this.entity);
-            this.falling = true;
-            this.y += 2; // To prevent bug where goat alternates between falling and landing on same platform
-            this.entity = null;
+    if (!this.attacking) {
+        if (!this.jumping && !this.falling && this.entity) {
+            if ((leftCornerBB.left > this.entity.boundingBox.right || leftCornerBB.right < this.entity.boundingBox.x) &&
+                (rightCornerBB.left > this.entity.boundingBox.right || rightCornerBB.right < this.entity.boundingBox.x)) {
+                console.log(this + " walked off " + this.entity);
+                this.falling = true;
+                this.y += 2; // To prevent bug where goat alternates between falling and landing on same platform
+                this.entity = null;
+            }
         }
     }
 
@@ -364,10 +367,15 @@ Goat.prototype.update = function () {
 
     // The attack
     if (this.attacking) {
-        if (this.right) this.x += this.attackVelocity * this.chargePower/4;
-        if (!this.right) this.x -= this.attackVelocity * this.chargePower/4;
+
+        // Determine position during attack
+        if (this.right) this.x += this.attackVelocity * this.chargePower / 4;
+        if (!this.right) this.x -= this.attackVelocity * this.chargePower / 4;
         this.attackTimeCounter++;
-        if (this.attackTimeCounter > 10) {
+
+        // When the attack is finished:
+        if (this.attackTimeCounter > this.attackTimeMax) {
+            console.log(this + " attacked with power of " + this.chargePower);
             this.attacking = false;
             this.attackTimeCounter = 0;
             this.chargePower = 1;

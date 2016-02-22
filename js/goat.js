@@ -53,10 +53,10 @@ function Goat(game, playerNumber, controls, sprite) {
     this.skidRightAnimation = new Animation(rightAsset, 752, 0, 94, 90, 0.1, 1, true, false);
 
     this.jumpLeftAnimation = new Animation(leftAsset, 846, 0, 94, 90, 0.1, 4, false, false);
-    this.jumpRightAnimation = new Animation(rightAsset, 1128, 0, 94, 90, 0.1, 1, false, false);
+    this.jumpRightAnimation = new Animation(rightAsset, 846, 0, 94, 90, 0.1, 4, false, false);
 
     this.fallLeftAnimation = new Animation(leftAsset, 1222, 0, 94, 90, 0.1, 4, false, false);
-    this.fallRightAnimation = new Animation(rightAsset, 1410, 0, 94, 90, 0.1, 1, false, false);
+    this.fallRightAnimation = new Animation(rightAsset, 1222, 0, 94, 90, 0.1, 4, false, false);
 
     this.landLeftAnimation = new Animation(leftAsset, 1504, 0, 94, 90, 0.1, 4, false, false);
     this.landRightAnimation = new Animation(rightAsset, 1504, 0, 94, 90, 0.1, 4, false, false);
@@ -120,7 +120,7 @@ Goat.prototype.reset = function () {
     this.x = 0;
     this.y = this.game.platforms[0].y - this.height;
 
-    this.entity = this.game.platforms[0];
+    this.entity = this.game.platforms[0]; // This should be the ground platform
 
     // this.boundingbox = new BoundingBox(this.x, this.y, this.standAnimation.frameWidth, this.standAnimation.frameHeight);
 };
@@ -129,10 +129,10 @@ Goat.prototype.reset = function () {
 Goat.prototype.update = function () {
 
     /****************************************
-     *              Collisions              *
+     *              Position              *
      ****************************************/
 
-    // Update goat's velocities if it's on a platform
+    // Update goat's velocities/position if it's on another entity
     if (this.entity) {
         this.y = this.entity.boundingBox.top - this.boundingBox.height;
         var ent = this.entity;
@@ -168,10 +168,13 @@ Goat.prototype.update = function () {
     // Update running state:
     this.rightKey || this.leftKey ? this.running = true : this.running = false;
 
-    // Running and boundary collisions:
+    // Update Running velocities:
     if (this.rightKey && this.x < this.game.surfaceWidth - this.width) this.velocity.x = Math.min(this.velocity.x + this.speed, this.maxVelocityX); // Running right
     if (this.leftKey && this.x > 0) this.velocity.x = Math.max(this.velocity.x - this.speed, -1 * this.maxVelocityX); // Running left
-    
+
+    // Prevent goat from moving out of bounds of stage:
+    if (this.x < 0 && this.leftKey || this.x + this.width > this.game.surfaceWidth && this.rightKey) this.velocity.x = 0;
+
     // if (Math.abs(this.velocity.x) < this.speed / 3) // If velocity is negligible 
     //     this.velocity.x = 0; // Set velocity to 0 so we don't have really small values that are basically 0.
 
@@ -212,37 +215,37 @@ Goat.prototype.update = function () {
 
     if (this.falling) {
         this.velocity.y += this.gravity;
-        
+
         if (this.y > this.base || this.entity) { // Should change to case where goat lands on a platform/goat
             this.falling = false;
             this.velocity.y = 0;
-            this.y = this.entity? this.entity.boundingBox.top - this.boundingBox.height : this.base;
+            this.y = this.entity ? this.entity.boundingBox.top - this.boundingBox.height : this.base;
         }
     }
-    
+
     this.y += this.velocity.y;
     this.boundingBox.update(this);
 
     /****************************************
-     *             Collision                *
+     *             Collisions               *
      ****************************************/
 
     // Setup temp bounding boxes to check for corner collisions:    
     var leftCornerBB = new BoundingBox(this.boundingBox.x + 3, this.boundingBox.y + this.boundingBox.height / 2, 15, this.boundingBox.height / 2);
     var rightCornerBB = new BoundingBox(this.boundingBox.x + 17, this.boundingBox.y + this.boundingBox.height / 2, 15, this.boundingBox.height / 2);
-    
+
     if (!this.right) {
         leftCornerBB = new BoundingBox(this.boundingBox.x + 7, this.boundingBox.y + this.boundingBox.height / 2, 15, this.boundingBox.height / 2);
         rightCornerBB = new BoundingBox(this.boundingBox.x + 22, this.boundingBox.y + this.boundingBox.height / 2, 15, this.boundingBox.height / 2);
     }
-    
+
     // Jumping onto an entity
-    if (this.falling) { 
-        for (var i = 0; i < this.game.entities.length; i++) {
-            var entity = this.game.entities[i];
+    if (this.falling) {
+        for (var i = 0, length = this.game.collidables.length; i < length; i++) {
+            var entity = this.game.collidables[i];
             if (entity != this && this.falling && (leftCornerBB.collide(entity.boundingBox) ||
                 rightCornerBB.collide(entity.boundingBox)) && (this.boundingBox.bottom - this.velocity.y * 1.5 <= entity.boundingBox.y)) {
-                
+
                 console.log(this + " collided with " + entity);
                 this.entity = entity;
                 this.y = entity.boundingBox.top - this.boundingBox.height;
@@ -251,16 +254,16 @@ Goat.prototype.update = function () {
             }
         }
     }
-    
+
     // Walking off an entity
     if (!this.jumping && !this.falling && this.entity) {
-       if ((leftCornerBB.left > this.entity.boundingBox.right || leftCornerBB.right < this.entity.boundingBox.x) &&
-           (rightCornerBB.left > this.entity.boundingBox.right || rightCornerBB.right < this.entity.boundingBox.x)) {
-           console.log("FALLING");
-           this.falling = true;
-           this.y += 2; // To prevent bug where goat alternates between falling and landing on same platform
-           this.entity = null;
-       }
+        if ((leftCornerBB.left > this.entity.boundingBox.right || leftCornerBB.right < this.entity.boundingBox.x) &&
+            (rightCornerBB.left > this.entity.boundingBox.right || rightCornerBB.right < this.entity.boundingBox.x)) {
+            console.log("FALLING");
+            this.falling = true;
+            this.y += 2; // To prevent bug where goat alternates between falling and landing on same platform
+            this.entity = null;
+        }
     }
 
 

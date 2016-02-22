@@ -15,6 +15,7 @@ function GameEngine() {
     this.entities = [];
     this.platforms = [];
     this.goats = [];
+    this.collidables = [];
     this.enableDebug = false; // debugging flag for drawing bounding boxes
     this.ctx = null;
     this.click = null;
@@ -47,18 +48,27 @@ GameEngine.prototype.start = function () {
 };
 
 GameEngine.prototype.loadFirstScene = function () {
+
+    // Set Scene
     this.scene = this.sceneSelector.scenes[0];
+
+    // Set Background
     this.entities.push(this.scene.background);
-    for (var i = 0; i < this.scene.platforms.length; i++) {
-        var pf = this.scene.platforms[i];
-        this.entities.push(pf);
-        this.platforms.push(pf);
-    }
+
+    // Set Platforms
+    // Note: push.apply allows you to append array contents all at once (no need for loops)
+    // Note: setting each array individually here to avoid shallow copying mistakes
+    this.platforms.push.apply(this.platforms, this.scene.platforms);
+    this.entities.push.apply(this.entities, this.scene.platforms);
+    this.collidables.push.apply(this.collidables, this.scene.platforms);
+
+    // Set Goats
     for (var i = 0; i < this.scene.goats.length; i++) {
         var goat = this.scene.goats[i];
         goat.reset(); // Reset so goat's initial platform is the ground
         this.entities.push(goat);
         this.goats.push(goat);
+        this.collidables.push(goat);
         // Add key listeners associated with goat
         // "closure" is needed so listener knows what element to refer to
         (function(goat, gameEngine) {

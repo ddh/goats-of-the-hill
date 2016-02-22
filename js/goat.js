@@ -50,8 +50,10 @@ function Goat(game, playerNumber, controls, sprite) {
     this.chargeDecayTime = 15;  // 15 secs before charge power starts decaying
     this.chargeDecay = false;   // Whether charge power is decaying
     this.chargeTick = 0.5;      // Every 30sec = tick in charge power
-    this.chargePower = 0;       // Currently held charge power
+    this.chargePower = 1;       // Currently held charge power
     this.chargePowerMax = 10;   // Maximum charge power (ticks)
+    this.attackTimeCounter = 0;
+    this.attackVelocity = 5;
 
     // Animations:
     this.trim = {top: 50, bottom: 50, left: 50, right: 50}; //
@@ -163,77 +165,81 @@ Goat.prototype.update = function () {
      *              Movement                *
      ****************************************/
 
-    // Update Goat's facing direction state:
-    if (this.rightKey) {
-        if (this.right == false) {
-            this.velocity.x *= Math.pow(this.friction, 10);
+    if (!this.attacking) {
+        // Update Goat's facing direction state:
+        if (this.rightKey) {
+            if (this.right == false) {
+                this.velocity.x *= Math.pow(this.friction, 10);
+            }
+            this.right = true;
+        } else if (this.leftKey) {
+            if (this.right == true) {
+                this.velocity.x *= Math.pow(this.friction, 4);
+            }
+            this.right = false;
         }
-        this.right = true;
-    } else if (this.leftKey) {
-        if (this.right == true) {
-            this.velocity.x *= Math.pow(this.friction, 4);
+
+        // Apply friction on running after letting go of run keys
+        if (!this.rightKey && !this.leftKey) {
+            this.velocity.x *= this.friction;
         }
-        this.right = false;
+
+        // Update running state:
+        this.rightKey || this.leftKey ? this.running = true : this.running = false;
+
+        // Update Running velocities:
+        if (this.rightKey && this.x < this.game.surfaceWidth - this.width) this.velocity.x = Math.min(this.velocity.x + this.speed, this.maxVelocityX); // Running right
+        if (this.leftKey && this.x > 0) this.velocity.x = Math.max(this.velocity.x - this.speed, -1 * this.maxVelocityX); // Running left
+
+        // Prevent goat from moving out of bounds of stage:
+        if (this.x < 0 && this.leftKey || this.x + this.width > this.game.surfaceWidth && this.rightKey) this.velocity.x = 0;
+
+        // if (Math.abs(this.velocity.x) < this.speed / 3) // If velocity is negligible
+        //     this.velocity.x = 0; // Set velocity to 0 so we don't have really small values that are basically 0.
+
+        this.x += this.velocity.x;
     }
-
-    // Apply friction on running after letting go of run keys
-    if (!this.rightKey && !this.leftKey) {
-        this.velocity.x *= this.friction;
-    }
-
-    // Update running state:
-    this.rightKey || this.leftKey ? this.running = true : this.running = false;
-
-    // Update Running velocities:
-    if (this.rightKey && this.x < this.game.surfaceWidth - this.width) this.velocity.x = Math.min(this.velocity.x + this.speed, this.maxVelocityX); // Running right
-    if (this.leftKey && this.x > 0) this.velocity.x = Math.max(this.velocity.x - this.speed, -1 * this.maxVelocityX); // Running left
-
-    // Prevent goat from moving out of bounds of stage:
-    if (this.x < 0 && this.leftKey || this.x + this.width > this.game.surfaceWidth && this.rightKey) this.velocity.x = 0;
-
-    // if (Math.abs(this.velocity.x) < this.speed / 3) // If velocity is negligible 
-    //     this.velocity.x = 0; // Set velocity to 0 so we don't have really small values that are basically 0.
-
-    this.x += this.velocity.x;
 
     /****************************************
      *              Jumping                 *
      ****************************************/
 
-    // Update Jump state:
-    if (this.jumpKey && !this.jumping && !this.falling) {
-        this.jumping = true;
-        this.ramping = true; // ramp up velocity instead of immediate impulse
-        this.entity = null;
-        this.soundFX.play('jump');
-        console.log(this + " Jumped");
-        this.base = 535; // Keep track of the goat's last bottom-y value
-    }
-
-    // Calculate jump velocity; incrementally 'ramping' velocity until a threshold
-    if (this.jumping) {
-
-        // Apply variable jumping velocity until threshold:
-        // TODO: Need a way to disable 'airtime' if key was let off early.
-        if (this.jumpKey && this.airTime < this.maxAirTime) {
-            this.velocity.y -= this.gravity; // Negate force of gravity during airTime
-            this.airTime += this.game.clockTick;
+    if (!this.attacking) {
+        // Update Jump state:
+        if (this.jumpKey && !this.jumping && !this.falling) {
+            this.jumping = true;
+            this.ramping = true; // ramp up velocity instead of immediate impulse
+            this.entity = null;
+            this.soundFX.play('jump');
+            console.log(this + " Jumped");
+            this.base = 535; // Keep track of the goat's last bottom-y value
         }
 
-        // Apply additional velocity until threshold:
-        if (this.ramping)
-            this.velocity.y -= 3.0; // To adjust how quickly goat reaches max jump velocity
+        // Calculate jump velocity; incrementally 'ramping' velocity until a threshold
+        if (this.jumping) {
 
-        // Cap additional velocity when threshold reached:
-        if (this.velocity.y < this.maxVelocityY) this.ramping = false;
+            // Apply variable jumping velocity until threshold:
+            // TODO: Need a way to disable 'airtime' if key was let off early.
+            if (this.jumpKey && this.airTime < this.maxAirTime) {
+                this.velocity.y -= this.gravity; // Negate force of gravity during airTime
+                this.airTime += this.game.clockTick;
+            }
 
-        // Apply the force of gravity
-        this.velocity.y += this.gravity;
-        //console.log("JUMPING Velocity " + this.velocity.y);
+            // Apply additional velocity until threshold:
+            if (this.ramping)
+                this.velocity.y -= 3.0; // To adjust how quickly goat reaches max jump velocity
 
-        if (!this.ramping && Math.abs(this.velocity.y) < 0.1) { // If jump is at/near peak
-            this.jumping = false;
-            this.falling = true;
+            // Cap additional velocity when threshold reached:
+            if (this.velocity.y < this.maxVelocityY) this.ramping = false;
+
+            // Apply the force of gravity
+            this.velocity.y += this.gravity;
+            //console.log("JUMPING Velocity " + this.velocity.y);
+
+            if (!this.ramping && Math.abs(this.velocity.y) < 0.1) { // If jump is at/near peak
+                this.jumping = false;
+                this.falling = true;
+            }
         }
     }
 
@@ -241,25 +247,27 @@ Goat.prototype.update = function () {
      *              Falling                 *
      ****************************************/
 
-    // Determine falling velocity of goat; mainly controlled by gravity pulling goat downwards
-    if (this.falling) {
-        //console.log("FALLING Velocity: " + this.velocity.y);
-        this.velocity.y = Math.min(this.velocity.y + this.gravity, this.terminalVelocity);
-        //this.velocity.y += this.gravity;
+    if (!this.attacking) { // Prevent falling updates during attacking
+        // Determine falling velocity of goat; mainly controlled by gravity pulling goat downwards
+        if (this.falling) {
+            //console.log("FALLING Velocity: " + this.velocity.y);
+            this.velocity.y = Math.min(this.velocity.y + this.gravity, this.terminalVelocity);
+            //this.velocity.y += this.gravity;
 
-        // Determine goat's position upon landing on an entity
-        if (this.y > this.base || this.entity) { // Should change to case where goat lands on a platform/goat
-            console.log(this + "'s final fall velocity was " + this.velocity.y);
-            this.falling = false;
-            this.airTime = 0;
-            this.canDoubleJump = true;
-            this.velocity.y = 0;
-            this.y = this.entity ? this.entity.boundingBox.top - this.boundingBox.height : this.base;
+            // Determine goat's position upon landing on an entity
+            if (this.y > this.base || this.entity) { // Should change to case where goat lands on a platform/goat
+                console.log(this + "'s final fall velocity was " + this.velocity.y);
+                this.falling = false;
+                this.airTime = 0;
+                this.canDoubleJump = true;
+                this.velocity.y = 0;
+                this.y = this.entity ? this.entity.boundingBox.top - this.boundingBox.height : this.base;
+            }
         }
-    }
 
-    this.y += this.velocity.y;
-    this.boundingBox.update(this);
+        this.y += this.velocity.y;
+        this.boundingBox.update(this);
+    }
 
     /****************************************
      *             Collisions               *
@@ -343,13 +351,26 @@ Goat.prototype.update = function () {
         // On letting go of charging key, release an attack
         if (!this.attackKey) {
             console.log(this + " stopped charging w/ power " + this.chargePower + " and held for " + this.chargeTime.toFixed(2) + "s.");
+            // TODO: Call attack(int power) function!
             this.charging = false;
-            this.chargePower = 0;
+            //this.chargePower = 1;
             this.chargeTime = 0;
             this.chargeDecay = false;
             this.attacking = true;
-            // TODO: Call attack(int power) function!
 
+
+        }
+    }
+
+    // The attack
+    if (this.attacking) {
+        if (this.right) this.x += this.attackVelocity * this.chargePower/4;
+        if (!this.right) this.x -= this.attackVelocity * this.chargePower/4;
+        this.attackTimeCounter++;
+        if (this.attackTimeCounter > 10) {
+            this.attacking = false;
+            this.attackTimeCounter = 0;
+            this.chargePower = 1;
         }
     }
 

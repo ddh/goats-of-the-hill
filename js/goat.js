@@ -77,6 +77,7 @@ function Goat(game, playerNumber, controls, sprite) {
     this.fallLeftAnimation = new Animation(leftAsset, 1222, 0, 94, 90, 0.1, 4, false, false);
     this.fallRightAnimation = new Animation(rightAsset, 1222, 0, 94, 90, 0.1, 4, false, false);
 
+
     this.landLeftAnimation = new Animation(leftAsset, 1504, 0, 94, 90, 0.1, 4, false, false);
     this.landRightAnimation = new Animation(rightAsset, 1504, 0, 94, 90, 0.1, 4, false, false);
 
@@ -135,6 +136,7 @@ Goat.prototype.reset = function () {
     this.charging = false;
     this.attacking = false;
     this.stunned = false;
+    this.score = 0;
 
     this.x = 0;
     this.y = this.game.platforms[0].y - this.height;
@@ -289,7 +291,6 @@ Goat.prototype.update = function () {
             var entity = this.game.collidables[i];
             if (entity != this && this.falling && (leftCornerBB.collide(entity.boundingBox) ||
                 rightCornerBB.collide(entity.boundingBox)) && (this.boundingBox.bottom - this.velocity.y * 1.5 <= entity.boundingBox.y)) {
-
                 console.log(this + " collided with " + entity);
                 this.entity = entity;
                 this.y = entity.boundingBox.top - this.boundingBox.height;
@@ -390,9 +391,32 @@ Goat.prototype.update = function () {
     /****************************************
      *              Misc.                   *
      ****************************************/
+
+    /****************************************
+     *              Scoring                 *
+     ****************************************/
     // Just to place a crown manually on top of player 1's goat.
     if (this.playerNumber === 0)
         this.king = this.game.kKey;
+
+    // Increments goat's score count:  
+    if (this.entity && this.entity.isHill && !isMounted(this.game.goats)) {
+        for (var i = 0; i < this.game.goats.length; i++) {
+            var goat = this.game.goats[i];
+            if (this.entity != goat.entity) {
+                this.score += 1;
+                console.log("score = " + this.score);
+            }
+        }
+    }
+    // helper function to prevent goat on goat on hill from gaining points
+    function isMounted(goats) {
+        for (var i = 0; i < goats.length; i++) {
+            var goat = goats[i];
+            if (goat.entity instanceof Goat) return true;
+        }
+        return false;
+    }
 
     Entity.prototype.update.call(this);
 };

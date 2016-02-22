@@ -47,7 +47,7 @@ ASSET_MANAGER.downloadAll(function () {
 
     gameEngine.loadFirstScene();
 
-    var pg = new PlayGame(gameEngine, 320, 250);
+    var pg = new PlayGame(gameEngine, 320, 250, true, true, 8);
     gameEngine.addEntity(pg);
 
     /* === START GAME === */

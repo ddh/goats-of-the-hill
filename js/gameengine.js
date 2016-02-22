@@ -76,11 +76,13 @@ GameEngine.prototype.loadFirstScene = function () {
                 if (e.which === goat.controls.jump) goat.jumpKey = true;
                 if (e.which === goat.controls.right) goat.rightKey = true;
                 if (e.which === goat.controls.left) goat.leftKey = true;
+                if (e.which === goat.controls.attack) goat.attackKey = true;
             }, false);
             gameEngine.ctx.canvas.addEventListener("keyup", function (e) {
                 if (e.which === goat.controls.jump) goat.jumpKey = false;
                 if (e.which === goat.controls.right) goat.rightKey = false;
                 if (e.which === goat.controls.left) goat.leftKey = false;
+                if (e.which === goat.controls.attack) goat.attackKey = false;
             });
         })(goat, this);
     }

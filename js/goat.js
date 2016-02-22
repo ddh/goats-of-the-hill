@@ -18,7 +18,7 @@ function Goat(game, playerNumber, controls, sprite) {
     this.jumpKey = false;
     this.leftKey = false;
     this.rightKey = false;
-    this.chargeKey = false;
+    this.attackKey = false;
 
     // Game physics:
     this.scale = 0.65;
@@ -196,14 +196,15 @@ Goat.prototype.update = function () {
         this.ramping = true; // ramp up velocity instead of immediate impulse
         this.entity = null;
         this.soundFX.play('jump');
-        console.log("Jumped");
-        this.base = 535; // Keep track of the goat's last bottom-y value TODO: What's this magic number?
+        console.log(this + " Jumped");
+        this.base = 535; // Keep track of the goat's last bottom-y value
     }
 
     // Calculate jump velocity; incrementally 'ramping' velocity until a threshold
     if (this.jumping) {
 
         // Apply variable jumping velocity until threshold:
+        // TODO: Need a way to disable 'airtime' if key was let off early.
         if (this.jumpKey && this.airTime < this.maxAirTime) {
             this.velocity.y -= this.gravity; // Negate force of gravity during airTime
             this.airTime += this.game.clockTick;
@@ -214,12 +215,11 @@ Goat.prototype.update = function () {
             this.velocity.y -= 3.0; // To adjust how quickly goat reaches max jump velocity
 
         // Cap additional velocity when threshold reached:
-        if (this.velocity.y < this.maxVelocityY)
-            this.ramping = false;
+        if (this.velocity.y < this.maxVelocityY) this.ramping = false;
 
         // Apply the force of gravity
         this.velocity.y += this.gravity;
-        console.log("JUMPING Velocity " + this.velocity.y);
+        //console.log("JUMPING Velocity " + this.velocity.y);
 
         if (!this.ramping && Math.abs(this.velocity.y) < 0.1) { // If jump is at/near peak
             this.jumping = false;
@@ -233,12 +233,13 @@ Goat.prototype.update = function () {
 
     // Determine falling velocity of goat; mainly controlled by gravity pulling goat downwards
     if (this.falling) {
-        console.log("FALLING Velocity: " + this.velocity.y);
+        //console.log("FALLING Velocity: " + this.velocity.y);
         this.velocity.y = Math.min(this.velocity.y + this.gravity, this.terminalVelocity);
         //this.velocity.y += this.gravity;
 
         // Determine goat's position upon landing on an entity
         if (this.y > this.base || this.entity) { // Should change to case where goat lands on a platform/goat
+            console.log(this + "'s final fall velocity was " + this.velocity.y);
             this.falling = false;
             this.airTime = 0;
             this.canDoubleJump = true;
@@ -283,7 +284,7 @@ Goat.prototype.update = function () {
     if (!this.jumping && !this.falling && this.entity) {
         if ((leftCornerBB.left > this.entity.boundingBox.right || leftCornerBB.right < this.entity.boundingBox.x) &&
             (rightCornerBB.left > this.entity.boundingBox.right || rightCornerBB.right < this.entity.boundingBox.x)) {
-            console.log("FALLING");
+            console.log(this + " walked off " + this.entity);
             this.falling = true;
             this.y += 2; // To prevent bug where goat alternates between falling and landing on same platform
             this.entity = null;

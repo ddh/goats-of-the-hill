@@ -15,6 +15,7 @@ function GameEngine() {
     this.entities = [];
     this.platforms = [];
     this.goats = [];
+    this.collidables = [];
     this.enableDebug = false; // debugging flag for drawing bounding boxes
     this.ctx = null;
     this.click = null;
@@ -110,16 +111,16 @@ GameEngine.prototype.startInput = function () {
 GameEngine.prototype.addEntity = function (entity) {
     if (entity instanceof Scene) {
         // 1) Add Background entity
-        this.addEntity(entity.background);
+        this.entities.push(entity.background);
 
         // 2) Add Platform entities
-        for (var i = 0; i < entity.platforms.length; i++) {
-            this.addEntity(entity.platforms[i]);
-        }
+        // Note: push.apply allows you to append array contents all at once (no need for loops)
+        // Note: setting each array individually here to avoid shallow copying mistakes
+        this.platforms.push.apply(this.platforms, entity.platforms);
+        this.collidables.push.apply(this.collidables, entity.platforms);
+        this.entities.push.apply(this.entities, entity.platforms);
 
         // 3) *Note: Goat entities already persist in game engine
-    } else if (entity instanceof Platform) {
-        this.platforms.push(entity);
     } else if (entity instanceof Goat) {
         this.goats.push(entity);
         // Add key listeners associated with goat
@@ -136,11 +137,12 @@ GameEngine.prototype.addEntity = function (entity) {
                 if (e.which === goat.controls.left) goat.leftKey = false;
             });
         })(entity, this);
+        this.entities.push(entity);
     } else if (entity instanceof PlayGame) {
         this.playGame = entity; // keep this field in game engine for now, may take it out later...
+        this.entities.push(entity);
     }
     console.log('added ' + entity.toString());
-    this.entities.push(entity);
 };
 
 GameEngine.prototype.draw = function () {

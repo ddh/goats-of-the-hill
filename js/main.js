@@ -8,7 +8,7 @@ ASSET_MANAGER.queueDownload("./img/mountain.png");
 ASSET_MANAGER.queueDownload("./img/hay.png");
 ASSET_MANAGER.queueDownload("./img/hay2.png");
 ASSET_MANAGER.queueDownload("./img/hay3.png");
-ASSET_MANAGER.queueDownload("./img/sparkles.png"); 
+ASSET_MANAGER.queueDownload("./img/sparkles.png");
 ASSET_MANAGER.queueDownload("./img/blue-goat-left.png");
 ASSET_MANAGER.queueDownload("./img/blue-goat-right.png");
 ASSET_MANAGER.queueDownload("./img/green-goat-left.png");
@@ -37,7 +37,7 @@ ASSET_MANAGER.downloadAll(function () {
     }).play();
 
     /* === Game Logistics === */
-    var pg = new PlayGame(gameEngine, 320, 250);
+    var pg = new PlayGame(gameEngine, 320, 250, true, true, 8);
     pg.roundNumber = document.getElementById('roundNumber');
     pg.sceneSelector = makeSceneSelector(gameEngine); // also initializes Scenes
     pg.initFirstScene();
@@ -69,24 +69,24 @@ var makeSceneSelector = function(gameEngine) {
     var groundPlatform = new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'hay', false);
     groundPlatform.oneWayCollision = false;
     platforms.push(groundPlatform); // ground platform is always the first platform added to a scene
-    
+
     // handle all other platforms (use existing platforms below to build other scenes' platforms later)
 
     /*** Rows in Bottom-up fashion ***/
     /* row 1 */
-    platforms.push(makePlatform(gameEngine, 'l', -2, 480, 'vertical', 'hay', true));
+    //platforms.push(makePlatform(gameEngine, 'l', -2, 480, 'vertical', 'hay', true));
     /* row 2 */
-    platforms.push(makePlatform(gameEngine, 'm', 300, 375, 'diagonal', 'hay', false));
+    //platforms.push(makePlatform(gameEngine, 'm', 300, 375, 'diagonal', 'hay', false));
     /* row 3 */
-    platforms.push(makePlatform(gameEngine, 'm', -2, 300, 'diagonal', 'hay', false));
+    //platforms.push(makePlatform(gameEngine, 'm', -2, 300, 'diagonal', 'hay', false));
     platforms.push(makePlatform(gameEngine, 'l', 562, 300, 'vertical', 'hay', false));
     /* row 4 */
-    platforms.push(makePlatform(gameEngine, 'm', 325, 130, 'diagonal', 'hay', false));
+    //platforms.push(makePlatform(gameEngine, 'm', 325, 130, 'diagonal', 'hay', false));
     /* row 5 */
-    platforms.push(makePlatform(gameEngine, 's', 100, 400, 'horizontal', 'hay', false));
+    //platforms.push(makePlatform(gameEngine, 's', 100, 400, 'horizontal', 'hay', false));
     platforms.push(makePlatform(gameEngine, 's', 400, 200, 'horizontal', 'hay', false));
     /* row 6 */
-    platforms.push(makePlatform(gameEngine, 's', 200, 200, 'bouncing', 'hay', false));
+    //platforms.push(makePlatform(gameEngine, 's', 200, 200, 'bouncing', 'hay', false));
 
     scenes.push(new Scene(platforms, background));
 

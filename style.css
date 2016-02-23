@@ -1,0 +1,29 @@
+.uwTheme {
+    position: absolute;
+    top: 50px;
+    height: 30px;
+    background-color: rgba(0,0,0,0);
+    font-family: Impact, Charcoal, sans-serif;
+    font-size: 24pt;
+    color: purple;
+}
+
+#gameTitle {
+    left: 250px;
+    width: 400px;
+}
+
+#roundNumber {
+    left: 900px;
+    width: 200px;
+}
+
+#gameWorldContainer {
+    width: 100%;
+    text-align: center;
+}
+
+#gameWorld {
+    border: 1px solid white;
+    display: inline;
+}

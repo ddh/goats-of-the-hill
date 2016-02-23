@@ -117,6 +117,9 @@ function Goat(game, playerNumber, controls, sprite) {
     this.stunned = false;
     this.king = false;
 
+    // TODO: KEEP THIS IN THE CONSTRUCTOR ELSE SCORE IS EITHER UNDEFINED OR NaN
+    this.score = 0;
+
     // this.boundingBox = new BoundingBox(this.x, this.y, this.width, this.height);
 
     Entity.call(this, game, 0, this.y, this.width, this.height);

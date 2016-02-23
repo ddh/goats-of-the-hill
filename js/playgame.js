@@ -30,9 +30,10 @@ PlayGame.prototype.reset = function () {
     this.RandomHillClockTickTracker = 0;
 };
 
+// TODO: handle transition logic here
 PlayGame.prototype.update = function () {
     // TODO: need to change how we're keeping track of round time vs. total game time
-    this.game.running = (this.game.click && this.game.timer.gameTime < ROUND_TIME_LIMIT);
+    this.game.roundRunning = (this.game.click && this.game.timer.gameTime < ROUND_TIME_LIMIT);
     Entity.prototype.update.call(this);
     this.scoreChecker();
     this.randomHillGenerator();
@@ -54,7 +55,9 @@ PlayGame.prototype.scoreChecker = function() {
             this.game.goats[i].king = false;
         }
     }
-    if (highestScore.score != 0) { //Avoids start of game deciding who is king
+    if (typeof highestScore.score !== 'undefined'
+                && typeof highestScore.score !== 'NaN'
+                && highestScore.score !== 0) { //Avoids start of game deciding who is king
         highestScore.king = true;
     }
 }
@@ -87,6 +90,7 @@ PlayGame.prototype.randomHillGenerator = function() {
     }
 };
 
+// TODO: handle transition logic here
 PlayGame.prototype.draw = function (ctx) {
     this.drawPlayButton(ctx);
     Entity.prototype.draw.call(this, ctx);

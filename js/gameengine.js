@@ -64,7 +64,7 @@ GameEngine.prototype.startInput = function () {
     this.ctx.canvas.addEventListener("keydown", function (e) {
         if (e.which === 75) {
             that.kKey ^= true;
-            console.log("king turned " + (that.kKey ? "on" : "off"));
+            //console.log("king turned " + (that.kKey ? "on" : "off"));
         }
         if (e.which === 70) {
             that.enableDebug ^= true; // 'F' key to toggle debug
@@ -122,7 +122,6 @@ GameEngine.prototype.addEntity = function (entity) {
 
         // 3) *Note: Goat entities already persist in game engine
     } else if (entity instanceof Goat) {
-        this.goats.push(entity);
         // Add key listeners associated with goat
         // "closure" is needed so listener knows what element to refer to
         (function(goat, gameEngine) {
@@ -137,7 +136,9 @@ GameEngine.prototype.addEntity = function (entity) {
                 if (e.which === goat.controls.left) goat.leftKey = false;
             });
         })(entity, this);
+        this.goats.push(entity);
         this.entities.push(entity);
+        this.collidables.push(entity);
     } else if (entity instanceof PlayGame) {
         this.playGame = entity; // keep this field in game engine for now, may take it out later...
         this.entities.push(entity);

@@ -4,20 +4,23 @@
 var ROUND_TIME_LIMIT = 300; // 5 minutes
 var ROUNDS_PLAYED = 0;
 
-function PlayGame(game, x, y) {
+function PlayGame(game, btnX, btnY) {
     this.game = game;
-    this.x = x;
-    this.y = y;
-    //this.game.roundNumber.innerHTML = "Round #" + (ROUNDS_PLAYED + 1); // don't think this is necessary ~Reid
+    this.btnX = btnX;
+    this.btnY = btnY;
+    this.isInTransitionScene = true;
+    this.sceneSelector = null;
+    this.scene = null;
+    this.roundRunning = false; // TODO: need to set this to true upon Canvas click
 
-    Entity.call(this, game, x, y, 0, 0);
+    Entity.call(this, game, 0, 0, 0, 0);
 }
 
 PlayGame.prototype = new Entity();
 PlayGame.prototype.constructor = PlayGame;
 
 PlayGame.prototype.reset = function () {
-    this.game.running = false;
+    this.roundRunning = false;
     ROUNDS_PLAYED++; // a game has been played previously because the game is getting reset
     this.game.roundNumber.innerHTML = "Round #" + (ROUNDS_PLAYED + 1);
 };
@@ -29,16 +32,24 @@ PlayGame.prototype.update = function () {
 };
 
 PlayGame.prototype.draw = function (ctx) {
+    this.drawPlayButton(ctx);
+    Entity.prototype.draw.call(this, ctx);
+};
+
+PlayGame.prototype.drawPlayButton = function (ctx) {
     ctx.fillStyle = "purple";
     if (!this.game.running) {
         ctx.font = "24pt Impact";
         if (ROUNDS_PLAYED === 0) {
-            ctx.fillText("Play OMG!?!", this.x, this.y);
+            ctx.fillText("Play OMG!?!", this.btnX, this.btnY);
         } else {
-            ctx.fillText("Play OMG Again?!?", this.x, this.y);
+            ctx.fillText("Play OMG Again?!?", this.btnX, this.btnY);
         }
     }
-    Entity.prototype.draw.call(this, ctx);
+};
+
+PlayGame.prototype.initFirstScene = function () {
+    this.scene = this.sceneSelector.scenes[0];
 };
 
 PlayGame.prototype.toString = function () {

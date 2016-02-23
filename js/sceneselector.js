@@ -1,7 +1,6 @@
-function Scene(platforms, background, goats) {
+function Scene(platforms, background) {
     this.platforms = platforms;
     this.background = background;
-    this.goats = goats;
 }
 
 Scene.prototype = new Entity();
@@ -25,10 +24,6 @@ SceneSelector.prototype.constructor = SceneSelector;
 
 SceneSelector.prototype.addScene = function(scene) {
     this.scenes.push(scene);
-};
-
-SceneSelector.prototype.getFirstScene = function() {
-    return this.scenes[0];
 };
 
 SceneSelector.prototype.getNextScene = function() {

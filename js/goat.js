@@ -7,6 +7,7 @@ function maxSpeedEnforcement(speed, maxSpeed) {
 }
 
 function Goat(game, playerNumber, controls, sprite) {
+    this.game = game;
     this.playerNumber = playerNumber;
     this.controls = controls;
 
@@ -25,7 +26,7 @@ function Goat(game, playerNumber, controls, sprite) {
     this.velocity = {x: 0, y: 0};
     this.speed = 5;
     this.jumpHeight = 100;
-    this.platform = null;
+    this.platform = this.game.platforms[0]; // start Goats out on ground platform
     this.scale = 0.65;
     this.score = 0;
 
@@ -122,7 +123,7 @@ Goat.prototype.reset = function () {
     this.x = 0;
     this.y = this.ground;
 
-    this.platform = this.game.platforms[0];
+    this.platform = this.game.platforms[0]; // start Goats out on ground platform
 
     //this.boundingbox = new BoundingBox(this.x, this.y, this.standAnimation.frameWidth, this.standAnimation.frameHeight);
 };

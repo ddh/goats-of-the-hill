@@ -37,7 +37,7 @@ function Goat(game, playerNumber, controls, sprite) {
     // Jump physics
     this.velocity = {x: 0, y: 0};
     this.gravity = 0.5;
-    this.terminalVelocity = 8;  // Max falling velocity
+    this.terminalVelocity = 12;  // Max falling velocity
     this.maxVelocityY = -6.0;   // Max jump velocity
     this.airTime = 0;           // How long the jump key is held
     this.maxAirTime = 0.3;      // Max time the jump key can be held for variable jumping
@@ -84,8 +84,8 @@ function Goat(game, playerNumber, controls, sprite) {
     this.leftChargeAnimation = new Animation(leftAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
     this.rightChargeAnimation = new Animation(rightAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
 
-    this.leftAttackAnimation = new Animation(leftAsset, 1974, 0, 94, 90, 0.1, 4, true, false);
-    this.rightAttackAnimation = new Animation(rightAsset, 1974, 0, 94, 90, 0.1, 4, true, false);
+    this.attackLeftAnimation = new Animation(leftAsset, 1974, 0, 94, 90, 0.1, 4, true, false);
+    this.attackRightAnimation = new Animation(rightAsset, 1974, 0, 94, 90, 0.1, 4, true, false);
 
     this.leftHurtAnimation = new Animation(leftAsset, 2068, 0, 94, 90, 0.1, 4, false, false);
     this.rightHurtAnimation = new Animation(rightAsset, 2068, 0, 94, 90, 0.1, 4, false, false);
@@ -323,7 +323,7 @@ Goat.prototype.update = function () {
      */
 
     // When attack key is held down, charge.
-    if (this.attackKey) {
+    if (this.attackKey && !this.attacking) {
         this.charging = true;
         this.attacking = false;
         this.chargeTime += this.game.clockTick;
@@ -361,18 +361,20 @@ Goat.prototype.update = function () {
             this.chargeTime = 0;
             this.chargeDecay = false;
             this.attacking = true;
-
-
         }
     }
 
     // The attack
     if (this.attacking) {
+        this.running = false;
 
         // Determine position during attack
         if (this.right) this.x += this.attackVelocity * this.chargePower / 4;
         if (!this.right) this.x -= this.attackVelocity * this.chargePower / 4;
         this.attackTimeCounter++;
+
+        if (this.x < 0) this.x = 0;
+        if (this.x + this.width > this.game.surfaceWidth) this.x = this.game.surfaceWidth - this.width;
 
         // When the attack is finished:
         if (this.attackTimeCounter > this.attackTimeMax) {
@@ -452,7 +454,12 @@ Goat.prototype.draw = function (ctx) {
             this.runRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else
             this.runLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
-
+    } 
+    else if (this.attacking) {
+        if (this.right)
+            this.attackRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+        else
+            this.attackLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
     } else {
         if (this.right)
             this.standRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);

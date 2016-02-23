@@ -84,8 +84,8 @@ function Goat(game, playerNumber, controls, sprite) {
     this.leftChargeAnimation = new Animation(leftAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
     this.rightChargeAnimation = new Animation(rightAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
 
-    this.attackLeftAnimation = new Animation(leftAsset, 1974, 0, 94, 90, 0.1, 4, true, false);
-    this.attackRightAnimation = new Animation(rightAsset, 1974, 0, 94, 90, 0.1, 4, true, false);
+    this.attackLeftAnimation = new Animation(leftAsset, 1974, 0, 94, 90, 0.1, 1, true, false);
+    this.attackRightAnimation = new Animation(rightAsset, 1974, 0, 94, 90, 0.1, 1, true, false);
 
     this.leftHurtAnimation = new Animation(leftAsset, 2068, 0, 94, 90, 0.1, 4, false, false);
     this.rightHurtAnimation = new Animation(rightAsset, 2068, 0, 94, 90, 0.1, 4, false, false);
@@ -435,13 +435,12 @@ Goat.prototype.draw = function (ctx) {
         }
     }
 
-    if (this.jumping) {
 
+    if (this.attacking) {
         if (this.right)
-            this.jumpRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+            this.attackRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else
-            this.jumpLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
-        this.fallLeftAnimation.elapsedTime = this.fallRightAnimation.elapsedTime = 0;
+            this.attackLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
     }
     else if (this.falling) {
         if (this.right)
@@ -455,12 +454,13 @@ Goat.prototype.draw = function (ctx) {
             this.runRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else
             this.runLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
-    } 
-    else if (this.attacking) {
+    }
+    else if (this.jumping) {
         if (this.right)
-            this.attackRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+            this.jumpRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else
-            this.attackLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+            this.jumpLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+        this.fallLeftAnimation.elapsedTime = this.fallRightAnimation.elapsedTime = 0;
     } else {
         if (this.right)
             this.standRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);

@@ -81,7 +81,7 @@ var makeSceneSelector = function (background, gameEngine) {
     //platforms.push(makePlatform(gameEngine, 'm', 325, 130, 'diagonal', 'hay', false));
     /* row 5 */
     //platforms.push(makePlatform(gameEngine, 's', 100, 400, 'horizontal', 'hay', false));
-    platforms.push(makePlatform(gameEngine, 's', 400, 200, 'horizontal', 'hay', false));
+    platforms.push(makePlatform(gameEngine, 's', 400, 220, 'horizontal', 'hay', false));
     /* row 6 */
     //platforms.push(makePlatform(gameEngine, 's', 200, 200, 'bouncing', 'hay', false));
 

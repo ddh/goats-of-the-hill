@@ -31,8 +31,30 @@ PlayGame.prototype.update = function () {
     // TODO: need to change how we're keeping track of round time vs. total game time
     this.game.running = (this.game.click && this.game.timer.gameTime < ROUND_TIME_LIMIT);
     Entity.prototype.update.call(this);
+    this.scoreChecker();
     this.randomHillGenerator();
 };
+
+// Checks which goat is the leader and crowns them.
+PlayGame.prototype.scoreChecker = function() {
+    var highestScore = this.game.goats[0]; //sets a goat as king
+    //checks which goat has the highest score
+    for (var i = 1, len = this.game.goats.length; i < len; i++) { 
+        var goat = this.game.goats[i];
+        if (highestScore.score < goat.score) {
+            highestScore = goat;
+        }
+    }
+    //ensures other goats don't have the crown 
+    for (var i = 0, len = this.game.goats.length; i < len; i++) {
+        if (highestScore != this.game.goats[i]) {
+            this.game.goats[i].king = false;
+        }
+    }
+    if (highestScore.score != 0) { //Avoids start of game deciding who is king
+        highestScore.king = true;
+    }
+}
 
 //Helper function for the hill
 PlayGame.prototype.randomHillGenerator = function() {

@@ -137,6 +137,7 @@ Goat.prototype.reset = function () {
     this.attacking = false;
     this.stunned = false;
     this.score = 0;
+    this.king = false;
 
     this.x = 0;
     this.y = this.game.platforms[0].y - this.height;
@@ -398,12 +399,12 @@ Goat.prototype.update = function () {
      *              Scoring                 *
      ****************************************/
     // Just to place a crown manually on top of player 1's goat.
-    if (this.playerNumber === 0)
-        this.king = this.game.kKey;
+    // if (this.playerNumber === 0)
+    //     this.king = this.game.kKey;
 
     // Increments goat's score count:  
     if (this.entity && this.entity.isHill && !isMounted(this.game.goats)) {
-        for (var i = 0; i < this.game.goats.length; i++) {
+        for (var i = 0, len = this.game.goats.length; i < len; i++) {
             var goat = this.game.goats[i];
             if (this.entity != goat.entity) {
                 this.score += 1;
@@ -413,7 +414,7 @@ Goat.prototype.update = function () {
     }
     // helper function to prevent goat on goat on hill from gaining points
     function isMounted(goats) {
-        for (var i = 0; i < goats.length; i++) {
+        for (var i = 0, len = goats.length; i < len; i++) {
             var goat = goats[i];
             if (goat.entity instanceof Goat) return true;
         }

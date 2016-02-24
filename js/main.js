@@ -92,6 +92,12 @@ var makeSceneSelector = function (background, gameEngine) {
     var playerTwoControls = {jump: 87, left: 65, right: 68, attack: 83, run: 16}; // W,A,D,S,shift
     goats.push(new Goat(gameEngine, 1, playerTwoControls, "green-goat"));
 
+    var playerThreeControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0}; // W,A,D,S,shift
+    goats.push(new Goat(gameEngine, 2, playerThreeControls, "red-goat"));
+
+    var playerFourControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0}; // W,A,D,S,shift
+    goats.push(new Goat(gameEngine, 3, playerFourControls, "yellow-goat"));
+
     scenes.push(new Scene(platforms, background, goats));
 
     /* === /END FOR SCENE #1 ONLY === */

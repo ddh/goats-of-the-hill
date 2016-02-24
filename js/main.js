@@ -86,10 +86,10 @@ var makeSceneSelector = function (background, gameEngine) {
     //platforms.push(makePlatform(gameEngine, 's', 200, 200, 'bouncing', 'hay', false));
 
     /* === Goats === */
-    var playerOneControls = {jump: 38, left: 37, right: 39, attack: 40};
+    var playerOneControls = {jump: 38, left: 37, right: 39, attack: 40, run: 18}; // ↑,←,→,↓,alt
     goats.push(new Goat(gameEngine, 0, playerOneControls, "blue-goat"));
 
-    var playerTwoControls = {jump: 87, left: 65, right: 68, attack: 83};
+    var playerTwoControls = {jump: 87, left: 65, right: 68, attack: 83, run: 16}; // W,A,D,S,shift
     goats.push(new Goat(gameEngine, 1, playerTwoControls, "green-goat"));
 
     scenes.push(new Scene(platforms, background, goats));

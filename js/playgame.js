@@ -1,7 +1,7 @@
 // This code is based on Chris Marriott's Unicorn game found here:
 // https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 
-var ROUND_TIME_LIMIT = 300; // 5 minutes
+var ROUND_TIME_LIMIT = 180; // 3 minutes
 var ROUNDS_PLAYED = 0;
 
 function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
@@ -12,7 +12,7 @@ function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.isInTransitionScene = true;
     this.randomizeHill = randomizeHill;
     this.randomHillSpeed = randomHillSpeed;
-    this.RandomHillClockTickTracker = 0;
+    this.randomHillClockTickTracker = 0;
     this.sceneSelector = null;
     this.scene = null;
     this.roundRunning = false; // TODO: need to set this to true upon Canvas click
@@ -24,6 +24,7 @@ function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.pOneScoreDiv.innerHTML = "0";
     this.pTwoScoreDiv.innerHTML = "0";
     this.roundTimerDiv.innerHTML = "3:00";
+    this.secondsLeft = 59;
 
     Entity.call(this, game, 0, 0, 0, 0);
 }
@@ -34,20 +35,21 @@ PlayGame.prototype.constructor = PlayGame;
 PlayGame.prototype.reset = function () {
     this.roundRunning = false;
     ROUNDS_PLAYED++; // a game has been played previously because the game is getting reset
-    this.roundNumber.innerHTML = "Round #" + (ROUNDS_PLAYED + 1);
-    this.RandomHillClockTickTracker = 0;
+    this.roundNumberDiv.innerHTML = "Round #" + (ROUNDS_PLAYED + 1);
+    this.randomHillClockTickTracker = 0;
     this.pOneScoreDiv.innerHTML = "0";
     this.pTwoScoreDiv.innerHTML = "0";
 };
 
 // TODO: handle transition logic here
 PlayGame.prototype.update = function () {
-    // TODO: need to change how we're keeping track of round time vs. total game time
-    this.game.roundRunning = (this.game.click && this.game.timer.gameTime < ROUND_TIME_LIMIT);
     Entity.prototype.update.call(this);
+
+    this.roundRunning = (this.game.click && this.game.timer.roundTime <= ROUND_TIME_LIMIT);
     this.scoreChecker();
     this.randomHillGenerator();
     this.updateScores();
+    this.updateTimer();
 };
 
 // Checks which goat is the leader and crowns them.
@@ -77,9 +79,9 @@ PlayGame.prototype.scoreChecker = function() {
 PlayGame.prototype.randomHillGenerator = function() {
     if (this.hill) { //there is a hill
         if (this.randomizeHill) { // It's a random hill style 
-            this.RandomHillClockTickTracker += this.game.clockTick;
-            if (this.RandomHillClockTickTracker >= this.randomHillSpeed) {
-                this.RandomHillClockTickTracker = 0;
+            this.randomHillClockTickTracker += this.game.clockTick;
+            if (this.randomHillClockTickTracker >= this.randomHillSpeed) {
+                this.randomHillClockTickTracker = 0;
                 var len = this.game.platforms.length;
                 for (var i = 1; i < len; i++) { // finds the current hill and disables it.
                     if (this.game.platforms[i].isHill) {
@@ -132,6 +134,30 @@ PlayGame.prototype.updateScores = function () {
             this.pTwoScoreDiv.innerHTML = score.toString();
         }
     }
+};
+
+PlayGame.prototype.updateTimer = function () {
+    var time = "";
+
+    // minutes
+    var mins = Math.floor((ROUND_TIME_LIMIT - this.game.timer.roundTime) / 60);
+    time += mins.toString() + ":";
+
+    // seconds
+    if (this.game.timer.secondJustPassed) {
+        this.secondsLeft--;
+        if (this.secondsLeft < 0) this.secondsLeft = 59;
+    }
+    if (this.secondsLeft <= 9) {
+        time += "0";
+    }
+    time += this.secondsLeft.toString() + ".";
+
+    // milliseconds
+    var millis = Math.round(((ROUND_TIME_LIMIT - this.game.timer.roundTime) % 60) * 1000) / 1000;
+    time += millis.toString();
+
+    this.roundTimerDiv.innerHTML = time;
 };
 
 PlayGame.prototype.toString = function () {

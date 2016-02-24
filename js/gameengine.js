@@ -214,6 +214,9 @@ function Timer() {
     this.gameTime = 0;
     this.maxStep = 0.05;
     this.wallLastTimestamp = 0;
+    this.roundTime = 0;
+    this.secondBucket = 0;
+    this.secondJustPassed = false;
 }
 
 Timer.prototype.tick = function () {
@@ -223,5 +226,16 @@ Timer.prototype.tick = function () {
 
     var gameDelta = Math.min(wallDelta, this.maxStep);
     this.gameTime += gameDelta;
+    this.roundTime += gameDelta;
+
+    // handles timing for each round
+    this.secondBucket += gameDelta;
+    if (this.secondBucket >= 1) {
+        this.secondBucket -= 1;
+        this.secondJustPassed = true;
+    } else {
+        this.secondJustPassed = false;
+    }
+
     return gameDelta;
 };

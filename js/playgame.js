@@ -23,8 +23,9 @@ function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.roundNumberDiv.innerHTML = "Round #1";
     this.pOneScoreDiv.innerHTML = "0";
     this.pTwoScoreDiv.innerHTML = "0";
-    this.roundTimerDiv.innerHTML = "3:00";
-    this.secondsLeft = 59;
+    //this.roundTimerDiv.innerHTML = "3:00";
+
+    this.startTimer(ROUND_TIME_LIMIT, this.roundTimerDiv);
 
     Entity.call(this, game, 0, 0, 0, 0);
 }
@@ -49,7 +50,6 @@ PlayGame.prototype.update = function () {
     this.scoreChecker();
     this.randomHillGenerator();
     this.updateScores();
-    this.updateTimer();
 };
 
 // Checks which goat is the leader and crowns them.
@@ -136,28 +136,31 @@ PlayGame.prototype.updateScores = function () {
     }
 };
 
-PlayGame.prototype.updateTimer = function () {
-    var time = "";
+// Taken from Stackflow: http://stackoverflow.com/questions/29139357/javascript-countdown-timer-will-not-display-twice
+PlayGame.prototype.startTimer = function (duration, display) {
+    var start = Date.now(),
+        diff,
+        minutes,
+        seconds;
 
-    // minutes
-    var mins = Math.floor((ROUND_TIME_LIMIT - this.game.timer.roundTime) / 60);
-    time += mins.toString() + ":";
+    function timer() {
+        diff = duration - (((Date.now() - start) / 1000) | 0);
 
-    // seconds
-    if (this.game.timer.secondJustPassed) {
-        this.secondsLeft--;
-        if (this.secondsLeft < 0) this.secondsLeft = 59;
+        minutes = (diff / 60) | 0;
+        seconds = (diff % 60) | 0;
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.innerHTML = minutes + ":" + seconds;
+
+        if (diff <= 0) {
+            start = Date.now() + 1000;
+        }
     }
-    if (this.secondsLeft <= 9) {
-        time += "0";
-    }
-    time += this.secondsLeft.toString() + ".";
 
-    // milliseconds
-    var millis = Math.round(((ROUND_TIME_LIMIT - this.game.timer.roundTime) % 60) * 1000) / 1000;
-    time += millis.toString();
-
-    this.roundTimerDiv.innerHTML = time;
+    timer();
+    setInterval(timer, 1000);
 };
 
 PlayGame.prototype.toString = function () {

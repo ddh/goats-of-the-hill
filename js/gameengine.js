@@ -228,14 +228,5 @@ Timer.prototype.tick = function () {
     this.gameTime += gameDelta;
     this.roundTime += gameDelta;
 
-    // handles timing for each round
-    this.secondBucket += gameDelta;
-    if (this.secondBucket >= 1) {
-        this.secondBucket -= 1;
-        this.secondJustPassed = true;
-    } else {
-        this.secondJustPassed = false;
-    }
-
     return gameDelta;
 };

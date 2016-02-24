@@ -16,6 +16,10 @@ function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.sceneSelector = null;
     this.scene = null;
     this.roundRunning = false; // TODO: need to set this to true upon Canvas click
+    this.pOneScoreDiv = document.getElementById("playerOneScore");
+    this.pTwoScoreDiv = document.getElementById("playerTwoScore");
+    this.pOneScoreDiv.innerHTML = "0";
+    this.pTwoScoreDiv.innerHTML = "0";
 
     Entity.call(this, game, 0, 0, 0, 0);
 }
@@ -26,8 +30,10 @@ PlayGame.prototype.constructor = PlayGame;
 PlayGame.prototype.reset = function () {
     this.roundRunning = false;
     ROUNDS_PLAYED++; // a game has been played previously because the game is getting reset
-    this.game.roundNumber.innerHTML = "Round #" + (ROUNDS_PLAYED + 1);
+    this.roundNumber.innerHTML = "Round #" + (ROUNDS_PLAYED + 1);
     this.RandomHillClockTickTracker = 0;
+    this.pOneScoreDiv.innerHTML = "0";
+    this.pTwoScoreDiv.innerHTML = "0";
 };
 
 // TODO: handle transition logic here
@@ -37,6 +43,7 @@ PlayGame.prototype.update = function () {
     Entity.prototype.update.call(this);
     this.scoreChecker();
     this.randomHillGenerator();
+    this.updateScores();
 };
 
 // Checks which goat is the leader and crowns them.
@@ -60,7 +67,7 @@ PlayGame.prototype.scoreChecker = function() {
                 && highestScore.score !== 0) { //Avoids start of game deciding who is king
         highestScore.king = true;
     }
-}
+};
 
 //Helper function for the hill
 PlayGame.prototype.randomHillGenerator = function() {
@@ -110,6 +117,17 @@ PlayGame.prototype.drawPlayButton = function (ctx) {
 
 PlayGame.prototype.initFirstScene = function () {
     this.scene = this.sceneSelector.scenes[0];
+};
+
+PlayGame.prototype.updateScores = function () {
+    for (var i = 0, len = this.game.goats.length; i < len; i++) {
+        var score = this.game.goats[i].score;
+        if (i === 0) { // player one
+            this.pOneScoreDiv.innerHTML = score.toString();
+        } else if (i === 1) { // player two
+            this.pTwoScoreDiv.innerHTML = score.toString();
+        }
+    }
 };
 
 PlayGame.prototype.toString = function () {

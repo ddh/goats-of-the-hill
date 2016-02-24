@@ -39,6 +39,7 @@ ASSET_MANAGER.downloadAll(function () {
     /* === Game Logistics === */
     var pg = new PlayGame(gameEngine, 320, 250, true, true, 8);
     pg.roundNumber = document.getElementById('roundNumber');
+    pg.roundNumber.innerHTML = "Round #1";
     pg.sceneSelector = makeSceneSelector(gameEngine); // also initializes Scenes
     pg.initFirstScene();
     gameEngine.addEntity(pg);

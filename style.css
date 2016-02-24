@@ -1,21 +1,22 @@
-.uwTheme {
+.textLabels {
     position: absolute;
-    top: 50px;
-    height: 30px;
     background-color: rgba(0,0,0,0);
     font-family: Impact, Charcoal, sans-serif;
     font-size: 24pt;
+    height: 30px;
+}
+
+.uwTheme {
+    top: 90px;
     color: purple;
 }
 
 #gameTitle {
     left: 250px;
-    width: 400px;
 }
 
 #roundNumber {
     left: 900px;
-    width: 200px;
 }
 
 #gameWorldContainer {
@@ -27,3 +28,16 @@
     border: 1px solid white;
     display: inline;
 }
+
+#playerOneScore {
+    top: 630px;
+    left: 420px;
+    color: DarkSlateBlue;
+}
+
+#playerTwoScore {
+    top: 630px;
+    left: 800px;
+    color: LimeGreen;
+}
+

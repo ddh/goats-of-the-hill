@@ -95,6 +95,7 @@ function Goat(game, playerNumber, controls, sprite) {
 
 
     this.crownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/smallest-king-crown.png"), 0, 0, 40, 32, 0.1, 1, true, false);
+    this.chargingAnimation = new Animation(ASSET_MANAGER.getAsset("./img/auras.png"), -15, 125, 97, 100, 0.1, 7, true, false);
 
     // Audio:
     this.soundFX = new Howl({
@@ -433,6 +434,10 @@ Goat.prototype.draw = function (ctx) {
         } else { // draw crown above left-turned head
             this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + this.scale * 13, this.y - this.scale * 20, this.scale);
         }
+    }
+    // For the charging anim
+    if (this.charging) {
+        this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 6.5, this.y-20, this.scale+ .2);
     }
 
     if (this.jumping) {

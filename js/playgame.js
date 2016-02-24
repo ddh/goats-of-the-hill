@@ -18,8 +18,12 @@ function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.roundRunning = false; // TODO: need to set this to true upon Canvas click
     this.pOneScoreDiv = document.getElementById("playerOneScore");
     this.pTwoScoreDiv = document.getElementById("playerTwoScore");
+    this.roundNumberDiv = document.getElementById('roundNumber');
+    this.roundTimerDiv = document.getElementById('roundTimer');
+    this.roundNumberDiv.innerHTML = "Round #1";
     this.pOneScoreDiv.innerHTML = "0";
     this.pTwoScoreDiv.innerHTML = "0";
+    this.roundTimerDiv.innerHTML = "3:00";
 
     Entity.call(this, game, 0, 0, 0, 0);
 }

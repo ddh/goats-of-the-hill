@@ -435,10 +435,7 @@ Goat.prototype.draw = function (ctx) {
             this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + this.scale * 13, this.y - this.scale * 20, this.scale);
         }
     }
-    // For the charging anim
-    if (this.charging) {
-        this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 6.5, this.y-20, this.scale+ .2);
-    }
+    
 
     if (this.jumping) {
 
@@ -473,6 +470,14 @@ Goat.prototype.draw = function (ctx) {
             this.standLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
     }
 
+    // For the charging anim
+    if (this.charging) {
+        if(this.right)
+            this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 1, this.y-20, this.scale+ .2);
+        else
+            this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 12, this.y-20, this.scale+ .2);
+    }
+    
     Entity.prototype.draw.call(this, ctx);
 };
 

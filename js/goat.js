@@ -43,12 +43,12 @@ function Goat(game, playerNumber, controls, sprite) {
     // Jump physics
     this.velocity = {x: 0, y: 0};
     this.gravity = 0.5;
-    this.terminalVelocity = 12;  // Max falling velocity
-    this.maxVelocityY = -6.0;   // Max jump velocity
+    this.terminalVelocity = 12; // Max falling velocity
+    this.maxVelocityY = -6.0;   // Max jump velocity (more negative, higher jump)
     this.airTime = 0;           // How long the jump key is held
     this.maxAirTime = 0.3;      // Max time the jump key can be held for variable jumping
-    this.doubleJump = true;
-    this.canDoubleJump = true;
+    this.jumps = 0;             // The number of times goat has jumped before landing
+    this.maxJumps = 1;          // Maximum number of jumps allowed (2=double-jumping, 3=triple, etc)
 
     // Attack physics
     this.chargeTime = 0;        // Held charge time
@@ -221,7 +221,11 @@ Goat.prototype.update = function () {
 
     if (!this.attacking) {
         // Update Jump state:
-        if (this.jumpKey && !this.jumping && !this.falling) {
+        if (this.jumpKey && !this.jumping && this.jumps < this.maxJumps) {
+            this.jumps++;
+            this.airTime = 0;
+            this.velocity.y = 0;
+            this.falling = false;
             this.jumping = true;
             this.ramping = true; // ramp up velocity instead of immediate impulse
             this.entity = null;
@@ -273,7 +277,7 @@ Goat.prototype.update = function () {
                 console.log(this + "'s final fall velocity was " + this.velocity.y);
                 this.falling = false;
                 this.airTime = 0;
-                this.canDoubleJump = true;
+                this.jumps = 0;
                 this.velocity.y = 0;
                 this.y = this.entity ? this.entity.boundingBox.top - this.boundingBox.height : this.base;
             }

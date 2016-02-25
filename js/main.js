@@ -39,11 +39,11 @@ ASSET_MANAGER.downloadAll(function () {
     }).play();
 
     /* === Game Logistics === */
-    var pg = new PlayGame(gameEngine, 320, 250, true, true, 8);
+    var pg = new PlayGame(gameEngine, 320, 300, true, true, 8);
     pg.sceneSelector = makeSceneSelector(gameEngine); // also initializes Scenes
     pg.initFirstScene();
-    gameEngine.addEntity(pg);
     gameEngine.loadScene(pg.scene);
+    gameEngine.addEntity(pg);
 
     /* === Goats === */
     var playerOneControls = {jump: 38, left: 37, right: 39, attack: 40, run: 18}; // ↑,←,→,↓,alt
@@ -66,7 +66,7 @@ var makeSceneSelector = function(gameEngine) {
     var scenes = [];
 
     scenes.push(createFirstScene(gameEngine));
-    //scenes.push(createSecondScene(gameEngine)); // first round
+    scenes.push(createSecondScene(gameEngine)); // first round
 
     return new SceneSelector(scenes);
 };

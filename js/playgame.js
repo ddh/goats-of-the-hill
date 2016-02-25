@@ -22,13 +22,10 @@ function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.pFourScoreDiv = document.getElementById("playerFourScore");
     this.roundNumberDiv = document.getElementById('roundNumber');
     this.roundTimerDiv = document.getElementById('roundTimer');
-    this.roundNumberDiv.innerHTML = "Round #1";
-    this.pOneScoreDiv.innerHTML = "0";
-    this.pTwoScoreDiv.innerHTML = "0";
-    this.pThreeScoreDiv.innerHTML = "0";
-    this.pFourScoreDiv.innerHTML = "0";
+    this.transitionTitleDiv = document.getElementById('transitionTitle');
+    this.gameTitleDuringRoundDiv = document.getElementById('gameTitleDuringRound');
 
-    this.startTimer(ROUND_TIME_LIMIT, this.roundTimerDiv);
+    this.initDivs();
 
     Entity.call(this, game, 0, 0, 0, 0);
 }
@@ -39,20 +36,21 @@ PlayGame.prototype.constructor = PlayGame;
 PlayGame.prototype.reset = function () {
     this.roundRunning = false;
     ROUNDS_PLAYED++; // a game has been played previously because the game is getting reset
-    this.roundNumberDiv.innerHTML = "Round #" + (ROUNDS_PLAYED + 1);
     this.randomHillClockTickTracker = 0;
-    this.pOneScoreDiv.innerHTML = "0";
-    this.pTwoScoreDiv.innerHTML = "0";
+    this.initDivs();
 };
 
-// TODO: handle transition logic here
 PlayGame.prototype.update = function () {
     Entity.prototype.update.call(this);
 
-    this.roundRunning = (this.game.click && this.game.timer.roundTime <= ROUND_TIME_LIMIT);
-    this.scoreChecker();
-    this.randomHillGenerator();
-    this.updateScores();
+    if (this.game.click) {
+        this.startTimer();
+        this.scoreChecker();
+        this.randomHillGenerator();
+        this.updateScores();
+    }
+
+    this.roundRunning = this.game.timer.roundTime <= ROUND_TIME_LIMIT;
 };
 
 // Checks which goat is the leader and crowns them.
@@ -107,9 +105,8 @@ PlayGame.prototype.randomHillGenerator = function() {
     }
 };
 
-// TODO: handle transition logic here
 PlayGame.prototype.draw = function (ctx) {
-    this.drawPlayButton(ctx);
+    if (this.isInTransitionScene) this.drawPlayButton(ctx);
     Entity.prototype.draw.call(this, ctx);
 };
 
@@ -118,10 +115,33 @@ PlayGame.prototype.drawPlayButton = function (ctx) {
     if (!this.game.running) {
         ctx.font = "24pt Impact";
         if (ROUNDS_PLAYED === 0) {
-            ctx.fillText("Play OMG!?!", this.btnX, this.btnY);
+            ctx.fillText("Click to play!", this.btnX, this.btnY);
         } else {
-            ctx.fillText("Play OMG Again?!?", this.btnX, this.btnY);
+            ctx.fillText("Play again?", this.btnX, this.btnY);
         }
+    }
+};
+
+PlayGame.prototype.initDivs = function () {
+    if (this.isInTransitionScene) {
+        this.roundNumberDiv.innerHTML = "";
+        this.pOneScoreDiv.innerHTML = "";
+        this.pTwoScoreDiv.innerHTML = "";
+        this.pThreeScoreDiv.innerHTML = "";
+        this.pFourScoreDiv.innerHTML = "";
+        this.gameTitleDuringRoundDiv.innerHTML = "";
+        if (ROUNDS_PLAYED === 0) {
+            this.transitionTitleDiv.innerHTML = "Oh My Goat!";
+        } else {
+            this.transitionTitleDiv.innerHTML = "";
+        }
+    } else {
+        this.roundNumberDiv.innerHTML = "Round #" + (ROUNDS_PLAYED + 1);
+        this.pOneScoreDiv.innerHTML = "0";
+        this.pTwoScoreDiv.innerHTML = "0";
+        this.pThreeScoreDiv.innerHTML = "0";
+        this.pFourScoreDiv.innerHTML = "0";
+        this.gameTitleDuringRoundDiv.innerHTML = "Oh My Goat!";
     }
 };
 

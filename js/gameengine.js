@@ -187,9 +187,11 @@ GameEngine.prototype.draw = function () {
     this.ctx.save();
 
     // 3. Draw each entity onto canvas
-    for (var i = 0; i < this.entities.length; i++) {
-        this.entities[i].draw(this.ctx);
-        //console.log(this.entities[i].toString() + " drawn");
+    for (var i = 0, len = this.entities.length; i < len; i++) {
+        var ent = this.entities[i];
+        if (this.playGame.isInTransitionScene && (ent instanceof Background || ent instanceof PlayGame)) {
+            this.entities[i].draw(this.ctx);
+        }
     }
     this.ctx.restore();
 };

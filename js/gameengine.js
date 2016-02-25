@@ -72,7 +72,7 @@ GameEngine.prototype.loadScene = function (scene) {
     this.addEntity(scene);
 };
 
-GameEngine.prototype.prepForRound = function () {
+GameEngine.prototype.prepForScene = function () {
     this.platforms = [];
     this.collidables = [];
     for (var i = 0, len = this.entities.length; i < len; i++) {
@@ -184,7 +184,7 @@ GameEngine.prototype.addEntity = function (entity) {
         this.playGame = entity; // keep this field in game engine for now, may take it out later...
         this.entities.push(entity);
     }
-    console.log('added ' + entity.toString());
+    if (typeof entity !== 'undefined') console.log('added ' + entity.toString());
 };
 
 GameEngine.prototype.draw = function () {
@@ -198,10 +198,7 @@ GameEngine.prototype.draw = function () {
     // 3. Draw each entity onto canvas
     for (var i = 0, len = this.entities.length; i < len; i++) {
         var ent = this.entities[i];
-        // TODO: this logic is messy, clean it up!
-        if (this.playGame.roundRunning && ent instanceof Goat) {
-            this.entities[i].draw(this.ctx);
-        } else if (this.playGame.isInTransitionScene) {
+        if (this.playGame.isInTransitionScene) {
             if (ent instanceof Background || ent instanceof PlayGame) this.entities[i].draw(this.ctx);
         } else {
             this.entities[i].draw(this.ctx);
@@ -211,35 +208,37 @@ GameEngine.prototype.draw = function () {
 };
 
 GameEngine.prototype.update = function () {
-    var entitiesCount = this.entities.length;
+    if (typeof this.entities !== 'undefined') {
+        var entitiesCount = this.entities.length;
 
-    // Cycle through the list of entities in GameEngine.
-    for (var i = 0; i < entitiesCount; i++) {
-        var entity = this.entities[i];
+        // Cycle through the list of entities in GameEngine.
+        for (var i = 0; i < entitiesCount; i++) {
+            var entity = this.entities[i];
 
-        // Only update those not flagged for removal, for optimization
-        if (!entity.removeFromWorld) {
-            entity.update();
-            //console.log(entity.toString() + " updated");
+            // Only update those not flagged for removal, for optimization
+            if (!entity.removeFromWorld) {
+                entity.update();
+                //console.log(entity.toString() + " updated");
+            }
         }
-    }
 
-    // Removal of flagged entities
-    for (var j = this.entities.length - 1; j >= 0; --j) {
-        if (this.entities[j].removeFromWorld) {
-            this.entities.splice(j, 1);
+        // Removal of flagged entities
+        for (var j = this.entities.length - 1; j >= 0; --j) {
+            if (this.entities[j].removeFromWorld) {
+                this.entities.splice(j, 1);
+            }
         }
-    }
 
-    // Poll for gamepads
-    for (var i = 0; i < this.goats.length; i++) {
-        var gamepad = navigator.getGamepads()[i];
-        if (gamepad) {
-            this.goats[i].jumpKey = buttonPressed(gamepad.buttons[0]);
-            this.goats[i].leftKey = gamepad.axes[0] < -0.5;
-            this.goats[i].rightKey = gamepad.axes[0] > 0.5;
-            this.goats[i].attackKey = buttonPressed(gamepad.buttons[7]);
-            this.goats[i].runKey = buttonPressed(gamepad.buttons[6]);
+        // Poll for gamepads
+        for (var i = 0; i < this.goats.length; i++) {
+            var gamepad = navigator.getGamepads()[i];
+            if (gamepad) {
+                this.goats[i].jumpKey = buttonPressed(gamepad.buttons[0]);
+                this.goats[i].leftKey = gamepad.axes[0] < -0.5;
+                this.goats[i].rightKey = gamepad.axes[0] > 0.5;
+                this.goats[i].attackKey = buttonPressed(gamepad.buttons[7]);
+                this.goats[i].runKey = buttonPressed(gamepad.buttons[6]);
+            }
         }
     }
 };
@@ -276,9 +275,6 @@ function Timer() {
     this.gameTime = 0;
     this.maxStep = 0.05;
     this.wallLastTimestamp = 0;
-    this.roundTime = 0;
-    this.secondBucket = 0;
-    this.secondJustPassed = false;
 }
 
 Timer.prototype.tick = function () {

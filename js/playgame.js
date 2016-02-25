@@ -1,7 +1,7 @@
 // This code is based on Chris Marriott's Unicorn game found here:
 // https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 
-var ROUND_TIME_LIMIT = 180; // 3 minutes
+var ROUND_TIME_LIMIT = 10; // 3 minutes
 var ROUNDS_PLAYED = 0;
 
 function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
@@ -9,14 +9,13 @@ function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.btnX = btnX;
     this.btnY = btnY;
     this.hill = hill;
-    this.isInTransitionScene = true;
+    this.isInTransitionScene = true; // false if round is currently running
     this.randomizeHill = randomizeHill;
     this.randomHillSpeed = randomHillSpeed;
     this.randomHillClockTickTracker = 0;
     this.sceneSelector = null;
     this.scene = null;
-    this.roundRunning = false;
-    this.roundTimeLeft = ROUND_TIME_LIMIT;
+    this.roundTimeElapsed = 0;
     this.pOneScoreDiv = document.getElementById("playerOneScore");
     this.pTwoScoreDiv = document.getElementById("playerTwoScore");
     this.pThreeScoreDiv = document.getElementById("playerThreeScore");
@@ -35,40 +34,53 @@ PlayGame.prototype = new Entity();
 PlayGame.prototype.constructor = PlayGame;
 
 PlayGame.prototype.reset = function () {
-    this.roundRunning = false;
-    ROUNDS_PLAYED++; // a game has been played previously because the game is getting reset
     this.randomHillClockTickTracker = 0;
-    this.roundTimeLeft = ROUND_TIME_LIMIT;
-    this.initDivs();
 };
 
 PlayGame.prototype.update = function () {
     Entity.prototype.update.call(this);
 
+    // ACTUAL ROUND JUST STARTED
     if (this.game.click) {
+        console.log("click detected");
         if (this.isInTransitionScene) { //
             // logistic stuff
             this.isInTransitionScene = false;
-            this.roundRunning = true;
             this.startTimer(ROUND_TIME_LIMIT, this.roundTimerDiv);
 
             // asset stuff
-            this.game.prepForRound();
+            this.game.prepForScene();
             this.scene = this.sceneSelector.getNextScene();
             this.game.addEntity(this.scene);
+            this.game.addEntity(this);
             this.initGoats();
             this.initDivs();
         }
     }
 
-    if (this.roundRunning) {
+    // TRANSITION SCENE JUST STARTED
+    if (!this.isInTransitionScene) {
         // asset stuff
         this.scoreChecker();
         this.randomHillGenerator();
         this.updateScores();
 
-        // logistic stuff
-        this.roundRunning = this.roundTimeLeft > 0;
+        if (this.roundTimeElapsed >= ROUND_TIME_LIMIT) {
+            // logistic stuff
+            this.isInTransitionScene = true;
+            this.roundTimerDiv.innerHTML = "";
+            ROUNDS_PLAYED++;
+            this.roundTimeElapsed = 0;
+            //console.log("scene 3 should be loaded!");
+
+            // asset stuff
+            this.game.prepForScene();
+            this.scene = this.sceneSelector.getNextScene();
+            this.game.addEntity(this.scene);
+            this.game.addEntity(this);
+            this.initGoats();
+            this.initDivs();
+        }
     }
 };
 
@@ -146,13 +158,11 @@ PlayGame.prototype.draw = function (ctx) {
 
 PlayGame.prototype.drawPlayButton = function (ctx) {
     ctx.fillStyle = "purple";
-    if (!this.game.running) {
-        ctx.font = "24pt Impact";
-        if (ROUNDS_PLAYED === 0) {
-            ctx.fillText("Click to play!", this.btnX, this.btnY);
-        } else {
-            ctx.fillText("Play again?", this.btnX, this.btnY);
-        }
+    ctx.font = "24pt Impact";
+    if (ROUNDS_PLAYED === 0) {
+        ctx.fillText("Click to play!", this.btnX, this.btnY);
+    } else {
+        ctx.fillText("Play again?", this.btnX, this.btnY);
     }
 };
 
@@ -206,6 +216,8 @@ PlayGame.prototype.startTimer = function (duration, display) {
         minutes,
         seconds;
 
+    var that = this; // now children, don't forget about closure!
+
     function timer() {
         diff = duration - (((Date.now() - start) / 1000) | 0);
 
@@ -217,7 +229,7 @@ PlayGame.prototype.startTimer = function (duration, display) {
 
         display.innerHTML = minutes + ":" + seconds;
 
-        this.roundTimeLeft = ROUND_TIME_LIMIT - ((minutes * 60) + seconds);
+        that.roundTimeElapsed = ROUND_TIME_LIMIT - ((minutes * 60) + seconds);
 
         if (diff <= 0) {
             start = Date.now() + 1000;

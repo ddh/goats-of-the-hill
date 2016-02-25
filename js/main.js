@@ -54,6 +54,8 @@ var makeSceneSelector = function(gameEngine) {
 
     scenes.push(createFirstScene(gameEngine));
     scenes.push(createSecondScene(gameEngine)); // first round
+    scenes.push(createFirstScene(gameEngine));
+    scenes.push(createSecondScene(gameEngine)); // second round
 
     return new SceneSelector(scenes);
 };

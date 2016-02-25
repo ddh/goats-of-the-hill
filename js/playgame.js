@@ -1,7 +1,7 @@
 // This code is based on Chris Marriott's Unicorn game found here:
 // https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 
-var ROUND_TIME_LIMIT = 10; // 3 minutes (in seconds)
+var ROUND_TIME_LIMIT = 10; // 1 minute (in seconds) TODO: change this value to 'team agreed upon' value
 var ROUNDS_PLAYED = 0;
 
 function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
@@ -44,7 +44,7 @@ PlayGame.prototype.update = function () {
     // ACTUAL ROUND JUST STARTED
     if (this.game.click) {
         console.log("click detected");
-        if (this.isInTransitionScene) { //
+        if (this.isInTransitionScene) {
             // logistic stuff
             this.isInTransitionScene = false;
             if (!this.timerStarted) this.startTimer(ROUND_TIME_LIMIT, this.roundTimerDiv);
@@ -126,9 +126,10 @@ PlayGame.prototype.scoreChecker = function() {
 PlayGame.prototype.randomHillGenerator = function() {
     var len = this.game.platforms.length;
     if (len !== 0 && this.hill) { //there is a hill
-        if (this.randomizeHill) { // It's a random hill style 
-            this.randomHillClockTickTracker += this.game.clockTick;
+        if (this.randomizeHill) { // It's a random hill style
+            if (!this.isInTransitionScene) this.randomHillClockTickTracker += this.game.clockTick;
             if (this.randomHillClockTickTracker >= this.randomHillSpeed) {
+                console.log("potential for hill change");
                 this.randomHillClockTickTracker = 0;
                 for (var i = 1; i < len; i++) { // finds the current hill and disables it.
                     if (this.game.platforms[i].isHill) {

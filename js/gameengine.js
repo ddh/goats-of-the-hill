@@ -75,12 +75,9 @@ GameEngine.prototype.loadScene = function (scene) {
 GameEngine.prototype.prepForScene = function () {
     this.platforms = [];
     this.collidables = [];
-    for (var i = 0, len = this.entities.length; i < len; i++) {
-        var ent = this.entities[i];
-        if (!ent instanceof Goat || !ent instanceof PlayGame) {
-            this.entities.splice(i, 1);
-        }
-    }
+    this.goats = [];
+    this.entities = [];
+    this.playGame = null;
 };
 
 GameEngine.prototype.startInput = function () {
@@ -216,7 +213,7 @@ GameEngine.prototype.update = function () {
             var entity = this.entities[i];
 
             // Only update those not flagged for removal, for optimization
-            if (!entity.removeFromWorld) {
+            if (typeof entity !== 'undefined' && !entity.removeFromWorld) {
                 entity.update();
                 //console.log(entity.toString() + " updated");
             }

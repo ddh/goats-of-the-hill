@@ -20,7 +20,7 @@ function helper(size, platType) {
     if (size === 's' && platType === 'hay') {
         return {img: ASSET_MANAGER.getAsset("./img/hay.png"), width: 85, height: 50};
     } else if (size === 'm' && platType === 'hay') {
-        console.log("returned helper");
+        //console.log("returned helper");
         return {img: ASSET_MANAGER.getAsset("./img/hay2.png"), width: 155, height: 50};
     } else if (size === 'l' && platType === 'hay') {
         return {img: ASSET_MANAGER.getAsset("./img/hay3.png"), width: 240, height: 50};  

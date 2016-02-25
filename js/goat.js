@@ -48,6 +48,7 @@ function Goat(game, playerNumber, controls, sprite) {
     this.maxAirTime = 0.3;      // Max time the jump key can be held for variable jumping
     this.jumps = 0;             // The number of times goat has jumped before landing
     this.maxJumps = 2;          // Maximum number of jumps allowed (2=double-jumping, 3=triple, etc)
+    this.allowJump = true;
 
     // Attack physics
     this.chargeTime = 0;        // Held charge time
@@ -224,7 +225,8 @@ Goat.prototype.update = function () {
 
     if (!this.attacking) {
         // Update Jump state:
-        if (this.jumpKey && !this.jumping && this.jumps < this.maxJumps) {
+        if (this.jumpKey && !this.jumping && this.jumps < this.maxJumps && this.allowJump) {
+            this.allowJump = false;
             this.jumps++;
             this.airTime = 0;
             this.velocity.y = 0;
@@ -237,6 +239,9 @@ Goat.prototype.update = function () {
             this.base = 535; // Keep track of the goat's last bottom-y value
         }
 
+        // Only allow another jump if previous jump key was let go before making another jump
+        if (!this.jumpKey) this.allowJump = true;
+
         // Calculate jump velocity; incrementally 'ramping' velocity until a threshold
         if (this.jumping) {
 
@@ -246,6 +251,7 @@ Goat.prototype.update = function () {
                 this.velocity.y -= this.gravity; // Negate force of gravity during airTime
                 this.airTime += this.game.clockTick;
             }
+
 
             // Apply additional velocity until threshold:
             if (this.ramping) this.velocity.y -= 3.0; // To adjust how quickly goat reaches max jump velocity
@@ -455,7 +461,6 @@ Goat.prototype.draw = function (ctx) {
             this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + this.scale * 13, this.y - this.scale * 20, this.scale);
         }
     }
-    
 
 
     if (this.attacking) {
@@ -493,12 +498,12 @@ Goat.prototype.draw = function (ctx) {
 
     // For the charging anim
     if (this.charging) {
-        if(this.right)
-            this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 1, this.y-20, this.scale+ .2);
+        if (this.right)
+            this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 1, this.y - 20, this.scale + .2);
         else
-            this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 12, this.y-20, this.scale+ .2);
+            this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 12, this.y - 20, this.scale + .2);
     }
-    
+
     Entity.prototype.draw.call(this, ctx);
 };
 

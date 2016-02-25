@@ -1,7 +1,7 @@
 // This code is based on Chris Marriott's Unicorn game found here:
 // https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 
-var ROUND_TIME_LIMIT = 10; // 3 minutes
+var ROUND_TIME_LIMIT = 10; // 3 minutes (in seconds)
 var ROUNDS_PLAYED = 0;
 
 function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
@@ -15,7 +15,7 @@ function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.randomHillClockTickTracker = 0;
     this.sceneSelector = null;
     this.scene = null;
-    this.roundTimeElapsed = 0;
+    this.roundSecondsElapsed = 0;
     this.timerStarted = false;
     this.pOneScoreDiv = document.getElementById("playerOneScore");
     this.pTwoScoreDiv = document.getElementById("playerTwoScore");
@@ -66,13 +66,12 @@ PlayGame.prototype.update = function () {
         this.randomHillGenerator();
         this.updateScores();
 
-        if (this.roundTimeElapsed >= ROUND_TIME_LIMIT) {
+        if (this.roundSecondsElapsed >= ROUND_TIME_LIMIT) {
             // logistic stuff
             this.isInTransitionScene = true;
             this.roundTimerDiv.innerHTML = "";
             ROUNDS_PLAYED++;
-            this.roundTimeElapsed = 0;
-            //console.log("scene 3 should be loaded!");
+            this.roundSecondsElapsed = 0;
 
             // asset stuff
             this.game.prepForScene();
@@ -228,19 +227,21 @@ PlayGame.prototype.startTimer = function (duration, display) {
 
         if (!that.isInTransitionScene) {
             display.innerHTML = minutes + ":" + seconds;
-            that.roundTimeElapsed = ROUND_TIME_LIMIT - ((minutes * 60) + seconds);
+            that.roundSecondsElapsed = ROUND_TIME_LIMIT - ((minutes * 60) + seconds);
         } else {
             display.innerHTML = "";
-            that.roundTimeElapsed = 0;
+            that.roundSecondsElapsed = 0;
         }
 
         if (diff <= 0) {
             start = Date.now() + 1000;
         }
+
+        if (that.isInTransitionScene) start = 0;
     }
 
     timer();
-    setInterval(timer, 1000);
+    setInterval(timer, 1000 / 60);
 };
 
 PlayGame.prototype.toString = function () {

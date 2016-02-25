@@ -60,7 +60,7 @@ function Goat(game, playerNumber, controls, sprite) {
     this.attackTimeCounter = 0;
     this.attackTimeMax = 10;    // How many UPDATES the attack lasts for
     this.attackVelocity = 2;    // Initial attack velocity
-
+    
     // Animations:
     this.trim = {top: 50, bottom: 50, left: 50, right: 50}; //
 
@@ -381,8 +381,10 @@ Goat.prototype.update = function () {
         }
     }
 
+    // Hit boxes for attacking:
     this.rightAttackBB = new BoundingBox(this.boundingBox.x + 38, (this.boundingBox.y + this.boundingBox.height / 2) - 8, 5, this.boundingBox.height / 2);
     this.leftAttackBB = new BoundingBox(this.boundingBox.x, (this.boundingBox.y + this.boundingBox.height / 2) - 8, 5, this.boundingBox.height / 2);
+
     // The attack
     if (this.attacking) {
         this.running = false;
@@ -403,17 +405,18 @@ Goat.prototype.update = function () {
             this.attackTimeCounter = 0;
             this.chargePower = 1;
         }
-        
-        
+
+        // If attack collides with another goat:
         for (var i = 0, len = this.game.goats.length; i < len; i++) {
             var goat = this.game.goats[i];
-            if(this.right) {
-                if(this.rightAttackBB.collide(goat.leftAttackBB) && goat != this) {
-                    console.log("BUMPED RIGHT");    
+            if (this.right) {
+                if (this.rightAttackBB.collide(goat.leftAttackBB) && goat != this) {
+                    console.log(this + " attacked " + goat + " from the left!");
+                    goat.hit = true;
                 }
             } else {
-                if(this.leftAttackBB.collide(goat.rightAttackBB) && goat != this) {
-                    console.log("BUMPED LEFT");    
+                if (this.leftAttackBB.collide(goat.rightAttackBB) && goat != this) {
+                    console.log(this + " attacked " + goat + " from the right!");
                 }
             }
         }
@@ -471,7 +474,6 @@ Goat.prototype.draw = function (ctx) {
             this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + this.scale * 13, this.y - this.scale * 20, this.scale);
         }
     }
-    
 
 
     if (this.attacking) {
@@ -509,12 +511,12 @@ Goat.prototype.draw = function (ctx) {
 
     // For the charging anim
     if (this.charging) {
-        if(this.right)
-            this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 1, this.y-20, this.scale+ .2);
+        if (this.right)
+            this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 1, this.y - 20, this.scale + .2);
         else
-            this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 12, this.y-20, this.scale+ .2);
+            this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 12, this.y - 20, this.scale + .2);
     }
-    
+
     Entity.prototype.draw.call(this, ctx);
 };
 

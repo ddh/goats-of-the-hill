@@ -142,9 +142,11 @@ GameEngine.prototype.addEntity = function (entity) {
         // 2) Add Platform entities
         // Note: push.apply allows you to append array contents all at once (no need for loops)
         // Note: setting each array individually here to avoid shallow copying mistakes
-        this.platforms.push.apply(this.platforms, entity.platforms);
-        this.collidables.push.apply(this.collidables, entity.platforms);
-        this.entities.push.apply(this.entities, entity.platforms);
+        if (entity.platforms.length > 0) {
+            this.platforms.push.apply(this.platforms, entity.platforms);
+            this.collidables.push.apply(this.collidables, entity.platforms);
+            this.entities.push.apply(this.entities, entity.platforms);
+        }
 
         // 3) *Note: Goat entities already persist in game engine
     } else if (entity instanceof Goat) {
@@ -187,6 +189,7 @@ GameEngine.prototype.draw = function () {
     // 3. Draw each entity onto canvas
     for (var i = 0; i < this.entities.length; i++) {
         this.entities[i].draw(this.ctx);
+        //console.log(this.entities[i].toString() + " drawn");
     }
     this.ctx.restore();
 };
@@ -201,6 +204,7 @@ GameEngine.prototype.update = function () {
         // Only update those not flagged for removal, for optimization
         if (!entity.removeFromWorld) {
             entity.update();
+            //console.log(entity.toString() + " updated");
         }
     }
 
@@ -222,8 +226,6 @@ GameEngine.prototype.update = function () {
             this.goats[i].runKey = buttonPressed(gamepad.buttons[6]);
         }
     }
-
-
 };
 
 GameEngine.prototype.loop = function () {

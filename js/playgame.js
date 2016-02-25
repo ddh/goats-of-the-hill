@@ -80,20 +80,21 @@ PlayGame.prototype.scoreChecker = function() {
 
 //Helper function for the hill
 PlayGame.prototype.randomHillGenerator = function() {
-    if (this.hill) { //there is a hill
+    var len = this.game.platforms.length;
+    if (len !== 0 && this.hill) { //there is a hill
         if (this.randomizeHill) { // It's a random hill style 
             this.randomHillClockTickTracker += this.game.clockTick;
             if (this.randomHillClockTickTracker >= this.randomHillSpeed) {
                 this.randomHillClockTickTracker = 0;
-                var len = this.game.platforms.length;
                 for (var i = 1; i < len; i++) { // finds the current hill and disables it.
                     if (this.game.platforms[i].isHill) {
                         this.game.platforms[i].isHill = false;
                     }            
                 }
+                // ***NOTE: if no platforms in scene, len is 0 so multiplying by zero is BAAAADD !!! :P
                 var randomPlatformIndex = Math.floor((Math.random() * len));
                 //do not include 0 (ground platform)
-                if (randomPlatformIndex != 0) {
+                if (randomPlatformIndex !== 0) {
                     this.game.platforms[randomPlatformIndex].isHill = true; // sets a new platform as the hill
                 } else {
                     while (randomPlatformIndex == 0) { // checks to make sure its not the ground platform

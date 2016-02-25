@@ -3,6 +3,7 @@
 // asset manager is now constructed after class is defined (bottom of assetmanager.js)
 
 // Use asset manager to download images
+ASSET_MANAGER.queueDownload("./img/farm-gradient.png");
 ASSET_MANAGER.queueDownload("./img/farm.png");
 ASSET_MANAGER.queueDownload("./img/mountain.png");
 ASSET_MANAGER.queueDownload("./img/hay.png");
@@ -61,14 +62,23 @@ ASSET_MANAGER.downloadAll(function () {
     gameEngine.start();
 });
 
-// TODO: add more scenes in once first scene is working correctly
 var makeSceneSelector = function(gameEngine) {
     var scenes = [];
+
+    scenes.push(createFirstScene(gameEngine));
+    //scenes.push(createSecondScene(gameEngine)); // first round
+
+    return new SceneSelector(scenes);
+};
+
+var createFirstScene = function (gameEngine) {
+    return new Scene([], new Background(gameEngine, ASSET_MANAGER.getAsset("./img/farm-gradient.png"), 800, 600));
+};
+
+var createSecondScene = function (gameEngine) {
     var platforms = [];
 
-    /* === FOR SCENE #1 ONLY === */
-
-    // handle first scene's background
+    // handle scene's background
     var background = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/farm.png"), 800, 600);
 
     // handle ground platform
@@ -90,18 +100,11 @@ var makeSceneSelector = function(gameEngine) {
     //platforms.push(makePlatform(gameEngine, 'm', 325, 130, 'diagonal', 'hay', false));
     /* row 5 */
     //platforms.push(makePlatform(gameEngine, 's', 100, 400, 'horizontal', 'hay', false));
-    platforms.push(makePlatform(gameEngine, 's', 400, 220, 'horizontal', 'hay', false));
+    platforms.push(makePlatform(gameEngine, 's', 400, 200, 'horizontal', 'hay', false));
     /* row 6 */
     //platforms.push(makePlatform(gameEngine, 's', 200, 200, 'bouncing', 'hay', false));
 
-    scenes.push(new Scene(platforms, background));
-
-    /* === END FOR SCENE #1 ONLY === */
-
-    var ss = new SceneSelector();
-    ss.addScene(scenes[0]);
-
-    return ss;
+    return new Scene(platforms, background);
 };
 
 var makePlatform = function (gameEngine, size, x, y, movement, platType, isHill) {

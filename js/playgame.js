@@ -15,7 +15,8 @@ function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.randomHillClockTickTracker = 0;
     this.sceneSelector = null;
     this.scene = null;
-    this.roundRunning = false; // TODO: need to set this to true upon Canvas click
+    this.roundRunning = false;
+    this.roundTimeLeft = ROUND_TIME_LIMIT;
     this.pOneScoreDiv = document.getElementById("playerOneScore");
     this.pTwoScoreDiv = document.getElementById("playerTwoScore");
     this.pThreeScoreDiv = document.getElementById("playerThreeScore");
@@ -37,6 +38,7 @@ PlayGame.prototype.reset = function () {
     this.roundRunning = false;
     ROUNDS_PLAYED++; // a game has been played previously because the game is getting reset
     this.randomHillClockTickTracker = 0;
+    this.roundTimeLeft = ROUND_TIME_LIMIT;
     this.initDivs();
 };
 
@@ -44,13 +46,45 @@ PlayGame.prototype.update = function () {
     Entity.prototype.update.call(this);
 
     if (this.game.click) {
-        this.startTimer();
+        if (this.isInTransitionScene) { //
+            // logistic stuff
+            this.isInTransitionScene = false;
+            this.roundRunning = true;
+            this.startTimer(ROUND_TIME_LIMIT, this.roundTimerDiv);
+
+            // asset stuff
+            this.game.prepForRound();
+            this.scene = this.sceneSelector.getNextScene();
+            this.game.addEntity(this.scene);
+            this.initGoats();
+            this.initDivs();
+        }
+    }
+
+    if (this.roundRunning) {
+        // asset stuff
         this.scoreChecker();
         this.randomHillGenerator();
         this.updateScores();
-    }
 
-    this.roundRunning = this.game.timer.roundTime <= ROUND_TIME_LIMIT;
+        // logistic stuff
+        this.roundRunning = this.roundTimeLeft > 0;
+    }
+};
+
+PlayGame.prototype.initGoats = function () {
+    /* === Goats === */
+    var playerOneControls = {jump: 38, left: 37, right: 39, attack: 40, run: 18}; // ↑,←,→,↓,alt
+    this.game.addEntity(new Goat(this.game, 0, playerOneControls, "blue-goat"));
+
+    var playerTwoControls = {jump: 87, left: 65, right: 68, attack: 83, run: 16}; // W,A,D,S,shift
+    this.game.addEntity(new Goat(this.game, 1, playerTwoControls, "green-goat"));
+
+    var playerThreeControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0};
+    this.game.addEntity(new Goat(this.game, 2, playerThreeControls, "red-goat"));
+
+    var playerFourControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0};
+    this.game.addEntity(new Goat(this.game, 3, playerFourControls, "yellow-goat"));
 };
 
 // Checks which goat is the leader and crowns them.
@@ -142,6 +176,7 @@ PlayGame.prototype.initDivs = function () {
         this.pThreeScoreDiv.innerHTML = "0";
         this.pFourScoreDiv.innerHTML = "0";
         this.gameTitleDuringRoundDiv.innerHTML = "Oh My Goat!";
+        this.transitionTitleDiv.innerHTML = "";
     }
 };
 
@@ -181,6 +216,8 @@ PlayGame.prototype.startTimer = function (duration, display) {
         seconds = seconds < 10 ? "0" + seconds : seconds;
 
         display.innerHTML = minutes + ":" + seconds;
+
+        this.roundTimeLeft = ROUND_TIME_LIMIT - ((minutes * 60) + seconds);
 
         if (diff <= 0) {
             start = Date.now() + 1000;

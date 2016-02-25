@@ -45,19 +45,6 @@ ASSET_MANAGER.downloadAll(function () {
     gameEngine.loadScene(pg.scene);
     gameEngine.addEntity(pg);
 
-    /* === Goats === */
-    var playerOneControls = {jump: 38, left: 37, right: 39, attack: 40, run: 18}; // ↑,←,→,↓,alt
-    gameEngine.addEntity(new Goat(gameEngine, 0, playerOneControls, "blue-goat"));
-
-    var playerTwoControls = {jump: 87, left: 65, right: 68, attack: 83, run: 16}; // W,A,D,S,shift
-    gameEngine.addEntity(new Goat(gameEngine, 1, playerTwoControls, "green-goat"));
-
-    var playerThreeControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0}; // W,A,D,S,shift
-    gameEngine.addEntity(new Goat(gameEngine, 2, playerThreeControls, "red-goat"));
-
-    var playerFourControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0}; // W,A,D,S,shift
-    gameEngine.addEntity(new Goat(gameEngine, 3, playerFourControls, "yellow-goat"));
-
     /* === START GAME === */
     gameEngine.start();
 });

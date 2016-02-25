@@ -454,7 +454,6 @@ Goat.prototype.update = function () {
 };
 
 Goat.prototype.draw = function (ctx) {
-
     // For drawing CROWN:
     if (this.king) {
         if (this.right) { // drawn crown above right-turned head

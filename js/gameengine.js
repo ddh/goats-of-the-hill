@@ -45,8 +45,6 @@ function GameEngine() {
     this.surfaceWidth = null;
     this.surfaceHeight = null;
     this.keys = {}; // TODO: use map to correlate certain e.which's or keys to booleans or elapsed times
-    this.sceneSelector = null;
-    this.scene = null;
     this.gamepads = [];
 
 }
@@ -72,6 +70,17 @@ GameEngine.prototype.start = function () {
 
 GameEngine.prototype.loadScene = function (scene) {
     this.addEntity(scene);
+};
+
+GameEngine.prototype.prepForRound = function () {
+    this.platforms = [];
+    this.collidables = [];
+    for (var i = 0, len = this.entities.length; i < len; i++) {
+        var ent = this.entities[i];
+        if (!ent instanceof Goat || !ent instanceof PlayGame) {
+            this.entities.splice(i, 1);
+        }
+    }
 };
 
 GameEngine.prototype.startInput = function () {
@@ -189,7 +198,12 @@ GameEngine.prototype.draw = function () {
     // 3. Draw each entity onto canvas
     for (var i = 0, len = this.entities.length; i < len; i++) {
         var ent = this.entities[i];
-        if (this.playGame.isInTransitionScene && (ent instanceof Background || ent instanceof PlayGame)) {
+        // TODO: this logic is messy, clean it up!
+        if (this.playGame.roundRunning && ent instanceof Goat) {
+            this.entities[i].draw(this.ctx);
+        } else if (this.playGame.isInTransitionScene) {
+            if (ent instanceof Background || ent instanceof PlayGame) this.entities[i].draw(this.ctx);
+        } else {
             this.entities[i].draw(this.ctx);
         }
     }
@@ -274,7 +288,6 @@ Timer.prototype.tick = function () {
 
     var gameDelta = Math.min(wallDelta, this.maxStep);
     this.gameTime += gameDelta;
-    this.roundTime += gameDelta;
 
     return gameDelta;
 };

@@ -26,7 +26,11 @@ function Goat(game, playerNumber, controls, sprite) {
     this.y = 200;   // game.platforms[0].y // Ground platforms' y
     this.width = 96 * this.scale;
     this.height = 95 * this.scale;
-    this.entity = this.game.platforms[0];
+    if (this.game.playGame.isInTransitionScene) {
+        this.entity = null; // there is no ground platform
+    } else {
+        this.entity = this.game.platforms[0];
+    }
     this.standingOn = null;
 
     // Movement physics:
@@ -150,9 +154,13 @@ Goat.prototype.reset = function () {
     this.king = false;
 
     this.x = 0;
-    this.y = this.game.platforms[0].y - this.height;
-
-    this.entity = this.game.platforms[0]; // This should be the ground platform
+    if (this.game.playGame.isInTransitionScene) {
+        this.y = 0; // there is no ground platform
+        this.entity = null;
+    } else {
+        this.y = this.game.platforms[0].y - this.height;
+        this.entity = this.game.platforms[0]; // This should be the ground platform
+    }
 
     // this.boundingbox = new BoundingBox(this.x, this.y, this.standAnimation.frameWidth, this.standAnimation.frameHeight);
 };
@@ -452,7 +460,6 @@ Goat.prototype.update = function () {
 };
 
 Goat.prototype.draw = function (ctx) {
-
     // For drawing CROWN:
     if (this.king) {
         if (this.right) { // drawn crown above right-turned head

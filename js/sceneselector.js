@@ -14,8 +14,8 @@ Scene.prototype.toString = function() {
     return "Scene";
 };
 
-function SceneSelector() {
-    this.scenes = [];
+function SceneSelector(scenes) {
+    this.scenes = scenes;
     this.currentScene = 0;
 }
 

@@ -11,7 +11,7 @@
     color: purple;
 }
 
-#gameTitle {
+#gameTitleDuringRound {
     left: 250px;
 }
 
@@ -60,3 +60,8 @@
     font-size: 32pt;
 }
 
+#transitionTitle {
+    top: 150px;
+    left: 540px;
+    font-size: 48px;
+}

@@ -1,0 +1,50 @@
+.textLabels {
+    position: absolute;
+    background-color: rgba(0,0,0,0);
+    font-family: Impact, Charcoal, sans-serif;
+    font-size: 24pt;
+    height: 30px;
+}
+
+.uwTheme {
+    top: 110px;
+    color: purple;
+}
+
+#gameTitle {
+    left: 250px;
+}
+
+#roundNumber {
+    left: 900px;
+}
+
+#gameWorldContainer {
+    width: 100%;
+    text-align: center;
+}
+
+#gameWorld {
+    border: 1px solid white;
+    display: inline;
+}
+
+#playerOneScore {
+    top: 640px;
+    left: 420px;
+    color: DarkSlateBlue;
+}
+
+#playerTwoScore {
+    top: 640px;
+    left: 800px;
+    color: LimeGreen;
+}
+
+#roundTimer {
+    color: Black;
+    top: 110px;
+    left: 590px;
+    font-size: 32pt;
+}
+

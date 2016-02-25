@@ -16,6 +16,7 @@ function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.sceneSelector = null;
     this.scene = null;
     this.roundTimeElapsed = 0;
+    this.timerStarted = false;
     this.pOneScoreDiv = document.getElementById("playerOneScore");
     this.pTwoScoreDiv = document.getElementById("playerTwoScore");
     this.pThreeScoreDiv = document.getElementById("playerThreeScore");
@@ -46,7 +47,7 @@ PlayGame.prototype.update = function () {
         if (this.isInTransitionScene) { //
             // logistic stuff
             this.isInTransitionScene = false;
-            this.startTimer(ROUND_TIME_LIMIT, this.roundTimerDiv);
+            if (!this.timerStarted) this.startTimer(ROUND_TIME_LIMIT, this.roundTimerDiv);
 
             // asset stuff
             this.game.prepForScene();
@@ -211,10 +212,8 @@ PlayGame.prototype.updateScores = function () {
 
 // Taken from Stackflow: http://stackoverflow.com/questions/29139357/javascript-countdown-timer-will-not-display-twice
 PlayGame.prototype.startTimer = function (duration, display) {
-    var start = Date.now(),
-        diff,
-        minutes,
-        seconds;
+    this.timerStarted = true;
+    var start = Date.now(), diff, minutes, seconds;
 
     var that = this; // now children, don't forget about closure!
 
@@ -227,9 +226,13 @@ PlayGame.prototype.startTimer = function (duration, display) {
         minutes = minutes < 10 ? "0" + minutes : minutes;
         seconds = seconds < 10 ? "0" + seconds : seconds;
 
-        display.innerHTML = minutes + ":" + seconds;
-
-        that.roundTimeElapsed = ROUND_TIME_LIMIT - ((minutes * 60) + seconds);
+        if (!that.isInTransitionScene) {
+            display.innerHTML = minutes + ":" + seconds;
+            that.roundTimeElapsed = ROUND_TIME_LIMIT - ((minutes * 60) + seconds);
+        } else {
+            display.innerHTML = "";
+            that.roundTimeElapsed = 0;
+        }
 
         if (diff <= 0) {
             start = Date.now() + 1000;

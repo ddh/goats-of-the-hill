@@ -18,6 +18,7 @@ function Goat(game, playerNumber, controls, sprite) {
     this.leftKey = false;
     this.rightKey = false;
     this.attackKey = false;
+    this.runKey = false;
 
     // Rigid body physics:
     this.scale = 0.65;
@@ -32,16 +33,21 @@ function Goat(game, playerNumber, controls, sprite) {
     this.friction = 0.75;
     this.speed = 0.5;
     this.maxVelocityX = 3.0;
+    this.walkSpeed = 0.5;
+    this.runSpeed = 1.5;
+    this.maxWalkSpeed = 3.0
+    this.maxRunSpeed = 6.0;
+
 
     // Jump physics
     this.velocity = {x: 0, y: 0};
     this.gravity = 0.5;
-    this.terminalVelocity = 12;  // Max falling velocity
-    this.maxVelocityY = -6.0;   // Max jump velocity
+    this.terminalVelocity = 12; // Max falling velocity
+    this.maxVelocityY = -6.0;   // Max jump velocity (more negative, higher jump)
     this.airTime = 0;           // How long the jump key is held
     this.maxAirTime = 0.3;      // Max time the jump key can be held for variable jumping
-    this.doubleJump = true;
-    this.canDoubleJump = true;
+    this.jumps = 0;             // The number of times goat has jumped before landing
+    this.maxJumps = 2;          // Maximum number of jumps allowed (2=double-jumping, 3=triple, etc)
 
     // Attack physics
     this.chargeTime = 0;        // Held charge time
@@ -53,7 +59,7 @@ function Goat(game, playerNumber, controls, sprite) {
     this.chargePowerMax = 10;   // Maximum charge power (ticks)
     this.attackTimeCounter = 0;
     this.attackTimeMax = 10;    // How many UPDATES the attack lasts for
-    this.attackVelocity = 5;    // Initial attack velocity
+    this.attackVelocity = 2;    // Initial attack velocity
 
     // Animations:
     this.trim = {top: 50, bottom: 50, left: 50, right: 50}; //
@@ -83,8 +89,8 @@ function Goat(game, playerNumber, controls, sprite) {
     this.leftChargeAnimation = new Animation(leftAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
     this.rightChargeAnimation = new Animation(rightAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
 
-    this.attackLeftAnimation = new Animation(leftAsset, 1974, 0, 94, 90, 0.1, 4, true, false);
-    this.attackRightAnimation = new Animation(rightAsset, 1974, 0, 94, 90, 0.1, 4, true, false);
+    this.attackLeftAnimation = new Animation(leftAsset, 1974, 0, 94, 90, 0.1, 1, true, false);
+    this.attackRightAnimation = new Animation(rightAsset, 1974, 0, 94, 90, 0.1, 1, true, false);
 
     this.leftHurtAnimation = new Animation(leftAsset, 2068, 0, 94, 90, 0.1, 4, false, false);
     this.rightHurtAnimation = new Animation(rightAsset, 2068, 0, 94, 90, 0.1, 4, false, false);
@@ -109,10 +115,10 @@ function Goat(game, playerNumber, controls, sprite) {
     // Action states:
     this.right = true; // Facing right (true) or left (false)
     this.standing = true;
+    this.running = false;
     this.skidding = false;
     this.jumping = false;
     this.falling = false;
-    this.running = false;
     this.charging = false;
     this.attacking = false;
     this.stunned = false;
@@ -194,6 +200,10 @@ Goat.prototype.update = function () {
         // Update running state:
         this.rightKey || this.leftKey ? this.running = true : this.running = false;
 
+        // Determine whether walking or running speeds:
+        this.speed = (this.runKey) ? this.runSpeed : this.walkSpeed;
+        this.maxVelocityX = (this.runKey) ? this.maxRunSpeed : this.maxWalkSpeed;
+
         // Update Running velocities:
         if (this.rightKey && this.x < this.game.surfaceWidth - this.width) this.velocity.x = Math.min(this.velocity.x + this.speed, this.maxVelocityX); // Running right
         if (this.leftKey && this.x > 0) this.velocity.x = Math.max(this.velocity.x - this.speed, -1 * this.maxVelocityX); // Running left
@@ -204,6 +214,7 @@ Goat.prototype.update = function () {
         // if (Math.abs(this.velocity.x) < this.speed / 3) // If velocity is negligible
         //     this.velocity.x = 0; // Set velocity to 0 so we don't have really small values that are basically 0.
 
+
         this.x += this.velocity.x;
     }
 
@@ -213,7 +224,11 @@ Goat.prototype.update = function () {
 
     if (!this.attacking) {
         // Update Jump state:
-        if (this.jumpKey && !this.jumping && !this.falling) {
+        if (this.jumpKey && !this.jumping && this.jumps < this.maxJumps) {
+            this.jumps++;
+            this.airTime = 0;
+            this.velocity.y = 0;
+            this.falling = false;
             this.jumping = true;
             this.ramping = true; // ramp up velocity instead of immediate impulse
             this.entity = null;
@@ -233,8 +248,7 @@ Goat.prototype.update = function () {
             }
 
             // Apply additional velocity until threshold:
-            if (this.ramping)
-                this.velocity.y -= 3.0; // To adjust how quickly goat reaches max jump velocity
+            if (this.ramping) this.velocity.y -= 3.0; // To adjust how quickly goat reaches max jump velocity
 
             // Cap additional velocity when threshold reached:
             if (this.velocity.y < this.maxVelocityY) this.ramping = false;
@@ -266,7 +280,7 @@ Goat.prototype.update = function () {
                 console.log(this + "'s final fall velocity was " + this.velocity.y);
                 this.falling = false;
                 this.airTime = 0;
-                this.canDoubleJump = true;
+                this.jumps = 0;
                 this.velocity.y = 0;
                 this.y = this.entity ? this.entity.boundingBox.top - this.boundingBox.height : this.base;
             }
@@ -337,7 +351,6 @@ Goat.prototype.update = function () {
                 console.log(this + " has Charge of: " + this.chargePower);
             }
         }
-
     }
 
     // While charging...
@@ -373,10 +386,11 @@ Goat.prototype.update = function () {
         this.running = false;
 
         // Determine position during attack
-        if (this.right) this.x += this.attackVelocity * this.chargePower / 4;
-        if (!this.right) this.x -= this.attackVelocity * this.chargePower / 4;
+        if (this.right) this.x += this.attackVelocity * this.chargePower;
+        if (!this.right) this.x -= this.attackVelocity * this.chargePower;
         this.attackTimeCounter++;
 
+        // Prevent attack-dash from moving goat out of bounds
         if (this.x < 0) this.x = 0;
         if (this.x + this.width > this.game.surfaceWidth) this.x = this.game.surfaceWidth - this.width;
 
@@ -439,13 +453,12 @@ Goat.prototype.draw = function (ctx) {
     }
     
 
-    if (this.jumping) {
 
+    if (this.attacking) {
         if (this.right)
-            this.jumpRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+            this.attackRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else
-            this.jumpLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
-        this.fallLeftAnimation.elapsedTime = this.fallRightAnimation.elapsedTime = 0;
+            this.attackLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
     }
     else if (this.falling) {
         if (this.right)
@@ -454,18 +467,20 @@ Goat.prototype.draw = function (ctx) {
             this.fallLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         this.jumpLeftAnimation.elapsedTime = this.jumpRightAnimation.elapsedTime = 0;
     }
+    else if (this.jumping) {
+        if (this.right)
+            this.jumpRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+        else
+            this.jumpLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+        this.fallLeftAnimation.elapsedTime = this.fallRightAnimation.elapsedTime = 0;
+    }
     else if (this.running) {
         if (this.right)
             this.runRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else
             this.runLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
-    } 
-    else if (this.attacking) {
-        if (this.right)
-            this.attackRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
-        else
-            this.attackLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
-    } else {
+    }
+    else {
         if (this.right)
             this.standRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else

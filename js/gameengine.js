@@ -11,6 +11,27 @@ window.requestAnimFrame = (function () {
         };
 })();
 
+
+/***************************
+ *      Gamepad Suport     *
+ ***************************/
+
+window.addEventListener("gamepadconnected", function (e) {
+    // Gamepad connected
+    console.log("Gamepad connected", e.gamepad);
+});
+
+window.addEventListener("gamepaddisconnected", function (e) {
+    // Gamepad disconnected
+    console.log("Gamepad " + e.gamepad.index + " disconnected", e.gamepad);
+});
+
+function buttonPressed(b) {
+    if (typeof(b) === "object") {
+        return b.pressed;
+    }
+}
+
 function GameEngine() {
     this.entities = [];
     this.platforms = [];
@@ -24,6 +45,10 @@ function GameEngine() {
     this.surfaceWidth = null;
     this.surfaceHeight = null;
     this.keys = {}; // TODO: use map to correlate certain e.which's or keys to booleans or elapsed times
+    this.sceneSelector = null;
+    this.scene = null;
+    this.gamepads = [];
+
 }
 
 GameEngine.prototype.init = function (ctx) {
@@ -43,6 +68,7 @@ GameEngine.prototype.start = function () {
         requestAnimFrame(gameLoop, that.ctx.canvas);
     })();
 };
+
 
 GameEngine.prototype.loadScene = function (scene) {
     this.addEntity(scene);
@@ -124,16 +150,20 @@ GameEngine.prototype.addEntity = function (entity) {
     } else if (entity instanceof Goat) {
         // Add key listeners associated with goat
         // "closure" is needed so listener knows what element to refer to
-        (function(goat, gameEngine) {
+        (function (goat, gameEngine) {
             gameEngine.ctx.canvas.addEventListener("keydown", function (e) {
                 if (e.which === goat.controls.jump) goat.jumpKey = true;
                 if (e.which === goat.controls.right) goat.rightKey = true;
                 if (e.which === goat.controls.left) goat.leftKey = true;
+                if (e.which === goat.controls.attack) goat.attackKey = true;
+                if (e.which === goat.controls.run) goat.runKey = true;
             }, false);
             gameEngine.ctx.canvas.addEventListener("keyup", function (e) {
                 if (e.which === goat.controls.jump) goat.jumpKey = false;
                 if (e.which === goat.controls.right) goat.rightKey = false;
                 if (e.which === goat.controls.left) goat.leftKey = false;
+                if (e.which === goat.controls.attack) goat.attackKey = false;
+                if (e.which === goat.controls.run) goat.runKey = false;
             });
         })(entity, this);
         this.goats.push(entity);
@@ -180,6 +210,20 @@ GameEngine.prototype.update = function () {
             this.entities.splice(j, 1);
         }
     }
+
+    // Poll for gamepads
+    for (var i = 0; i < this.goats.length; i++) {
+        var gamepad = navigator.getGamepads()[i];
+        if (gamepad) {
+            this.goats[i].jumpKey = buttonPressed(gamepad.buttons[0]);
+            this.goats[i].leftKey = gamepad.axes[0] < -0.5;
+            this.goats[i].rightKey = gamepad.axes[0] > 0.5;
+            this.goats[i].attackKey = buttonPressed(gamepad.buttons[7]);
+            this.goats[i].runKey = buttonPressed(gamepad.buttons[6]);
+        }
+    }
+
+
 };
 
 GameEngine.prototype.loop = function () {

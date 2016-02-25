@@ -45,11 +45,17 @@ ASSET_MANAGER.downloadAll(function () {
     gameEngine.loadScene(pg.scene);
 
     /* === Goats === */
-    var playerOneControls = {jump: 38, left: 37, right: 39};
+    var playerOneControls = {jump: 38, left: 37, right: 39, attack: 40, run: 18}; // ↑,←,→,↓,alt
     gameEngine.addEntity(new Goat(gameEngine, 0, playerOneControls, "blue-goat"));
 
-    var playerTwoControls = {jump: 87, left: 65, right: 68};
+    var playerTwoControls = {jump: 87, left: 65, right: 68, attack: 83, run: 16}; // W,A,D,S,shift
     gameEngine.addEntity(new Goat(gameEngine, 1, playerTwoControls, "green-goat"));
+
+    var playerThreeControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0}; // W,A,D,S,shift
+    gameEngine.addEntity(new Goat(gameEngine, 2, playerThreeControls, "red-goat"));
+
+    var playerFourControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0}; // W,A,D,S,shift
+    gameEngine.addEntity(new Goat(gameEngine, 3, playerFourControls, "yellow-goat"));
 
     /* === START GAME === */
     gameEngine.start();
@@ -84,7 +90,7 @@ var makeSceneSelector = function(gameEngine) {
     //platforms.push(makePlatform(gameEngine, 'm', 325, 130, 'diagonal', 'hay', false));
     /* row 5 */
     //platforms.push(makePlatform(gameEngine, 's', 100, 400, 'horizontal', 'hay', false));
-    platforms.push(makePlatform(gameEngine, 's', 400, 200, 'horizontal', 'hay', false));
+    platforms.push(makePlatform(gameEngine, 's', 400, 220, 'horizontal', 'hay', false));
     /* row 6 */
     //platforms.push(makePlatform(gameEngine, 's', 200, 200, 'bouncing', 'hay', false));
 

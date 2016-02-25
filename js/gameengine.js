@@ -23,10 +23,7 @@ function GameEngine() {
     this.wheel = null;
     this.surfaceWidth = null;
     this.surfaceHeight = null;
-    this.running = false; // boolean used by playgame.js
     this.keys = {}; // TODO: use map to correlate certain e.which's or keys to booleans or elapsed times
-    this.sceneSelector = null;
-    this.scene = null;
 }
 
 GameEngine.prototype.init = function (ctx) {
@@ -47,45 +44,8 @@ GameEngine.prototype.start = function () {
     })();
 };
 
-GameEngine.prototype.loadFirstScene = function () {
-
-    // Set Scene
-    this.scene = this.sceneSelector.scenes[0];
-
-    // Set Background
-    this.entities.push(this.scene.background);
-
-    // Set Platforms
-    // Note: push.apply allows you to append array contents all at once (no need for loops)
-    // Note: setting each array individually here to avoid shallow copying mistakes
-    this.platforms.push.apply(this.platforms, this.scene.platforms);
-    this.entities.push.apply(this.entities, this.scene.platforms);
-    this.collidables.push.apply(this.collidables, this.scene.platforms);
-
-    // Set Goats
-    for (var i = 0; i < this.scene.goats.length; i++) {
-        var goat = this.scene.goats[i];
-        goat.reset(); // Reset so goat's initial platform is the ground
-        this.entities.push(goat);
-        this.goats.push(goat);
-        this.collidables.push(goat);
-        // Add key listeners associated with goat
-        // "closure" is needed so listener knows what element to refer to
-        (function(goat, gameEngine) {
-            gameEngine.ctx.canvas.addEventListener("keydown", function (e) {
-                if (e.which === goat.controls.jump) goat.jumpKey = true;
-                if (e.which === goat.controls.right) goat.rightKey = true;
-                if (e.which === goat.controls.left) goat.leftKey = true;
-                if (e.which === goat.controls.attack) goat.attackKey = true;
-            }, false);
-            gameEngine.ctx.canvas.addEventListener("keyup", function (e) {
-                if (e.which === goat.controls.jump) goat.jumpKey = false;
-                if (e.which === goat.controls.right) goat.rightKey = false;
-                if (e.which === goat.controls.left) goat.leftKey = false;
-                if (e.which === goat.controls.attack) goat.attackKey = false;
-            });
-        })(goat, this);
-    }
+GameEngine.prototype.loadScene = function (scene) {
+    this.addEntity(scene);
 };
 
 GameEngine.prototype.startInput = function () {
@@ -104,7 +64,7 @@ GameEngine.prototype.startInput = function () {
     this.ctx.canvas.addEventListener("keydown", function (e) {
         if (e.which === 75) {
             that.kKey ^= true;
-            console.log("king turned " + (that.kKey ? "on" : "off"));
+            //console.log("king turned " + (that.kKey ? "on" : "off"));
         }
         if (e.which === 70) {
             that.enableDebug ^= true; // 'F' key to toggle debug
@@ -148,10 +108,42 @@ GameEngine.prototype.startInput = function () {
     console.log('Input started');
 };
 
-// TODO: need to tweak how we're adding entities to the game engine, ie. have separate field arrays for each entity type
 GameEngine.prototype.addEntity = function (entity) {
+    if (entity instanceof Scene) {
+        // 1) Add Background entity
+        this.entities.push(entity.background);
+
+        // 2) Add Platform entities
+        // Note: push.apply allows you to append array contents all at once (no need for loops)
+        // Note: setting each array individually here to avoid shallow copying mistakes
+        this.platforms.push.apply(this.platforms, entity.platforms);
+        this.collidables.push.apply(this.collidables, entity.platforms);
+        this.entities.push.apply(this.entities, entity.platforms);
+
+        // 3) *Note: Goat entities already persist in game engine
+    } else if (entity instanceof Goat) {
+        // Add key listeners associated with goat
+        // "closure" is needed so listener knows what element to refer to
+        (function(goat, gameEngine) {
+            gameEngine.ctx.canvas.addEventListener("keydown", function (e) {
+                if (e.which === goat.controls.jump) goat.jumpKey = true;
+                if (e.which === goat.controls.right) goat.rightKey = true;
+                if (e.which === goat.controls.left) goat.leftKey = true;
+            }, false);
+            gameEngine.ctx.canvas.addEventListener("keyup", function (e) {
+                if (e.which === goat.controls.jump) goat.jumpKey = false;
+                if (e.which === goat.controls.right) goat.rightKey = false;
+                if (e.which === goat.controls.left) goat.leftKey = false;
+            });
+        })(entity, this);
+        this.goats.push(entity);
+        this.entities.push(entity);
+        this.collidables.push(entity);
+    } else if (entity instanceof PlayGame) {
+        this.playGame = entity; // keep this field in game engine for now, may take it out later...
+        this.entities.push(entity);
+    }
     console.log('added ' + entity.toString());
-    this.entities.push(entity);
 };
 
 GameEngine.prototype.draw = function () {
@@ -222,6 +214,9 @@ function Timer() {
     this.gameTime = 0;
     this.maxStep = 0.05;
     this.wallLastTimestamp = 0;
+    this.roundTime = 0;
+    this.secondBucket = 0;
+    this.secondJustPassed = false;
 }
 
 Timer.prototype.tick = function () {
@@ -231,5 +226,7 @@ Timer.prototype.tick = function () {
 
     var gameDelta = Math.min(wallDelta, this.maxStep);
     this.gameTime += gameDelta;
+    this.roundTime += gameDelta;
+
     return gameDelta;
 };

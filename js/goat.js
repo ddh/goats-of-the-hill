@@ -7,7 +7,6 @@ function maxSpeedEnforcement(speed, maxSpeed) {
 }
 
 function Goat(game, playerNumber, controls, sprite) {
-
     // Game properties:
     this.playerNumber = playerNumber;
     this.controls = controls;
@@ -118,6 +117,9 @@ function Goat(game, playerNumber, controls, sprite) {
     this.attacking = false;
     this.stunned = false;
     this.king = false;
+
+    // TODO: KEEP THIS IN THE CONSTRUCTOR ELSE SCORE IS EITHER UNDEFINED OR NaN
+    this.score = 0;
 
     // this.boundingBox = new BoundingBox(this.x, this.y, this.width, this.height);
 

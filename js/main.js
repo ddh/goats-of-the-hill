@@ -38,35 +38,37 @@ ASSET_MANAGER.downloadAll(function () {
     }).play();
 
     /* === Game Logistics === */
-    var roundNumber = document.getElementById('roundNumber');
-    gameEngine.roundNumber = roundNumber;
-
-    /* === Background === */
-    var bg = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/farm.png"), 800, 600);
-
-    gameEngine.sceneSelector = makeSceneSelector(bg, gameEngine); // also initializes Scenes
-
-    gameEngine.loadFirstScene();
-
     var pg = new PlayGame(gameEngine, 320, 250, true, true, 8);
+    pg.sceneSelector = makeSceneSelector(gameEngine); // also initializes Scenes
+    pg.initFirstScene();
     gameEngine.addEntity(pg);
+    gameEngine.loadScene(pg.scene);
+
+    /* === Goats === */
+    var playerOneControls = {jump: 38, left: 37, right: 39};
+    gameEngine.addEntity(new Goat(gameEngine, 0, playerOneControls, "blue-goat"));
+
+    var playerTwoControls = {jump: 87, left: 65, right: 68};
+    gameEngine.addEntity(new Goat(gameEngine, 1, playerTwoControls, "green-goat"));
 
     /* === START GAME === */
     gameEngine.start();
 });
 
 // TODO: add more scenes in once first scene is working correctly
-var makeSceneSelector = function (background, gameEngine) {
+var makeSceneSelector = function(gameEngine) {
     var scenes = [];
     var platforms = [];
-    var goats = [];
 
     /* === FOR SCENE #1 ONLY === */
+
+    // handle first scene's background
+    var background = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/farm.png"), 800, 600);
 
     // handle ground platform
     var groundPlatform = new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'hay', false);
     groundPlatform.oneWayCollision = false;
-    platforms.push(groundPlatform);
+    platforms.push(groundPlatform); // ground platform is always the first platform added to a scene
 
     // handle all other platforms (use existing platforms below to build other scenes' platforms later)
 
@@ -86,16 +88,9 @@ var makeSceneSelector = function (background, gameEngine) {
     /* row 6 */
     //platforms.push(makePlatform(gameEngine, 's', 200, 200, 'bouncing', 'hay', false));
 
-    /* === Goats === */
-    var playerOneControls = {jump: 38, left: 37, right: 39, attack: 40};
-    goats.push(new Goat(gameEngine, 0, playerOneControls, "blue-goat"));
+    scenes.push(new Scene(platforms, background));
 
-    var playerTwoControls = {jump: 87, left: 65, right: 68, attack: 83};
-    goats.push(new Goat(gameEngine, 1, playerTwoControls, "green-goat"));
-
-    scenes.push(new Scene(platforms, background, goats));
-
-    /* === /END FOR SCENE #1 ONLY === */
+    /* === END FOR SCENE #1 ONLY === */
 
     var ss = new SceneSelector();
     ss.addScene(scenes[0]);

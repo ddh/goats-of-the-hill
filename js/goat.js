@@ -381,6 +381,8 @@ Goat.prototype.update = function () {
         }
     }
 
+    this.rightAttackBB = new BoundingBox(this.boundingBox.x + 38, (this.boundingBox.y + this.boundingBox.height / 2) - 8, 5, this.boundingBox.height / 2);
+    this.leftAttackBB = new BoundingBox(this.boundingBox.x, (this.boundingBox.y + this.boundingBox.height / 2) - 8, 5, this.boundingBox.height / 2);
     // The attack
     if (this.attacking) {
         this.running = false;
@@ -400,6 +402,20 @@ Goat.prototype.update = function () {
             this.attacking = false;
             this.attackTimeCounter = 0;
             this.chargePower = 1;
+        }
+        
+        
+        for (var i = 0, len = this.game.goats.length; i < len; i++) {
+            var goat = this.game.goats[i];
+            if(this.right) {
+                if(this.rightAttackBB.collide(goat.leftAttackBB) && goat != this) {
+                    console.log("BUMPED RIGHT");    
+                }
+            } else {
+                if(this.leftAttackBB.collide(goat.rightAttackBB) && goat != this) {
+                    console.log("BUMPED LEFT");    
+                }
+            }
         }
     }
 

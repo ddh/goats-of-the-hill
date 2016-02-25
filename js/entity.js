@@ -19,7 +19,13 @@ Entity.prototype.reset = function () {
 };
 
 Entity.prototype.draw = function (ctx) {
-    if (this.game.enableDebug) this.boundingBox.draw(ctx);
+    if (this.game.enableDebug) {
+        this.boundingBox.draw(ctx);  
+        if (this instanceof Goat) {
+            this.rightAttackBB.draw(ctx);
+            this.leftAttackBB.draw(ctx);
+        }
+    } 
 };
 
 Entity.prototype.rotateAndCache = function (image, angle) {

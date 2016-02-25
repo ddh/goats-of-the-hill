@@ -31,14 +31,26 @@
 
 #playerOneScore {
     top: 640px;
-    left: 420px;
+    left: 325px;
     color: DarkSlateBlue;
 }
 
 #playerTwoScore {
     top: 640px;
-    left: 800px;
+    left: 525px;
     color: LimeGreen;
+}
+
+#playerThreeScore {
+    top: 640px;
+    left: 725px;
+    color: Red;
+}
+
+#playerFourScore {
+    top: 640px;
+    left: 925px;
+    color: Gold;
 }
 
 #roundTimer {

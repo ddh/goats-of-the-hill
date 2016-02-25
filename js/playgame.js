@@ -18,12 +18,15 @@ function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.roundRunning = false; // TODO: need to set this to true upon Canvas click
     this.pOneScoreDiv = document.getElementById("playerOneScore");
     this.pTwoScoreDiv = document.getElementById("playerTwoScore");
+    this.pThreeScoreDiv = document.getElementById("playerThreeScore");
+    this.pFourScoreDiv = document.getElementById("playerFourScore");
     this.roundNumberDiv = document.getElementById('roundNumber');
     this.roundTimerDiv = document.getElementById('roundTimer');
     this.roundNumberDiv.innerHTML = "Round #1";
     this.pOneScoreDiv.innerHTML = "0";
     this.pTwoScoreDiv.innerHTML = "0";
-    //this.roundTimerDiv.innerHTML = "3:00";
+    this.pThreeScoreDiv.innerHTML = "0";
+    this.pFourScoreDiv.innerHTML = "0";
 
     this.startTimer(ROUND_TIME_LIMIT, this.roundTimerDiv);
 
@@ -132,6 +135,10 @@ PlayGame.prototype.updateScores = function () {
             this.pOneScoreDiv.innerHTML = score.toString();
         } else if (i === 1) { // player two
             this.pTwoScoreDiv.innerHTML = score.toString();
+        } else if (i === 2) { // player three
+            this.pThreeScoreDiv.innerHTML = score.toString();
+        } else if (i === 3) { // player four
+            this.pFourScoreDiv.innerHTML = score.toString();
         }
     }
 };

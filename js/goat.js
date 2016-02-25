@@ -420,20 +420,24 @@ Goat.prototype.update = function () {
     //     this.king = this.game.kKey;
 
     // Increments goat's score count:  
-    if (this.entity && this.entity.isHill && !isMounted(this.game.goats)) {
+    if (this.entity && this.entity.isHill && !isMounted(this, this.game.goats)) {
+        var incrementScore = true;
         for (var i = 0, len = this.game.goats.length; i < len; i++) {
             var goat = this.game.goats[i];
-            if (this.entity != goat.entity) {
-                this.score += 1;
-                console.log("score = " + this.score);
+            if (goat != this && this.entity == goat.entity) {
+                incrementScore = false;
             }
+        }
+        if (incrementScore) {
+            this.score += 1;
+            console.log("score = " + this.score);
         }
     }
     // helper function to prevent goat on goat on hill from gaining points
-    function isMounted(goats) {
+    function isMounted(thisGoat, goats) {
         for (var i = 0, len = goats.length; i < len; i++) {
             var goat = goats[i];
-            if (goat.entity instanceof Goat) return true;
+            if (goat.entity == thisGoat) return true;
         }
         return false;
     }

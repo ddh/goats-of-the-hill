@@ -655,8 +655,30 @@ Goat.prototype.draw = function (ctx) {
         else
             this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 12, this.y - 20, this.scale + .2);
     }
+    
+    ctx.strokeStyle = "rgb(255, 0, 0)";
+    ctx.fillStyle = "rgba(255, 255, 0, .5)";
+    drawRoundedRect(ctx, this.boundingBox.x, this.boundingBox.y + this.boundingBox.height + 10, this.boundingBox.width, 10, 2);
+    ctx.fillStyle = "rgba(0, 255, 0, 1)";
+    drawRoundedRect(ctx, this.boundingBox.x, this.boundingBox.y + this.boundingBox.height + 10, (this.chargePower / this.chargePowerMax) * this.boundingBox.width, 10, 2);
 
     Entity.prototype.draw.call(this, ctx);
+};
+
+function drawRoundedRect(ctx, x, y, width, height, radius) {
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
 };
 
 

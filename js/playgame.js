@@ -87,16 +87,24 @@ PlayGame.prototype.update = function () {
 PlayGame.prototype.initGoats = function () {
     /* === Goats === */
     var playerOneControls = {jump: 38, left: 37, right: 39, attack: 40, run: 18}; // ↑,←,→,↓,alt
-    this.game.addEntity(new Goat(this.game, 0, playerOneControls, "blue-goat"));
-
+    var goat1 = new Goat(this.game, 0, playerOneControls, "blue-goat");
+    goat1.x = 30;
+    this.game.addEntity(goat1);
+    
     var playerTwoControls = {jump: 87, left: 65, right: 68, attack: 83, run: 16}; // W,A,D,S,shift
-    this.game.addEntity(new Goat(this.game, 1, playerTwoControls, "green-goat"));
+    var goat2 = new Goat(this.game, 1, playerTwoControls, "green-goat");
+    goat2.x = 230;
+    this.game.addEntity(goat2);
 
     var playerThreeControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0};
-    this.game.addEntity(new Goat(this.game, 2, playerThreeControls, "red-goat"));
+    var goat3 = new Goat(this.game, 2, playerThreeControls, "red-goat");
+    goat3.x = 430;
+    this.game.addEntity(goat3);
 
     var playerFourControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0};
-    this.game.addEntity(new Goat(this.game, 3, playerFourControls, "yellow-goat"));
+    var goat4 = new Goat(this.game, 3, playerFourControls, "yellow-goat");
+    goat4.x = 630;
+    this.game.addEntity(goat4);
 };
 
 // Checks which goat is the leader and crowns them.

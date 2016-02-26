@@ -431,10 +431,6 @@ Goat.prototype.update = function () {
      *              Attacking               *
      ****************************************/
 
-    /*TODO: Attacking takes precedence over all other movements such as falling, jumping, or movement.
-
-     */
-
     // When attack key is held down, charge.
     if (this.attackKey && !this.attacking && !this.injured) {
         this.charging = true;
@@ -461,7 +457,6 @@ Goat.prototype.update = function () {
         // On letting go of charging key, release an attack
         if (!this.attackKey) {
             console.log(this + " stopped charging w/ power " + this.chargePower + " and held for " + this.chargeTime.toFixed(2) + "s.");
-            // TODO: Call attack(int power) function!
             this.charging = false;
             //this.chargePower = 1;
             this.chargeTime = 0;
@@ -526,10 +521,10 @@ Goat.prototype.update = function () {
      *              On Hit                  *
      ****************************************/
 
-    // TODO: 1. Attacking AI goats breaks their AI.
-    // TODO: 2. Still need to provide knockback
-    // TODO: 3. Need to prevent an injured goat from gaining points if on hill
-    // TODO: 4. BUG: "Bullet passing through paper" effect on high charged attacks. No collisions are detected!
+    // TODO: 1. Need to prevent an injured goat from gaining points if on hill
+    // TODO: 2. Prevent goats from being hit out of bounds of the stage
+    // TODO: 3. Fix animations
+    // TODO: 4. Tweak knockback durations and distance if needed
 
     if (this.injured) {
 

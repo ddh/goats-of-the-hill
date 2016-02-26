@@ -93,10 +93,10 @@ PlayGame.prototype.initGoats = function () {
     this.game.addEntity(new Goat(this.game, 1, playerTwoControls, "green-goat"));
 
     var playerThreeControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0};
-    this.game.addEntity(new Goat(this.game, 2, playerThreeControls, "red-goat"));
+    this.game.addEntity(new Goat(this.game, "AI", playerThreeControls, "red-goat"));
 
     var playerFourControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0};
-    this.game.addEntity(new Goat(this.game, 3, playerFourControls, "yellow-goat"));
+    this.game.addEntity(new Goat(this.game, "AI", playerFourControls, "yellow-goat"));
 };
 
 // Checks which goat is the leader and crowns them.

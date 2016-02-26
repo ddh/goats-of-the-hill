@@ -168,8 +168,54 @@ Goat.prototype.reset = function () {
 // Based off of Chris Marriott's Unicorn's update method: https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 Goat.prototype.update = function () {
 
+
     /****************************************
-     *              Position              *
+     *              AI Goat                 *
+     ****************************************/
+
+    if (this.playerNumber == "AI") {
+
+        // Find the hill
+        function findHill(that) {
+            for (var i = 0, len = that.game.platforms.length; i < len; i++) {
+                if (that.game.platforms[i].isHill) return that.game.platforms[i];
+            }
+        }
+
+        var hill = findHill(this);
+
+        // If goat is NOT king, allow it to run. Otherwise just walk
+        this.runKey = !this.king;
+
+        // When there is a hill present, AI Goat moves towards it:
+        if (hill) {
+
+            // Horizontal movement towards hill (walk/run left and right)
+            if (this.x + this.width < hill.x + hill.width / 2) {
+                //console.log(this + " AI is moving right!");
+                this.rightKey = true;
+                this.leftKey = false;
+            } else if (this.x > hill.x + hill.width / 2) {
+                //console.log(this + " AI is moving left!");
+                this.leftKey = true;
+                this.rightKey = false;
+            }
+
+            // Jump when underneath the hill, if not already on it
+            if (this.entity != hill && this.boundingBox.collide(new BoundingBox(hill.x, hill.y, hill.width, this.game.surfaceHeight))) {
+                this.allowJump = true;
+                this.jumpKey = true;
+            }
+        }
+
+        // TODO: Hold a charge of variable power. Attack only the King.
+
+
+    }
+
+
+    /****************************************
+     *              Position                *
      ****************************************/
 
     // Update goat's velocities/position if it's on another entity
@@ -254,7 +300,6 @@ Goat.prototype.update = function () {
         if (this.jumping) {
 
             // Apply variable jumping velocity until threshold:
-            // TODO: Need a way to disable 'airtime' if key was let off early.
             if (this.jumpKey && this.airTime < this.maxAirTime) {
                 this.velocity.y -= this.gravity; // Negate force of gravity during airTime
                 this.airTime += this.game.clockTick;
@@ -395,6 +440,10 @@ Goat.prototype.update = function () {
         }
     }
 
+    // Hit boxes for attacking:
+    this.rightAttackBB = new BoundingBox(this.boundingBox.x + 38, (this.boundingBox.y + this.boundingBox.height / 2) - 8, 5, this.boundingBox.height / 2);
+    this.leftAttackBB = new BoundingBox(this.boundingBox.x, (this.boundingBox.y + this.boundingBox.height / 2) - 8, 5, this.boundingBox.height / 2);
+
     // The attack
     if (this.attacking) {
         this.running = false;
@@ -415,6 +464,21 @@ Goat.prototype.update = function () {
             this.attackTimeCounter = 0;
             this.chargePower = 1;
         }
+
+        // If attack collides with another goat:
+        for (var i = 0, len = this.game.goats.length; i < len; i++) {
+            var goat = this.game.goats[i];
+            if (this.right) {
+                if (this.rightAttackBB.collide(goat.leftAttackBB) && goat != this) {
+                    console.log(this + " attacked " + goat + " from the left!");
+                    goat.hit = true;
+                }
+            } else {
+                if (this.leftAttackBB.collide(goat.rightAttackBB) && goat != this) {
+                    console.log(this + " attacked " + goat + " from the right!");
+                }
+            }
+        }
     }
 
 
@@ -433,7 +497,7 @@ Goat.prototype.update = function () {
     // if (this.playerNumber === 0)
     //     this.king = this.game.kKey;
 
-    // Increments goat's score count:  
+    // Increments goat's score count:
     if (this.entity && this.entity.isHill && !isMounted(this, this.game.goats)) {
         var incrementScore = true;
         for (var i = 0, len = this.game.goats.length; i < len; i++) {
@@ -457,7 +521,8 @@ Goat.prototype.update = function () {
     }
 
     Entity.prototype.update.call(this);
-};
+}
+;
 
 Goat.prototype.draw = function (ctx) {
     // For drawing CROWN:

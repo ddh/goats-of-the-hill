@@ -70,7 +70,7 @@ function Goat(game, playerNumber, controls, sprite) {
     this.injured = false;           // Whether this goat was collided into
     this.timeout = 0;
     this.timeoutMax = 100;          // How many updates an injured goat is immobolized for
-    this.hit = {dir: '', pow: ''};  // A hit object containing information about the collision
+    this.hit = {right: '', pow: ''};// A hit object containing information about the collision
     this.maxVictims = 1;            // The number of goats a goat can attack in one attack (TODO: POWERUP)
     this.invulnerable = false;      // If true, this goat cannot be attacked (TODO: POWERUP)
 
@@ -182,7 +182,7 @@ Goat.prototype.update = function () {
      *              AI Goat                 *
      ****************************************/
 
-    if (this.playerNumber == "AI") {
+    if (this.playerNumber == "AI" && !this.injured) {
 
         // Find the hill
         function findHill(that) {
@@ -507,13 +507,25 @@ Goat.prototype.update = function () {
      *              On Hit                  *
      ****************************************/
 
+    // TODO: 1. Attacking AI goats breaks their AI.
+    // TODO: 2. Still need to provide knockback
+    // TODO: 3. Need to prevent an injured goat from gaining points if on hill
+    // TODO: 4. BUG: "Bullet passing through paper" effect on high charged attacks. No collisions are detected!
+
     if (this.injured) {
+
+        // Knockback goat to right
+        if (this.hit.right) {
+            this.x += 1 * this.hit.pow;
+        } else {
+            this.x -= 1 * this.hit.pow;
+        }
+        this.timeout += 50 / this.hit.pow;
         this.chargePower = 1; // An injured goat cannot charge
         this.runKey = false;
         this.jumpKey = false;
         this.leftKey = false;
         this.rightKey = false;
-        this.timeout++;
     }
 
     if (this.timeout >= this.timeoutMax) {

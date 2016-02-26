@@ -65,17 +65,17 @@ function Goat(game, playerNumber, controls, sprite) {
     this.chargeTime = 0;            // Held charge time
     this.chargeDecayTime = 10;      // 10 secs before charge power starts decaying
     this.chargeDecay = false;       // Whether charge power is decaying
-    this.chargeTick = 0.25;         // Every 15sec = tick in charge power
+    this.chargeTick = 0.25;         // Every 1/4 sec = tick in charge power
     this.chargePower = 1;           // Currently held charge power
-    this.chargePowerMax = 10;       // Maximum charge power (ticks) (TODO: POWERUP)
+    this.chargePowerMax = 5;       // Maximum charge power (ticks) (TODO: POWERUP)
     this.attackTimeCounter = 0;
-    this.attackTimeMax = 10;        // How many UPDATES the attack lasts for
-    this.attackVelocity = 2;        // Initial attack velocity
+    this.attackTimeMax = 20;        // How many UPDATES the attack lasts for
+    this.attackVelocity = 2.5;        // Initial attack velocity
 
     // Hit physics:
     this.injured = false;           // Whether this goat was collided into
     this.timeout = 0;
-    this.timeoutMax = 100;          // How many updates an injured goat is immobolized for
+    this.timeoutMax = 300;          // How many updates an injured goat is immobolized for
     this.hit = {right: '', pow: ''};// A hit object containing information about the collision
     this.maxVictims = 1;            // The number of goats a goat can attack in one attack (TODO: POWERUP)
     this.invulnerable = false;      // If true, this goat cannot be attacked (TODO: POWERUP)
@@ -120,8 +120,8 @@ function Goat(game, playerNumber, controls, sprite) {
 
     this.crownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/smallest-king-crown.png"), 0, 0, 40, 32, 0.1, 1, true, false);
     this.chargingAnimation = new Animation(ASSET_MANAGER.getAsset("./img/auras.png"), -15, 125, 97, 100, 0.1, 7, true, false);
-    this.attackAuraLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/attackAuraLeft.png"), 3, 0, 44, 150, .1, 4, false, false);
-    this.attackAuraRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/attackAuraRight.png"), 8, 0, 43, 150, .1, 4, false, true);
+    this.attackAuraLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/attackAuraLeft.png"), 3, 0, 44, 150, .1, 4, true, false);
+    this.attackAuraRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/attackAuraRight.png"), 8, 0, 43, 150, .1, 4, true, true);
 
     // Audio:
     this.soundFX = new Howl({
@@ -237,7 +237,7 @@ Goat.prototype.update = function () {
         this.attackKey = true
 
         // Or Goat will attack the king if it detects a collision with king
-        if (this.chargePower >= getRandomIntInclusive(5, 10)) {
+        if (this.chargePower >= getRandomIntInclusive(3, this.chargePowerMax)) {
             for (var i = 0; i < this.game.goats.length; i++) {
                 var otherGoat = this.game.goats[i];
                 if (this.boundingBox.collide(otherGoat.boundingBox) && this != otherGoat) {
@@ -468,8 +468,8 @@ Goat.prototype.update = function () {
     }
 
     // Hit boxes for attacking:
-    this.rightAttackBB = new BoundingBox(this.boundingBox.x + 33, (this.boundingBox.y + this.boundingBox.height / 2) - 8, 10, this.boundingBox.height / 2);
-    this.leftAttackBB = new BoundingBox(this.boundingBox.x, (this.boundingBox.y + this.boundingBox.height / 2) - 8, 10, this.boundingBox.height / 2);
+    this.rightAttackBB = new BoundingBox(this.boundingBox.x + 33, this.boundingBox.y + 4, 10, this.boundingBox.height * 0.8);
+    this.leftAttackBB = new BoundingBox(this.boundingBox.x, this.boundingBox.y + 4, 10, this.boundingBox.height * 0.8);
 
     // The attack
     if (this.attacking) {
@@ -532,9 +532,9 @@ Goat.prototype.update = function () {
 
         // Knockback goat to right
         if (this.hit.right) {
-            this.x += 1 * this.hit.pow;
+            this.x += 10 * this.hit.pow;
         } else {
-            this.x -= 1 * this.hit.pow;
+            this.x -= 10 * this.hit.pow;
         }
         this.timeout += 50 / this.hit.pow;
         this.chargePower = 1; // An injured goat cannot charge
@@ -611,7 +611,7 @@ Goat.prototype.draw = function (ctx) {
             this.attackLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
             this.attackAuraLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x - 20, this.y - 15, this.scale * 5);
         }
-            
+
     }
     else if (this.falling) {
         if (this.right)

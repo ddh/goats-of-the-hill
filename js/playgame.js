@@ -93,17 +93,17 @@ PlayGame.prototype.initGoats = function () {
     this.game.addEntity(new Goat(this.game, 1, playerTwoControls, "green-goat"));
 
     var playerThreeControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0};
-    this.game.addEntity(new Goat(this.game, "AI", playerThreeControls, "red-goat"));
+    this.game.addEntity(new Goat(this.game, 2, playerThreeControls, "red-goat"));
 
     var playerFourControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0};
-    this.game.addEntity(new Goat(this.game, "AI", playerFourControls, "yellow-goat"));
+    this.game.addEntity(new Goat(this.game, 3, playerFourControls, "yellow-goat"));
 };
 
 // Checks which goat is the leader and crowns them.
-PlayGame.prototype.scoreChecker = function() {
+PlayGame.prototype.scoreChecker = function () {
     var highestScore = this.game.goats[0]; //sets a goat as king
     //checks which goat has the highest score
-    for (var i = 1, len = this.game.goats.length; i < len; i++) { 
+    for (var i = 1, len = this.game.goats.length; i < len; i++) {
         var goat = this.game.goats[i];
         if (highestScore.score < goat.score) {
             highestScore = goat;
@@ -116,14 +116,14 @@ PlayGame.prototype.scoreChecker = function() {
         }
     }
     if (typeof highestScore.score !== 'undefined'
-                && typeof highestScore.score !== 'NaN'
-                && highestScore.score !== 0) { //Avoids start of game deciding who is king
+        && typeof highestScore.score !== 'NaN'
+        && highestScore.score !== 0) { //Avoids start of game deciding who is king
         highestScore.king = true;
     }
 };
 
 //Helper function for the hill
-PlayGame.prototype.randomHillGenerator = function() {
+PlayGame.prototype.randomHillGenerator = function () {
     var len = this.game.platforms.length;
     if (len !== 0 && this.hill) { //there is a hill
         if (this.randomizeHill) { // It's a random hill style
@@ -134,7 +134,7 @@ PlayGame.prototype.randomHillGenerator = function() {
                 for (var i = 1; i < len; i++) { // finds the current hill and disables it.
                     if (this.game.platforms[i].isHill) {
                         this.game.platforms[i].isHill = false;
-                    }            
+                    }
                 }
                 // ***NOTE: if no platforms in scene, len is 0 so multiplying by zero is BAAAADD !!! :P
                 var randomPlatformIndex = Math.floor((Math.random() * len));
@@ -143,11 +143,11 @@ PlayGame.prototype.randomHillGenerator = function() {
                     this.game.platforms[randomPlatformIndex].isHill = true; // sets a new platform as the hill
                 } else {
                     while (randomPlatformIndex == 0) { // checks to make sure its not the ground platform
-                        randomPlatformIndex = Math.floor((Math.random() * len));                
+                        randomPlatformIndex = Math.floor((Math.random() * len));
                     }
                     this.game.platforms[randomPlatformIndex].isHill = true; // sets a new platform as the hill
-                }   
-            }   
+                }
+            }
         }
     }
 };

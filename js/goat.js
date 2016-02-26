@@ -37,8 +37,8 @@ function Goat(game, playerNumber, controls, sprite) {
     this.friction = 0.75;
     this.speed = 0.5;
     this.maxVelocityX = 3.0;
-    this.walkSpeed = 0.5;
-    this.runSpeed = 1.5;
+    this.walkSpeed = 0.5;           // (TODO: POWERUP)
+    this.runSpeed = 1.5;            // (TODO: POWERUP)
     this.maxWalkSpeed = 3.0
     this.maxRunSpeed = 6.0;
 
@@ -46,25 +46,32 @@ function Goat(game, playerNumber, controls, sprite) {
     // Jump physics
     this.velocity = {x: 0, y: 0};
     this.gravity = 0.5;
-    this.terminalVelocity = 12; // Max falling velocity
-    this.maxVelocityY = -6.0;   // Max jump velocity (more negative, higher jump)
-    this.airTime = 0;           // How long the jump key is held
-    this.maxAirTime = 0.3;      // Max time the jump key can be held for variable jumping
-    this.jumps = 0;             // The number of times goat has jumped before landing
-    this.maxJumps = 2;          // Maximum number of jumps allowed (2=double-jumping, 3=triple, etc)
+    this.terminalVelocity = 12;     // Max falling velocity
+    this.maxVelocityY = -6.0;       // Max jump velocity (more negative, higher jump) (TODO: POWERUP)
+    this.airTime = 0;               // How long the jump key is held
+    this.maxAirTime = 0.3;          // Max time the jump key can be held for variable jumping
+    this.jumps = 0;                 // The number of times goat has jumped before landing
+    this.maxJumps = 2;              // Maximum number of jumps allowed (2=double-jumping, 3=triple, etc) (TODO: POWERUP)
     this.allowJump = true;
 
     // Attack physics
-    this.chargeTime = 0;        // Held charge time
-    this.chargeTimeMax = 5;     // 5 seconds to obtain max charge
-    this.chargeDecayTime = 15;  // 15 secs before charge power starts decaying
-    this.chargeDecay = false;   // Whether charge power is decaying
-    this.chargeTick = 0.5;      // Every 30sec = tick in charge power
-    this.chargePower = 1;       // Currently held charge power
-    this.chargePowerMax = 10;   // Maximum charge power (ticks)
+    this.chargeTime = 0;            // Held charge time
+    this.chargeTimeMax = 5;         // 5 seconds to obtain max charge
+    this.chargeDecayTime = 15;      // 15 secs before charge power starts decaying
+    this.chargeDecay = false;       // Whether charge power is decaying
+    this.chargeTick = 0.5;          // Every 30sec = tick in charge power
+    this.chargePower = 1;           // Currently held charge power
+    this.chargePowerMax = 10;       // Maximum charge power (ticks) (TODO: POWERUP)
     this.attackTimeCounter = 0;
-    this.attackTimeMax = 10;    // How many UPDATES the attack lasts for
-    this.attackVelocity = 2;    // Initial attack velocity
+    this.attackTimeMax = 10;        // How many UPDATES the attack lasts for
+    this.attackVelocity = 2;        // Initial attack velocity
+
+    // Hit physics:
+    this.injured = false;           // Whether this goat was collided into
+    this.hit = {dir: '', pow: ''};  // A hit object containing information about the collision
+    this.maxVictims = 1;            // The number of goats a goat can attack in one attack (TODO: POWERUP)
+    this.invulnerable = false;      // If true, this goat cannot be attacked (TODO: POWERUP)
+
 
     // Animations:
     this.trim = {top: 50, bottom: 50, left: 50, right: 50}; //
@@ -468,18 +475,35 @@ Goat.prototype.update = function () {
         // If attack collides with another goat:
         for (var i = 0, len = this.game.goats.length; i < len; i++) {
             var goat = this.game.goats[i];
+            var victims = 0;
+            if (victims < this.maxVictims) {
+
+            }
             if (this.right) {
-                if (this.rightAttackBB.collide(goat.leftAttackBB) && goat != this) {
+                // Goats who are already injured cannot be attacked
+                if (this.rightAttackBB.collide(goat.leftAttackBB) && goat != this && !goat.injured) {
                     console.log(this + " attacked " + goat + " from the left!");
-                    goat.hit = true;
+                    goat.injured = true;
+                    goat.hit = {right: true, pow: this.chargePower};
+                    victims++;
+                    break; // Can only attack one goat at a time
                 }
             } else {
-                if (this.leftAttackBB.collide(goat.rightAttackBB) && goat != this) {
+                if (this.leftAttackBB.collide(goat.rightAttackBB) && goat != this && !goat.injured) {
                     console.log(this + " attacked " + goat + " from the right!");
+                    goat.injured = true;
+                    goat.hit = {right: false, pow: this.chargePower};
+                    victims++;
+                    break; // Can only attack one goat at a time
                 }
             }
         }
     }
+
+
+    /****************************************
+     *              On Hit                  *
+     ****************************************/
 
 
     /****************************************

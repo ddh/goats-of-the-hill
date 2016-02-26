@@ -229,13 +229,9 @@ GameEngine.prototype.update = function () {
 
         // TODO: Find cleaner way (ie upon gamepad disconnect/connect listeners to trigger AI Goats):
 
-        // If player 3's controller is not connected, AI Goat takes over
-        if (this.goats.length == 3) {
-            this.goats[2].playerNumber = (typeof navigator.getGamepads()[2] === 'undefined') ? "AI" : 2;
-        }
-
-        // If player 4's controller is not connected, AI Goat takes over
+        // If player 3 or 4's controller is not connected, AI Goat takes over
         if (this.goats.length == 4) {
+            this.goats[2].playerNumber = (typeof navigator.getGamepads()[2] === 'undefined') ? "AI" : 2;
             this.goats[3].playerNumber = (typeof navigator.getGamepads()[3] === 'undefined') ? "AI" : 3;
         }
 

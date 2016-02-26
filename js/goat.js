@@ -120,6 +120,8 @@ function Goat(game, playerNumber, controls, sprite) {
 
     this.crownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/smallest-king-crown.png"), 0, 0, 40, 32, 0.1, 1, true, false);
     this.chargingAnimation = new Animation(ASSET_MANAGER.getAsset("./img/auras.png"), -15, 125, 97, 100, 0.1, 7, true, false);
+    this.attackAuraLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/attackAuraLeft.png"), 3, 0, 44, 150, .1, 4, false, false);
+    this.attackAuraRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/attackAuraRight.png"), 8, 0, 43, 150, .1, 4, false, true);
 
     // Audio:
     this.soundFX = new Howl({
@@ -602,10 +604,14 @@ Goat.prototype.draw = function (ctx) {
 
 
     if (this.attacking) {
-        if (this.right)
+        if (this.right) {
             this.attackRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
-        else
+            this.attackAuraRightAnimation.drawFrame(this.game.clockTick, ctx, this.x - 50, this.y - 15, this.scale * 5);
+        } else {
             this.attackLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+            this.attackAuraLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x - 20, this.y - 15, this.scale * 5);
+        }
+            
     }
     else if (this.falling) {
         if (this.right)

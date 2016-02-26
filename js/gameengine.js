@@ -45,8 +45,6 @@ function GameEngine() {
     this.surfaceWidth = null;
     this.surfaceHeight = null;
     this.keys = {}; // TODO: use map to correlate certain e.which's or keys to booleans or elapsed times
-    this.sceneSelector = null;
-    this.scene = null;
     this.gamepads = [];
 
 }
@@ -72,6 +70,14 @@ GameEngine.prototype.start = function () {
 
 GameEngine.prototype.loadScene = function (scene) {
     this.addEntity(scene);
+};
+
+GameEngine.prototype.prepForScene = function () {
+    this.platforms = [];
+    this.collidables = [];
+    this.goats = [];
+    this.entities = [];
+    this.playGame = null;
 };
 
 GameEngine.prototype.startInput = function () {
@@ -142,9 +148,11 @@ GameEngine.prototype.addEntity = function (entity) {
         // 2) Add Platform entities
         // Note: push.apply allows you to append array contents all at once (no need for loops)
         // Note: setting each array individually here to avoid shallow copying mistakes
-        this.platforms.push.apply(this.platforms, entity.platforms);
-        this.collidables.push.apply(this.collidables, entity.platforms);
-        this.entities.push.apply(this.entities, entity.platforms);
+        if (entity.platforms.length > 0) {
+            this.platforms.push.apply(this.platforms, entity.platforms);
+            this.collidables.push.apply(this.collidables, entity.platforms);
+            this.entities.push.apply(this.entities, entity.platforms);
+        }
 
         // 3) *Note: Goat entities already persist in game engine
     } else if (entity instanceof Goat) {
@@ -173,7 +181,7 @@ GameEngine.prototype.addEntity = function (entity) {
         this.playGame = entity; // keep this field in game engine for now, may take it out later...
         this.entities.push(entity);
     }
-    console.log('added ' + entity.toString());
+    if (typeof entity !== 'undefined') console.log('added ' + entity.toString());
 };
 
 GameEngine.prototype.draw = function () {
@@ -185,45 +193,51 @@ GameEngine.prototype.draw = function () {
     this.ctx.save();
 
     // 3. Draw each entity onto canvas
-    for (var i = 0; i < this.entities.length; i++) {
-        this.entities[i].draw(this.ctx);
+    for (var i = 0, len = this.entities.length; i < len; i++) {
+        var ent = this.entities[i];
+        if (this.playGame.isInTransitionScene) {
+            if (ent instanceof Background || ent instanceof PlayGame) this.entities[i].draw(this.ctx);
+        } else {
+            this.entities[i].draw(this.ctx);
+        }
     }
     this.ctx.restore();
 };
 
 GameEngine.prototype.update = function () {
-    var entitiesCount = this.entities.length;
+    if (typeof this.entities !== 'undefined') {
+        var entitiesCount = this.entities.length;
 
-    // Cycle through the list of entities in GameEngine.
-    for (var i = 0; i < entitiesCount; i++) {
-        var entity = this.entities[i];
+        // Cycle through the list of entities in GameEngine.
+        for (var i = 0; i < entitiesCount; i++) {
+            var entity = this.entities[i];
 
-        // Only update those not flagged for removal, for optimization
-        if (!entity.removeFromWorld) {
-            entity.update();
+            // Only update those not flagged for removal, for optimization
+            if (typeof entity !== 'undefined' && !entity.removeFromWorld) {
+                entity.update();
+                //console.log(entity.toString() + " updated");
+            }
+        }
+
+        // Removal of flagged entities
+        for (var j = this.entities.length - 1; j >= 0; --j) {
+            if (this.entities[j].removeFromWorld) {
+                this.entities.splice(j, 1);
+            }
+        }
+
+        // Poll for gamepads
+        for (var i = 0; i < this.goats.length; i++) {
+            var gamepad = navigator.getGamepads()[i];
+            if (gamepad) {
+                this.goats[i].jumpKey = buttonPressed(gamepad.buttons[0]);
+                this.goats[i].leftKey = gamepad.axes[0] < -0.5;
+                this.goats[i].rightKey = gamepad.axes[0] > 0.5;
+                this.goats[i].attackKey = buttonPressed(gamepad.buttons[7]);
+                this.goats[i].runKey = buttonPressed(gamepad.buttons[6]);
+            }
         }
     }
-
-    // Removal of flagged entities
-    for (var j = this.entities.length - 1; j >= 0; --j) {
-        if (this.entities[j].removeFromWorld) {
-            this.entities.splice(j, 1);
-        }
-    }
-
-    // Poll for gamepads
-    for (var i = 0; i < this.goats.length; i++) {
-        var gamepad = navigator.getGamepads()[i];
-        if (gamepad) {
-            this.goats[i].jumpKey = buttonPressed(gamepad.buttons[0]);
-            this.goats[i].leftKey = gamepad.axes[0] < -0.5;
-            this.goats[i].rightKey = gamepad.axes[0] > 0.5;
-            this.goats[i].attackKey = buttonPressed(gamepad.buttons[7]);
-            this.goats[i].runKey = buttonPressed(gamepad.buttons[6]);
-        }
-    }
-
-
 };
 
 GameEngine.prototype.loop = function () {
@@ -258,9 +272,6 @@ function Timer() {
     this.gameTime = 0;
     this.maxStep = 0.05;
     this.wallLastTimestamp = 0;
-    this.roundTime = 0;
-    this.secondBucket = 0;
-    this.secondJustPassed = false;
 }
 
 Timer.prototype.tick = function () {
@@ -270,7 +281,6 @@ Timer.prototype.tick = function () {
 
     var gameDelta = Math.min(wallDelta, this.maxStep);
     this.gameTime += gameDelta;
-    this.roundTime += gameDelta;
 
     return gameDelta;
 };

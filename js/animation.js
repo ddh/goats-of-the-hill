@@ -46,7 +46,7 @@ Animation.prototype.drawFrame = function (tick, ctx, x, y, scaleBy) {
         locX, locY,
         this.frameWidth * scaleBy,
         this.frameHeight * scaleBy);
-}
+};
 
 Animation.prototype.currentFrame = function () {
     return Math.floor(this.elapsedTime / this.frameDuration);

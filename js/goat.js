@@ -56,10 +56,9 @@ function Goat(game, playerNumber, controls, sprite) {
 
     // Attack physics
     this.chargeTime = 0;            // Held charge time
-    this.chargeTimeMax = 5;         // 5 seconds to obtain max charge
-    this.chargeDecayTime = 15;      // 15 secs before charge power starts decaying
+    this.chargeDecayTime = 10;      // 10 secs before charge power starts decaying
     this.chargeDecay = false;       // Whether charge power is decaying
-    this.chargeTick = 0.5;          // Every 30sec = tick in charge power
+    this.chargeTick = 0.25;         // Every 15sec = tick in charge power
     this.chargePower = 1;           // Currently held charge power
     this.chargePowerMax = 10;       // Maximum charge power (ticks) (TODO: POWERUP)
     this.attackTimeCounter = 0;
@@ -431,12 +430,6 @@ Goat.prototype.update = function () {
             console.log(this + "'s charge power decayed to " + this.chargePower);
         }
 
-        // Once max charge time is met:
-        if (this.chargeTime >= this.chargeTimeMax) {
-            console.log("MAXIMUM CHARGE REACHED!");
-            // TODO: Do something here once max charge is met? Dunno what.
-        }
-
         // On letting go of charging key, release an attack
         if (!this.attackKey) {
             console.log(this + " stopped charging w/ power " + this.chargePower + " and held for " + this.chargeTime.toFixed(2) + "s.");
@@ -450,8 +443,8 @@ Goat.prototype.update = function () {
     }
 
     // Hit boxes for attacking:
-    this.rightAttackBB = new BoundingBox(this.boundingBox.x + 38, (this.boundingBox.y + this.boundingBox.height / 2) - 8, 5, this.boundingBox.height / 2);
-    this.leftAttackBB = new BoundingBox(this.boundingBox.x, (this.boundingBox.y + this.boundingBox.height / 2) - 8, 5, this.boundingBox.height / 2);
+    this.rightAttackBB = new BoundingBox(this.boundingBox.x + 33, (this.boundingBox.y + this.boundingBox.height / 2) - 8, 10, this.boundingBox.height / 2);
+    this.leftAttackBB = new BoundingBox(this.boundingBox.x, (this.boundingBox.y + this.boundingBox.height / 2) - 8, 10, this.boundingBox.height / 2);
 
     // The attack
     if (this.attacking) {
@@ -468,37 +461,35 @@ Goat.prototype.update = function () {
 
         // When the attack is finished:
         if (this.attackTimeCounter > this.attackTimeMax) {
-            console.log(this + " attacked with power of " + this.chargePower);
-            this.attacking = false;
-            this.attackTimeCounter = 0;
-            this.chargePower = 1;
+            this.finishAttack();
         }
 
         // If attack collides with another goat:
+        var victims = 0;
         for (var i = 0, len = this.game.goats.length; i < len; i++) {
             var goat = this.game.goats[i];
-            var victims = 0;
             if (victims < this.maxVictims) {
-
-            }
-            if (this.right) {
-                // Goats who are already injured cannot be attacked
-                if (this.rightAttackBB.collide(goat.leftAttackBB) && goat != this && !goat.injured) {
-                    console.log(this + " attacked " + goat + " from the left!");
-                    goat.injured = true;
-                    goat.hit = {right: true, pow: this.chargePower};
-                    victims++;
-                    break; // Can only attack one goat at a time
+                if (this.right) {
+                    // Goats who are already injured cannot be attacked
+                    if (this.rightAttackBB.collide(goat.leftAttackBB) && goat != this && !goat.injured) {
+                        this.transferHit(goat);
+                        this.finishAttack();
+                        victims++;
+                        break; // Can only attack one goat at a time
+                    }
+                } else {
+                    if (this.leftAttackBB.collide(goat.rightAttackBB) && goat != this && !goat.injured) {
+                        this.transferHit(goat);
+                        this.finishAttack();
+                        victims++;
+                        break; // Can only attack one goat at a time
+                    }
                 }
             } else {
-                if (this.leftAttackBB.collide(goat.rightAttackBB) && goat != this && !goat.injured) {
-                    console.log(this + " attacked " + goat + " from the right!");
-                    goat.injured = true;
-                    goat.hit = {right: false, pow: this.chargePower};
-                    victims++;
-                    break; // Can only attack one goat at a time
-                }
+                console.log(victims + " " + this.maxVictims);
+                this.attacking = false;
             }
+
         }
     }
 
@@ -637,6 +628,20 @@ Goat.prototype.draw = function (ctx) {
     }
 
     Entity.prototype.draw.call(this, ctx);
+};
+
+
+Goat.prototype.finishAttack = function () {
+    console.log(this + " attacked with power of " + this.chargePower);
+    this.attacking = false;
+    this.attackTimeCounter = 0;
+    this.chargePower = 1;
+};
+
+Goat.prototype.transferHit = function (goat) {
+    console.log(this + " attacked " + goat + (this.right ? " from the left!" : " from the right!"));
+    goat.injured = true;
+    goat.hit = {right: this.right, pow: this.chargePower};
 };
 
 Goat.prototype.toString = function () {

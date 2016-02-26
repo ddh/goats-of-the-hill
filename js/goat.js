@@ -6,6 +6,13 @@ function maxSpeedEnforcement(speed, maxSpeed) {
     }
 }
 
+// Returns a random integer between min (included) and max (included)
+// Using Math.round() will give you a non-uniform distribution!
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+function getRandomIntInclusive(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function Goat(game, playerNumber, controls, sprite) {
     // Game properties:
     this.playerNumber = playerNumber;
@@ -111,7 +118,6 @@ function Goat(game, playerNumber, controls, sprite) {
     this.leftStunnedAnimation = new Animation(leftAsset, 2538, 0, 94, 90, 0.1, 4, true, false);
     this.rightStunnedAnimation = new Animation(rightAsset, 2538, 0, 94, 90, 0.1, 4, true, false);
 
-
     this.crownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/smallest-king-crown.png"), 0, 0, 40, 32, 0.1, 1, true, false);
     this.chargingAnimation = new Animation(ASSET_MANAGER.getAsset("./img/auras.png"), -15, 125, 97, 100, 0.1, 7, true, false);
 
@@ -181,6 +187,8 @@ Goat.prototype.update = function () {
      *              AI Goat                 *
      ****************************************/
 
+    // AI Goat basically emulates key presses:
+
     if (this.playerNumber == "AI" && !this.injured) {
 
         // Find the hill
@@ -195,18 +203,25 @@ Goat.prototype.update = function () {
         // If goat is NOT king, allow it to run. Otherwise just walk
         this.runKey = !this.king;
 
+        // If goat is on the hill, just walk
+        if (this.entity == hill) this.runKey = false;
+
         // When there is a hill present, AI Goat moves towards it:
         if (hill) {
 
             // Horizontal movement towards hill (walk/run left and right)
-            if (this.x + this.width < hill.x + hill.width / 2) {
-                //console.log(this + " AI is moving right!");
-                this.rightKey = true;
-                this.leftKey = false;
-            } else if (this.x > hill.x + hill.width / 2) {
-                //console.log(this + " AI is moving left!");
-                this.leftKey = true;
-                this.rightKey = false;
+            if (this.entity != hill || !this.king) {
+                if (this.x < hill.x) {
+                    //console.log(this + " AI is moving right!");
+                    this.rightKey = true;
+                    this.leftKey = false;
+                } else if (this.x + this.width > hill.x + hill.width) {
+                    //console.log(this + " AI is moving left!");
+                    this.leftKey = true;
+                    this.rightKey = false;
+                }
+            } else {
+                this.leftKey = this.rightKey = false; // Stop the goat from moving if king
             }
 
             // Jump when underneath the hill, if not already on it
@@ -216,8 +231,21 @@ Goat.prototype.update = function () {
             }
         }
 
-        // TODO: Hold a charge of variable power. Attack only the King.
+        // AI Attacking: Goat is always charging up
+        this.attackKey = true
 
+        // Or Goat will attack the king if it detects a collision with king
+        if (this.chargePower >= getRandomIntInclusive(5, 10)) {
+            for (var i = 0; i < this.game.goats.length; i++) {
+                var otherGoat = this.game.goats[i];
+                if (this.boundingBox.collide(otherGoat.boundingBox) && this != otherGoat) {
+                    this.attackKey = false;
+                }
+            }
+        }
+
+        // If AI's charge is decaying, attack at power 5, before losing it
+        if (this.chargeDecay && this.chargePower == 5) this.attackKey = false;
 
     }
 
@@ -642,6 +670,10 @@ Goat.prototype.transferHit = function (goat) {
     console.log(this + " attacked " + goat + (this.right ? " from the left!" : " from the right!"));
     goat.injured = true;
     goat.hit = {right: this.right, pow: this.chargePower};
+};
+
+Goat.prototype.resetAllKeys = function () {
+    this.leftKey = this.rightKey = this.jumpKey = this.runKey = this.attackKey = false;
 };
 
 Goat.prototype.toString = function () {

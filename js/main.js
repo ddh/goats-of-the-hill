@@ -92,7 +92,7 @@ var createSecondScene = function (gameEngine) {
 
     /*** Rows in Bottom-up fashion ***/
     /* row 1 */
-    platforms.push(makePlatform(gameEngine, 'l', -2, 480, 'vertical', 'hay', true));
+    //platforms.push(makePlatform(gameEngine, 'l', -2, 480, 'vertical', 'hay', true));
     /* row 2 */
     //platforms.push(makePlatform(gameEngine, 'm', 300, 375, 'diagonal', 'hay', false));
     /* row 3 */
@@ -101,7 +101,7 @@ var createSecondScene = function (gameEngine) {
     /* row 4 */
     //platforms.push(makePlatform(gameEngine, 'm', 325, 130, 'diagonal', 'hay', false));
     /* row 5 */
-    //platforms.push(makePlatform(gameEngine, 's', 100, 400, 'horizontal', 'hay', false));
+    platforms.push(makePlatform(gameEngine, 'l', 100, 400, 'horizontal', 'hay', false));
     //platforms.push(makePlatform(gameEngine, 's', 400, 200, 'horizontal', 'hay', false));
     /* row 6 */
     //platforms.push(makePlatform(gameEngine, 's', 200, 200, 'bouncing', 'hay', false));

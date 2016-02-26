@@ -6,6 +6,13 @@ function maxSpeedEnforcement(speed, maxSpeed) {
     }
 }
 
+// Returns a random integer between min (included) and max (included)
+// Using Math.round() will give you a non-uniform distribution!
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+function getRandomIntInclusive(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function Goat(game, playerNumber, controls, sprite) {
     // Game properties:
     this.playerNumber = playerNumber;
@@ -37,8 +44,8 @@ function Goat(game, playerNumber, controls, sprite) {
     this.friction = 0.75;
     this.speed = 0.5;
     this.maxVelocityX = 3.0;
-    this.walkSpeed = 0.5;
-    this.runSpeed = 1.5;
+    this.walkSpeed = 0.5;           // (TODO: POWERUP)
+    this.runSpeed = 1.5;            // (TODO: POWERUP)
     this.maxWalkSpeed = 3.0
     this.maxRunSpeed = 6.0;
 
@@ -46,25 +53,33 @@ function Goat(game, playerNumber, controls, sprite) {
     // Jump physics
     this.velocity = {x: 0, y: 0};
     this.gravity = 0.5;
-    this.terminalVelocity = 12; // Max falling velocity
-    this.maxVelocityY = -6.0;   // Max jump velocity (more negative, higher jump)
-    this.airTime = 0;           // How long the jump key is held
-    this.maxAirTime = 0.3;      // Max time the jump key can be held for variable jumping
-    this.jumps = 0;             // The number of times goat has jumped before landing
-    this.maxJumps = 2;          // Maximum number of jumps allowed (2=double-jumping, 3=triple, etc)
+    this.terminalVelocity = 12;     // Max falling velocity
+    this.maxVelocityY = -6.0;       // Max jump velocity (more negative, higher jump) (TODO: POWERUP)
+    this.airTime = 0;               // How long the jump key is held
+    this.maxAirTime = 0.3;          // Max time the jump key can be held for variable jumping
+    this.jumps = 0;                 // The number of times goat has jumped before landing
+    this.maxJumps = 2;              // Maximum number of jumps allowed (2=double-jumping, 3=triple, etc) (TODO: POWERUP)
     this.allowJump = true;
 
     // Attack physics
-    this.chargeTime = 0;        // Held charge time
-    this.chargeTimeMax = 5;     // 5 seconds to obtain max charge
-    this.chargeDecayTime = 15;  // 15 secs before charge power starts decaying
-    this.chargeDecay = false;   // Whether charge power is decaying
-    this.chargeTick = 0.5;      // Every 30sec = tick in charge power
-    this.chargePower = 1;       // Currently held charge power
-    this.chargePowerMax = 10;   // Maximum charge power (ticks)
+    this.chargeTime = 0;            // Held charge time
+    this.chargeDecayTime = 10;      // 10 secs before charge power starts decaying
+    this.chargeDecay = false;       // Whether charge power is decaying
+    this.chargeTick = 0.25;         // Every 15sec = tick in charge power
+    this.chargePower = 1;           // Currently held charge power
+    this.chargePowerMax = 10;       // Maximum charge power (ticks) (TODO: POWERUP)
     this.attackTimeCounter = 0;
-    this.attackTimeMax = 10;    // How many UPDATES the attack lasts for
-    this.attackVelocity = 2;    // Initial attack velocity
+    this.attackTimeMax = 10;        // How many UPDATES the attack lasts for
+    this.attackVelocity = 2;        // Initial attack velocity
+
+    // Hit physics:
+    this.injured = false;           // Whether this goat was collided into
+    this.timeout = 0;
+    this.timeoutMax = 100;          // How many updates an injured goat is immobolized for
+    this.hit = {right: '', pow: ''};// A hit object containing information about the collision
+    this.maxVictims = 1;            // The number of goats a goat can attack in one attack (TODO: POWERUP)
+    this.invulnerable = false;      // If true, this goat cannot be attacked (TODO: POWERUP)
+
 
     // Animations:
     this.trim = {top: 50, bottom: 50, left: 50, right: 50}; //
@@ -91,18 +106,17 @@ function Goat(game, playerNumber, controls, sprite) {
     this.landLeftAnimation = new Animation(leftAsset, 1504, 0, 94, 90, 0.1, 4, false, false);
     this.landRightAnimation = new Animation(rightAsset, 1504, 0, 94, 90, 0.1, 4, false, false);
 
-    this.leftChargeAnimation = new Animation(leftAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
-    this.rightChargeAnimation = new Animation(rightAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
+    this.chargeLeftAnimation = new Animation(leftAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
+    this.chargeRightAnimation = new Animation(rightAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
 
     this.attackLeftAnimation = new Animation(leftAsset, 1974, 0, 94, 90, 0.1, 1, true, false);
     this.attackRightAnimation = new Animation(rightAsset, 1974, 0, 94, 90, 0.1, 1, true, false);
 
-    this.leftHurtAnimation = new Animation(leftAsset, 2068, 0, 94, 90, 0.1, 4, false, false);
-    this.rightHurtAnimation = new Animation(rightAsset, 2068, 0, 94, 90, 0.1, 4, false, false);
+    this.injuredLeftAnimation = new Animation(leftAsset, 2068, 0, 94, 90, 0.1, 4, false, false);
+    this.injuredRightAnimation = new Animation(rightAsset, 2068, 0, 94, 90, 0.1, 4, false, false);
 
     this.leftStunnedAnimation = new Animation(leftAsset, 2538, 0, 94, 90, 0.1, 4, true, false);
     this.rightStunnedAnimation = new Animation(rightAsset, 2538, 0, 94, 90, 0.1, 4, true, false);
-
 
     this.crownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/smallest-king-crown.png"), 0, 0, 40, 32, 0.1, 1, true, false);
     this.chargingAnimation = new Animation(ASSET_MANAGER.getAsset("./img/auras.png"), -15, 125, 97, 100, 0.1, 7, true, false);
@@ -173,7 +187,9 @@ Goat.prototype.update = function () {
      *              AI Goat                 *
      ****************************************/
 
-    if (this.playerNumber == "AI") {
+    // AI Goat basically emulates key presses:
+
+    if (this.playerNumber == "AI" && !this.injured) {
 
         // Find the hill
         function findHill(that) {
@@ -187,18 +203,25 @@ Goat.prototype.update = function () {
         // If goat is NOT king, allow it to run. Otherwise just walk
         this.runKey = !this.king;
 
+        // If goat is on the hill, just walk
+        if (this.entity == hill) this.runKey = false;
+
         // When there is a hill present, AI Goat moves towards it:
         if (hill) {
 
             // Horizontal movement towards hill (walk/run left and right)
-            if (this.x + this.width < hill.x + hill.width / 2) {
-                //console.log(this + " AI is moving right!");
-                this.rightKey = true;
-                this.leftKey = false;
-            } else if (this.x > hill.x + hill.width / 2) {
-                //console.log(this + " AI is moving left!");
-                this.leftKey = true;
-                this.rightKey = false;
+            if (this.entity != hill || !this.king) {
+                if (this.x < hill.x) {
+                    //console.log(this + " AI is moving right!");
+                    this.rightKey = true;
+                    this.leftKey = false;
+                } else if (this.x + this.width > hill.x + hill.width) {
+                    //console.log(this + " AI is moving left!");
+                    this.leftKey = true;
+                    this.rightKey = false;
+                }
+            } else {
+                this.leftKey = this.rightKey = false; // Stop the goat from moving if king
             }
 
             // Jump when underneath the hill, if not already on it
@@ -208,8 +231,21 @@ Goat.prototype.update = function () {
             }
         }
 
-        // TODO: Hold a charge of variable power. Attack only the King.
+        // AI Attacking: Goat is always charging up
+        this.attackKey = true
 
+        // Or Goat will attack the king if it detects a collision with king
+        if (this.chargePower >= getRandomIntInclusive(5, 10)) {
+            for (var i = 0; i < this.game.goats.length; i++) {
+                var otherGoat = this.game.goats[i];
+                if (this.boundingBox.collide(otherGoat.boundingBox) && this != otherGoat) {
+                    this.attackKey = false;
+                }
+            }
+        }
+
+        // If AI's charge is decaying, attack at power 5, before losing it
+        if (this.chargeDecay && this.chargePower == 5) this.attackKey = false;
 
     }
 
@@ -233,7 +269,7 @@ Goat.prototype.update = function () {
      *              Movement                *
      ****************************************/
 
-    if (!this.attacking) {
+    if (!this.attacking && !this.injured) {
         // Update Goat's facing direction state:
         if (this.rightKey) {
             if (this.right == false) {
@@ -277,7 +313,7 @@ Goat.prototype.update = function () {
      *              Jumping                 *
      ****************************************/
 
-    if (!this.attacking) {
+    if (!this.attacking && !this.injured) {
         // Update Jump state:
         if (this.jumpKey && !this.jumping && this.jumps < this.maxJumps && this.allowJump) {
             this.allowJump = false;
@@ -395,12 +431,8 @@ Goat.prototype.update = function () {
      *              Attacking               *
      ****************************************/
 
-    /*TODO: Attacking takes precedence over all other movements such as falling, jumping, or movement.
-
-     */
-
     // When attack key is held down, charge.
-    if (this.attackKey && !this.attacking) {
+    if (this.attackKey && !this.attacking && !this.injured) {
         this.charging = true;
         this.attacking = false;
         this.chargeTime += this.game.clockTick;
@@ -422,16 +454,9 @@ Goat.prototype.update = function () {
             console.log(this + "'s charge power decayed to " + this.chargePower);
         }
 
-        // Once max charge time is met:
-        if (this.chargeTime >= this.chargeTimeMax) {
-            console.log("MAXIMUM CHARGE REACHED!");
-            // TODO: Do something here once max charge is met? Dunno what.
-        }
-
         // On letting go of charging key, release an attack
         if (!this.attackKey) {
             console.log(this + " stopped charging w/ power " + this.chargePower + " and held for " + this.chargeTime.toFixed(2) + "s.");
-            // TODO: Call attack(int power) function!
             this.charging = false;
             //this.chargePower = 1;
             this.chargeTime = 0;
@@ -441,8 +466,8 @@ Goat.prototype.update = function () {
     }
 
     // Hit boxes for attacking:
-    this.rightAttackBB = new BoundingBox(this.boundingBox.x + 38, (this.boundingBox.y + this.boundingBox.height / 2) - 8, 5, this.boundingBox.height / 2);
-    this.leftAttackBB = new BoundingBox(this.boundingBox.x, (this.boundingBox.y + this.boundingBox.height / 2) - 8, 5, this.boundingBox.height / 2);
+    this.rightAttackBB = new BoundingBox(this.boundingBox.x + 33, (this.boundingBox.y + this.boundingBox.height / 2) - 8, 10, this.boundingBox.height / 2);
+    this.leftAttackBB = new BoundingBox(this.boundingBox.x, (this.boundingBox.y + this.boundingBox.height / 2) - 8, 10, this.boundingBox.height / 2);
 
     // The attack
     if (this.attacking) {
@@ -459,26 +484,67 @@ Goat.prototype.update = function () {
 
         // When the attack is finished:
         if (this.attackTimeCounter > this.attackTimeMax) {
-            console.log(this + " attacked with power of " + this.chargePower);
-            this.attacking = false;
-            this.attackTimeCounter = 0;
-            this.chargePower = 1;
+            this.finishAttack();
         }
 
         // If attack collides with another goat:
+        var victims = 0;
         for (var i = 0, len = this.game.goats.length; i < len; i++) {
             var goat = this.game.goats[i];
-            if (this.right) {
-                if (this.rightAttackBB.collide(goat.leftAttackBB) && goat != this) {
-                    console.log(this + " attacked " + goat + " from the left!");
-                    goat.hit = true;
+            if (victims < this.maxVictims) {
+                if (this.right) {
+                    // Goats who are already injured cannot be attacked
+                    if (this.rightAttackBB.collide(goat.leftAttackBB) && goat != this && !goat.injured) {
+                        this.transferHit(goat);
+                        this.finishAttack();
+                        victims++;
+                        break; // Can only attack one goat at a time
+                    }
+                } else {
+                    if (this.leftAttackBB.collide(goat.rightAttackBB) && goat != this && !goat.injured) {
+                        this.transferHit(goat);
+                        this.finishAttack();
+                        victims++;
+                        break; // Can only attack one goat at a time
+                    }
                 }
             } else {
-                if (this.leftAttackBB.collide(goat.rightAttackBB) && goat != this) {
-                    console.log(this + " attacked " + goat + " from the right!");
-                }
+                console.log(victims + " " + this.maxVictims);
+                this.attacking = false;
             }
+
         }
+    }
+
+
+    /****************************************
+     *              On Hit                  *
+     ****************************************/
+
+    // TODO: 1. Need to prevent an injured goat from gaining points if on hill
+    // TODO: 2. Prevent goats from being hit out of bounds of the stage
+    // TODO: 3. Fix animations
+    // TODO: 4. Tweak knockback durations and distance if needed
+
+    if (this.injured) {
+
+        // Knockback goat to right
+        if (this.hit.right) {
+            this.x += 1 * this.hit.pow;
+        } else {
+            this.x -= 1 * this.hit.pow;
+        }
+        this.timeout += 50 / this.hit.pow;
+        this.chargePower = 1; // An injured goat cannot charge
+        this.runKey = false;
+        this.jumpKey = false;
+        this.leftKey = false;
+        this.rightKey = false;
+    }
+
+    if (this.timeout >= this.timeoutMax) {
+        this.injured = false;
+        this.timeout = 0;
     }
 
 
@@ -561,12 +627,20 @@ Goat.prototype.draw = function (ctx) {
         else
             this.runLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
     }
+    else if (this.injured) {
+        if (this.right)
+            this.injuredRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+        else
+            this.injuredLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+        this.injuredLeftAnimation.elapsedTime = this.injuredRightAnimation.elapsedTime = 0;
+    }
     else {
         if (this.right)
             this.standRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else
             this.standLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
     }
+
 
     // For the charging anim
     if (this.charging) {
@@ -577,6 +651,24 @@ Goat.prototype.draw = function (ctx) {
     }
 
     Entity.prototype.draw.call(this, ctx);
+};
+
+
+Goat.prototype.finishAttack = function () {
+    console.log(this + " attacked with power of " + this.chargePower);
+    this.attacking = false;
+    this.attackTimeCounter = 0;
+    this.chargePower = 1;
+};
+
+Goat.prototype.transferHit = function (goat) {
+    console.log(this + " attacked " + goat + (this.right ? " from the left!" : " from the right!"));
+    goat.injured = true;
+    goat.hit = {right: this.right, pow: this.chargePower};
+};
+
+Goat.prototype.resetAllKeys = function () {
+    this.leftKey = this.rightKey = this.jumpKey = this.runKey = this.attackKey = false;
 };
 
 Goat.prototype.toString = function () {

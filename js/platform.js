@@ -1,8 +1,8 @@
 function Platform(game, size, x, y, movement, platType, isHill) {
     var obj = helper(size, platType);
-    
+
     this.game = game;
-    this.size = size;    
+    this.size = size;
     this.image = obj.img;
     this.width = obj.width;
     this.height = obj.height;
@@ -23,7 +23,7 @@ function helper(size, platType) {
         //console.log("returned helper");
         return {img: ASSET_MANAGER.getAsset("./img/hay2.png"), width: 155, height: 50};
     } else if (size === 'l' && platType === 'hay') {
-        return {img: ASSET_MANAGER.getAsset("./img/hay3.png"), width: 240, height: 50};  
+        return {img: ASSET_MANAGER.getAsset("./img/hay3.png"), width: 240, height: 50};
     } else if (size === 'ground') {
         return {img: ASSET_MANAGER.getAsset("./img/transparent_pixel.png"), width: 800, height: 70};
     }
@@ -47,20 +47,20 @@ Platform.prototype.update = function () {
             }
             break;
         case 'horizontal':
-            if(this.isHill) { // the target platform to win points 
+            if(this.isHill) { // the target platform to win points
                 this.x += this.velocity.x;
                 this.velocity.y = 0;
                 if (this.x <= 0 || this.x + this.width >= this.game.ctx.canvas.width) {
                     this.velocity.x *= -1;
-                }   
+                }
             } else {
                 this.x += this.velocity.x;
                 this.velocity.y = 0;
                 if (this.x <= 0 || this.x + this.width >= this.game.ctx.canvas.width) {
                     this.velocity.x *= -1;
-                }    
+                }
             }
-            
+
             break;
         case 'elliptical':
             break;
@@ -93,12 +93,12 @@ Platform.prototype.update = function () {
 };
 
 Platform.prototype.draw = function (ctx) {
-    
+
     if(this.isHill) {
         var scaleBy = .6;
         var offsetFromLeftEdge = (this.width - 115) / 2; // this offset is used with centerAlignX
         var centerAlignX = this.x + offsetFromLeftEdge;
-        
+
         this.hillAnimation.drawFrame(this.game.clockTick, ctx, centerAlignX, this.y - 70, scaleBy); //draws sparkles parallel with platform
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     } else {

@@ -1,7 +1,7 @@
 // This code is based on Chris Marriott's Unicorn game found here:
 // https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 
-var ROUND_TIME_LIMIT = 10; // 1 minute (in seconds) TODO: change this value to 'team agreed upon' value
+var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds) TODO: change this value to 'team agreed upon' value
 var ROUNDS_PLAYED = 0;
 
 function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {

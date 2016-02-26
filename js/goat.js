@@ -68,6 +68,8 @@ function Goat(game, playerNumber, controls, sprite) {
 
     // Hit physics:
     this.injured = false;           // Whether this goat was collided into
+    this.timeout = 0;
+    this.timeoutMax = 100;          // How many updates an injured goat is immobolized for
     this.hit = {dir: '', pow: ''};  // A hit object containing information about the collision
     this.maxVictims = 1;            // The number of goats a goat can attack in one attack (TODO: POWERUP)
     this.invulnerable = false;      // If true, this goat cannot be attacked (TODO: POWERUP)
@@ -98,14 +100,14 @@ function Goat(game, playerNumber, controls, sprite) {
     this.landLeftAnimation = new Animation(leftAsset, 1504, 0, 94, 90, 0.1, 4, false, false);
     this.landRightAnimation = new Animation(rightAsset, 1504, 0, 94, 90, 0.1, 4, false, false);
 
-    this.leftChargeAnimation = new Animation(leftAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
-    this.rightChargeAnimation = new Animation(rightAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
+    this.chargeLeftAnimation = new Animation(leftAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
+    this.chargeRightAnimation = new Animation(rightAsset, 1880, 0, 94, 90, 0.1, 4, true, false);
 
     this.attackLeftAnimation = new Animation(leftAsset, 1974, 0, 94, 90, 0.1, 1, true, false);
     this.attackRightAnimation = new Animation(rightAsset, 1974, 0, 94, 90, 0.1, 1, true, false);
 
-    this.leftHurtAnimation = new Animation(leftAsset, 2068, 0, 94, 90, 0.1, 4, false, false);
-    this.rightHurtAnimation = new Animation(rightAsset, 2068, 0, 94, 90, 0.1, 4, false, false);
+    this.injuredLeftAnimation = new Animation(leftAsset, 2068, 0, 94, 90, 0.1, 4, false, false);
+    this.injuredRightAnimation = new Animation(rightAsset, 2068, 0, 94, 90, 0.1, 4, false, false);
 
     this.leftStunnedAnimation = new Animation(leftAsset, 2538, 0, 94, 90, 0.1, 4, true, false);
     this.rightStunnedAnimation = new Animation(rightAsset, 2538, 0, 94, 90, 0.1, 4, true, false);
@@ -240,7 +242,7 @@ Goat.prototype.update = function () {
      *              Movement                *
      ****************************************/
 
-    if (!this.attacking) {
+    if (!this.attacking && !this.injured) {
         // Update Goat's facing direction state:
         if (this.rightKey) {
             if (this.right == false) {
@@ -284,7 +286,7 @@ Goat.prototype.update = function () {
      *              Jumping                 *
      ****************************************/
 
-    if (!this.attacking) {
+    if (!this.attacking && !this.injured) {
         // Update Jump state:
         if (this.jumpKey && !this.jumping && this.jumps < this.maxJumps && this.allowJump) {
             this.allowJump = false;
@@ -407,7 +409,7 @@ Goat.prototype.update = function () {
      */
 
     // When attack key is held down, charge.
-    if (this.attackKey && !this.attacking) {
+    if (this.attackKey && !this.attacking && !this.injured) {
         this.charging = true;
         this.attacking = false;
         this.chargeTime += this.game.clockTick;
@@ -505,6 +507,20 @@ Goat.prototype.update = function () {
      *              On Hit                  *
      ****************************************/
 
+    if (this.injured) {
+        this.chargePower = 1; // An injured goat cannot charge
+        this.runKey = false;
+        this.jumpKey = false;
+        this.leftKey = false;
+        this.rightKey = false;
+        this.timeout++;
+    }
+
+    if (this.timeout >= this.timeoutMax) {
+        this.injured = false;
+        this.timeout = 0;
+    }
+
 
     /****************************************
      *              Powerups                *
@@ -585,12 +601,20 @@ Goat.prototype.draw = function (ctx) {
         else
             this.runLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
     }
+    else if (this.injured) {
+        if (this.right)
+            this.injuredRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+        else
+            this.injuredLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
+        this.injuredLeftAnimation.elapsedTime = this.injuredRightAnimation.elapsedTime = 0;
+    }
     else {
         if (this.right)
             this.standRightAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
         else
             this.standLeftAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, this.scale);
     }
+
 
     // For the charging anim
     if (this.charging) {

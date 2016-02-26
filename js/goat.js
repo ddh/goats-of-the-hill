@@ -19,6 +19,7 @@ function Goat(game, playerNumber, controls, sprite) {
     this.controls = controls;
     this.game = game;
     this.ctx = game.ctx;
+    this.sprite = sprite;
 
     // Control keys:
     this.jumpKey = false;
@@ -120,8 +121,17 @@ function Goat(game, playerNumber, controls, sprite) {
 
     this.crownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/smallest-king-crown.png"), 0, 0, 40, 32, 0.1, 1, true, false);
     this.chargingAnimation = new Animation(ASSET_MANAGER.getAsset("./img/auras.png"), -15, 125, 97, 100, 0.1, 7, true, false);
-    this.attackAuraLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/attackAuraLeft.png"), 3, 0, 44, 150, .1, 4, false, false);
-    this.attackAuraRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/attackAuraRight.png"), 8, 0, 43, 150, .1, 4, false, true);
+    console.log("sprite =" + this.sprite);
+    if (this.sprite === "green-goat") {
+        console.log("GREEN GOAT ATTACKED");
+        this.attackAuraLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/"+ this.sprite + "-attackAuraLeft.png"), 3, 0, 44, 150, .1, 4, true, false);
+        this.attackAuraRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/"+ this.sprite + "-attackAuraRight.png"), 16, 0, 43, 150, .1, 4, true, true);
+    } else {
+        this.attackAuraLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/attackAuraLeft.png"), 3, 0, 44, 150, .1, 4, true, false);
+        this.attackAuraRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/attackAuraRight.png"), 8, 0, 43, 150, .1, 4, true, true);
+    }
+  //  this.attackAuraLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/attackAuraLeft.png"), 3, 0, 44, 150, .1, 4, true, false);
+ //   this.attackAuraRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/attackAuraRight.png"), 8, 0, 43, 150, .1, 4, true, true);
 
     // Audio:
     this.soundFX = new Howl({

@@ -23,6 +23,8 @@ ASSET_MANAGER.queueDownload("./img/smallest-king-crown.png");
 ASSET_MANAGER.queueDownload("./img/auras.png");
 ASSET_MANAGER.queueDownload("./img/attackAuraLeft.png");
 ASSET_MANAGER.queueDownload("./img/attackAuraRight.png");
+ASSET_MANAGER.queueDownload("./img/green-goat-attackAuraLeft.png");
+ASSET_MANAGER.queueDownload("./img/green-goat-attackAuraRight.png");
 
 ASSET_MANAGER.downloadAll(function () {
 

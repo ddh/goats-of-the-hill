@@ -162,7 +162,7 @@ PlayGame.prototype.draw = function (ctx) {
 
 PlayGame.prototype.drawPlayButton = function (ctx) {
     if (ROUNDS_PLAYED === 0) {
-        drawTextWithOutline(ctx, "24pt Impact", "Click to play!", this.btnX, this.btnY, "purple", "white");
+        drawTextWithOutline(ctx, "24pt Impact", "Click to play!", this.btnX, this.btnY + 120, "purple", "white");
     } else {
         drawTextWithOutline(ctx, "24pt Impact", "Play again?", this.btnX, this.btnY, 'purple', 'white');
     }

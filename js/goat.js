@@ -64,9 +64,9 @@ function Goat(game, playerNumber, controls, sprite) {
 
     // Attack physics
     this.chargeTime = 0;            // Elapsed time held during charging
-    this.chargeDecayTime = 10;      // 10 secs before charge power starts decaying
+    this.chargeDecayCounter = 0;    // Keeps count of how long the charge has been decaying for
+    this.chargeDecayTime = 10;       // 10 secs before charge power starts decaying
     this.chargeDecay = false;       // Whether charge power is decaying
-    this.chargeTick = 0.25;         // Every 1/4 sec = tick in charge power
     this.chargePower = 1;           // Currently held charge power
     this.chargePowerMax = 5;        // Maximum charge power (ticks) (TODO: POWERUP)
     this.attackTimeCounter = 0;
@@ -122,9 +122,9 @@ function Goat(game, playerNumber, controls, sprite) {
     this.crownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/smallest-king-crown.png"), 0, 0, 40, 32, 0.1, 1, true, false);
     this.chargingAnimation = new Animation(ASSET_MANAGER.getAsset("./img/auras.png"), -15, 125, 97, 100, 0.1, 7, true, false);
 
-    this.attackAuraLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/"+ this.sprite + "-attackAuraLeft.png"), 3, 0, 44, 150, .1, 4, true, false);
-    this.attackAuraRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/"+ this.sprite + "-attackAuraRight.png"), 16, 0, 43, 150, .1, 4, true, true);
-    
+    this.attackAuraLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/" + this.sprite + "-attackAuraLeft.png"), 3, 0, 44, 150, .1, 4, true, false);
+    this.attackAuraRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/" + this.sprite + "-attackAuraRight.png"), 16, 0, 43, 150, .1, 4, true, true);
+
     // Audio:
     this.soundFX = new Howl({
         autoplay: false,
@@ -442,24 +442,29 @@ Goat.prototype.update = function () {
         this.chargeTime += this.game.clockTick;
         if (!this.chargeDecay) {
             this.chargePower = Math.min(Math.ceil(this.chargeTime / 1), this.chargePowerMax);
-            console.log(this + " has Charge of: " + this.chargePower);
+            //console.log(this + " has Charge of: " + this.chargePower);
         }
     }
 
     // While charging...
     if (this.charging) {
 
-        // Decay charge power if held for too long
-        if (this.chargeTime / 1 >= this.chargeDecayTime + this.chargePower) {
-            this.chargeDecay = true;
-            this.chargePower = Math.max((this.chargePower - (this.chargeTime / 1 - this.chargeDecayTime + this.chargePower)), 1);
+        // Enable decay if charge held for too long
+        if (this.chargeTime / 1 >= this.chargeDecayTime + this.chargePower) this.chargeDecay = true;
+
+        // On decay, decrement the charge power
+        if (this.chargeDecay) {
+            this.chargeDecayCounter += this.game.clockTick;
+            this.chargePower = Math.max(Math.floor(this.chargePowerMax - this.chargeDecayCounter) / 1, 1);
             console.log(this + "'s charge power decayed to " + this.chargePower);
+
         }
 
         // On letting go of charging key, release an attack
         if (!this.attackKey) {
             console.log(this + " stopped charging w/ power " + this.chargePower + " and held for " + this.chargeTime.toFixed(2) + "s.");
             this.charging = false;
+            this.chargeDecayCounter = 0;
             this.chargeTime = 0;
             this.chargeDecay = false;
             this.attacking = true;
@@ -560,11 +565,8 @@ Goat.prototype.update = function () {
     /****************************************
      *              Scoring                 *
      ****************************************/
-// Just to place a crown manually on top of player 1's goat.
-// if (this.playerNumber === 0)
-//     this.king = this.game.kKey;
 
-// Increments goat's score count:
+    // Increments goat's score count:
     if (this.entity && this.entity.isHill && !isMounted(this, this.game.goats)) {
         var incrementScore = true;
         for (var i = 0, len = this.game.goats.length; i < len; i++) {
@@ -575,10 +577,10 @@ Goat.prototype.update = function () {
         }
         if (incrementScore) {
             this.score += 1;
-            console.log("score = " + this.score);
+            //console.log("score = " + this.score);
         }
     }
-// helper function to prevent goat on goat on hill from gaining points
+    // helper function to prevent goat on goat on hill from gaining points
     function isMounted(thisGoat, goats) {
         for (var i = 0, len = goats.length; i < len; i++) {
             var goat = goats[i];
@@ -663,6 +665,7 @@ Goat.prototype.draw = function (ctx) {
             this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 12, this.y - 20, this.scale + .2);
     }
 
+    // Display charge meter:
     ctx.strokeStyle = "rgb(255, 0, 0)";
     ctx.fillStyle = "rgba(255, 255, 0, .5)";
     drawRoundedRect(ctx, this.boundingBox.x, this.boundingBox.y + this.boundingBox.height + 10, this.boundingBox.width, 10, 2);
@@ -672,6 +675,7 @@ Goat.prototype.draw = function (ctx) {
     Entity.prototype.draw.call(this, ctx);
 };
 
+// Draw charge meter to canvas
 function drawRoundedRect(ctx, x, y, width, height, radius) {
 
     ctx.lineWidth = 2;

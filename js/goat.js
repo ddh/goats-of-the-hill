@@ -120,7 +120,7 @@ function Goat(game, playerNumber, controls, sprite) {
     this.leftStunnedAnimation = new Animation(leftAsset, 2538, 0, 94, 90, 0.1, 4, true, false);
     this.rightStunnedAnimation = new Animation(rightAsset, 2538, 0, 94, 90, 0.1, 4, true, false);
 
-    this.crownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/smallest-king-crown.png"), 0, 0, 40, 32, 0.1, 1, true, false);
+    this.crownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/simple-crown-animated.png"), 0, 0, 40, 40, 0.1, 10, true, false);
     this.chargingAnimation = new Animation(ASSET_MANAGER.getAsset("./img/auras.png"), -15, 125, 97, 100, 0.1, 7, true, false);
 
     this.attackAuraLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/" + this.sprite + "-attackAuraLeft.png"), 3, 0, 44, 150, .1, 4, true, false);
@@ -598,15 +598,6 @@ Goat.prototype.update = function () {
 ;
 
 Goat.prototype.draw = function (ctx) {
-    // For drawing CROWN:
-    if (this.king) {
-        if (this.right) { // drawn crown above right-turned head
-            this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + this.scale * 42, this.y - this.scale * 20, this.scale);
-        } else { // draw crown above left-turned head
-            this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + this.scale * 13, this.y - this.scale * 20, this.scale);
-        }
-    }
-
 
     if (this.attacking) {
         if (this.right) {
@@ -669,6 +660,15 @@ Goat.prototype.draw = function (ctx) {
             this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 12, this.y - 20, this.scale + .2);
     }
 
+    // For drawing CROWN:
+    if (this.king) {
+        if (this.right) { // drawn crown above right-turned head
+            this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + this.scale * 44, this.y - this.scale * 30, this.scale);
+        } else { // draw crown above left-turned head
+            this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + this.scale * 13, this.y - this.scale * 30, this.scale);
+        }
+    }
+    
     // Display charge meter:
     ctx.strokeStyle = "rgb(255, 0, 0)";
     ctx.fillStyle = "rgba(255, 255, 0, .5)";

@@ -46,6 +46,7 @@ function GameEngine() {
     this.surfaceHeight = null;
     this.keys = {}; // TODO: use map to correlate certain e.which's or keys to booleans or elapsed times
     this.gamepads = [];
+    this.pauseKey = false;
 
 }
 
@@ -104,6 +105,12 @@ GameEngine.prototype.startInput = function () {
 
         }
     }, false);
+
+    this.ctx.canvas.addEventListener("keydown", function(e) {
+        if(e.which===27) {
+            that.pauseKey ^= true;
+        }
+    })
 
     /* === MOUSE SETTINGS === */
 
@@ -251,20 +258,24 @@ GameEngine.prototype.update = function () {
 
 GameEngine.prototype.loop = function () {
 
-    // 1. Advance game a 'tick' on the game timer
-    this.clockTick = this.timer.tick();
 
-    // 2. Update game engine (cycle through all entities)
-    this.update();
+    if(!this.pauseKey) {
+        // 1. Advance game a 'tick' on the game timer
+        this.clockTick = this.timer.tick();
 
-    // 3. Redraw out to canvas
-    this.draw();
+        // 2. Update game engine (cycle through all entities)
+        this.update();
 
-    // 4. Reset inputs to prevent repeated firing
-    this.click = null;
-    this.rightclick = null;
-    this.wheel = null;
-    this.space = null;
+        // 3. Redraw out to canvas
+        this.draw();
+
+        // 4. Reset inputs to prevent repeated firing
+        this.click = null;
+        this.rightclick = null;
+        this.wheel = null;
+        this.space = null;
+    }
+
 };
 
 GameEngine.prototype.reset = function () {

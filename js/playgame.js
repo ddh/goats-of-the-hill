@@ -1,8 +1,9 @@
 // This code is based on Chris Marriott's Unicorn game found here:
 // https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 
-var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds) TODO: change this value to 'team agreed upon' value
+var ROUND_TIME_LIMIT = 10; // 1 minute (in seconds) TODO: change this value to 'team agreed upon' value
 var ROUNDS_PLAYED = 0;
+var GOLD_COLOR = "rgb(255, 215, 0)";
 
 function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.game = game;
@@ -15,18 +16,19 @@ function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.randomHillClockTickTracker = 0;
     this.sceneSelector = null;
     this.scene = null;
+    this.isInTitleScreenScene = true;
     this.roundSecondsElapsed = 0;
     this.timerStarted = false;
+    this.lastRoundWasTie = false;
     this.roundTimerDiv = document.getElementById('roundTimer');
+    this.goatWhoWonLastRound = null;
     Entity.call(this, game, 0, 0, 0, 0);
 }
 
 PlayGame.prototype = new Entity();
 PlayGame.prototype.constructor = PlayGame;
 
-PlayGame.prototype.reset = function () {
-    this.randomHillClockTickTracker = 0;
-};
+PlayGame.prototype.reset = function () {};
 
 PlayGame.prototype.update = function () {
     Entity.prototype.update.call(this);
@@ -61,8 +63,11 @@ PlayGame.prototype.update = function () {
             this.roundTimerDiv.innerHTML = "";
             ROUNDS_PLAYED++;
             this.roundSecondsElapsed = 0;
+            this.lastRoundWasTie = false;
+            this.goatWhoWonLastRound = null;
 
             // asset stuff
+            this.determineWinningGoat();
             this.game.prepForScene();
             this.scene = this.sceneSelector.getNextScene();
             this.game.addEntity(this.scene);
@@ -151,6 +156,19 @@ PlayGame.prototype.randomHillGenerator = function () {
 PlayGame.prototype.draw = function (ctx) {
     if (this.isInTransitionScene) {
         this.drawPlayButton(ctx);
+        var statStr = "", statX, statY = 100;
+        if (!this.lastRoundWasTie) {
+            if (!this.isInTitleScreenScene) {
+                statStr = this.goatWhoWonLastRound.toString() + " won with a score of " + this.goatWhoWonLastRound.score;
+                statX = 200;
+            }
+        } else {
+            if (!this.isInTitleScreenScene) {
+                statStr = "Last round was a tie!";
+                statX = 280;
+            }
+        }
+        drawTextWithOutline(ctx, "32px Impact", statStr, statX, statY, GOLD_COLOR, 'white');
     } else {
         this.drawScores(ctx);
         drawTextWithOutline(ctx, "32px Impact", this.roundTimerDiv.innerHTML, 350, 40, 'black', 'white');
@@ -169,14 +187,14 @@ PlayGame.prototype.drawPlayButton = function (ctx) {
 };
 
 PlayGame.prototype.drawScores = function (ctx) {
-    var font = "32px Impact"
+    var font = "32px Impact";
     drawTextWithOutline(ctx, font, this.playerOneScore, 45, 590, 'white', 'blue');
     drawTextWithOutline(ctx, font, this.playerTwoScore, 245, 590, 'white', 'green');
     drawTextWithOutline(ctx, font, this.playerThreeScore, 445, 590, 'white', 'red');
-    drawTextWithOutline(ctx, font, this.playerFourScore, 645, 590, 'white', 'rgb(255, 215, 0)');
-}
+    drawTextWithOutline(ctx, font, this.playerFourScore, 645, 590, 'white', GOLD_COLOR);
+};
 
-function drawTextWithOutline(ctx, font, text, x, y, fillColor, outlineColor) {
+var drawTextWithOutline = function (ctx, font, text, x, y, fillColor, outlineColor) {
     ctx.font = font;
     ctx.strokeStyle = outlineColor;
     ctx.lineWidth = 5;
@@ -239,6 +257,27 @@ PlayGame.prototype.startTimer = function (duration, display) {
 
     timer();
     setInterval(timer, 1000 / 60);
+};
+
+// determines which goat won the previous round
+PlayGame.prototype.determineWinningGoat = function () {
+    this.isInTitleScreenScene = false; // 'cause at least one round has now been played
+    var len = this.game.goats.length;
+    var maxScore = 0;
+    this.goatWhoWonLastRound = this.game.goats[0];
+    for (var i = 1; i < len; i++) {
+        var goat = this.game.goats[i];
+        if (goat.score > maxScore) {
+            this.goatWhoWonLastRound = goat;
+            maxScore = goat.score;
+        }
+    }
+    // determines if last round was tie
+    for (var j = 0; j < len; j++) {
+        var goat = this.game.goats[j];
+        if (this.goatWhoWonLastRound !== goat && this.goatWhoWonLastRound.score === goat.score)
+            this.lastRoundWasTie = true;
+    }
 };
 
 PlayGame.prototype.toString = function () {

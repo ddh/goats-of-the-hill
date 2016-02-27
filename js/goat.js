@@ -673,6 +673,8 @@ Goat.prototype.draw = function (ctx) {
 };
 
 function drawRoundedRect(ctx, x, y, width, height, radius) {
+
+    ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
     ctx.lineTo(x + width - radius, y);

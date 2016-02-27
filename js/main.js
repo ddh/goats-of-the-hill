@@ -20,6 +20,7 @@ ASSET_MANAGER.queueDownload("./img/red-goat-left.png");
 ASSET_MANAGER.queueDownload("./img/red-goat-right.png");
 ASSET_MANAGER.queueDownload("./img/transparent_pixel.png");
 ASSET_MANAGER.queueDownload("./img/smallest-king-crown.png");
+ASSET_MANAGER.queueDownload("./img/simple-crown-animated.png");
 ASSET_MANAGER.queueDownload("./img/auras.png");
 ASSET_MANAGER.queueDownload("./img/blue-goat-attackAuraLeft.png");
 ASSET_MANAGER.queueDownload("./img/blue-goat-attackAuraRight.png");

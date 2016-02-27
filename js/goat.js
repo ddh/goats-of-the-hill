@@ -119,7 +119,7 @@ function Goat(game, playerNumber, controls, sprite) {
     this.leftStunnedAnimation = new Animation(leftAsset, 2538, 0, 94, 90, 0.1, 4, true, false);
     this.rightStunnedAnimation = new Animation(rightAsset, 2538, 0, 94, 90, 0.1, 4, true, false);
 
-    this.crownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/smallest-king-crown.png"), 0, 0, 40, 32, 0.1, 1, true, false);
+    this.crownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/simple-crown-animated.png"), 0, 0, 40, 40, 0.1, 10, true, false);
     this.chargingAnimation = new Animation(ASSET_MANAGER.getAsset("./img/auras.png"), -15, 125, 97, 100, 0.1, 7, true, false);
     this.attackAuraLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/"+ this.sprite + "-attackAuraLeft.png"), 3, 0, 44, 150, .1, 4, true, false);
     this.attackAuraRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/"+ this.sprite + "-attackAuraRight.png"), 16, 0, 43, 150, .1, 4, true, true);
@@ -563,8 +563,8 @@ Goat.prototype.update = function () {
      *              Scoring                 *
      ****************************************/
     // Just to place a crown manually on top of player 1's goat.
-    // if (this.playerNumber === 0)
-    //     this.king = this.game.kKey;
+     if (this.playerNumber === 0)
+         this.king = this.game.kKey;
 
     // Increments goat's score count:
     if (this.entity && this.entity.isHill && !isMounted(this, this.game.goats)) {
@@ -594,15 +594,6 @@ Goat.prototype.update = function () {
 ;
 
 Goat.prototype.draw = function (ctx) {
-    // For drawing CROWN:
-    if (this.king) {
-        if (this.right) { // drawn crown above right-turned head
-            this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + this.scale * 42, this.y - this.scale * 20, this.scale);
-        } else { // draw crown above left-turned head
-            this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + this.scale * 13, this.y - this.scale * 20, this.scale);
-        }
-    }
-
 
     if (this.attacking) {
         if (this.right) {
@@ -655,6 +646,15 @@ Goat.prototype.draw = function (ctx) {
             this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 1, this.y - 20, this.scale + .2);
         else
             this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 12, this.y - 20, this.scale + .2);
+    }
+
+    // For drawing CROWN:
+    if (this.king) {
+        if (this.right) { // drawn crown above right-turned head
+            this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + this.scale * 44, this.y - this.scale * 30, this.scale);
+        } else { // draw crown above left-turned head
+            this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + this.scale * 13, this.y - this.scale * 30, this.scale);
+        }
     }
     
     ctx.strokeStyle = "rgb(255, 0, 0)";

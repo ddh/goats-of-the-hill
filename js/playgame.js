@@ -39,6 +39,7 @@ PlayGame.prototype.update = function () {
         if (this.isInTransitionScene) {
             // logistic stuff
             this.isInTransitionScene = false;
+            this.randomHillClockTickTracker = 0;
             if (!this.timerStarted) this.startTimer(ROUND_TIME_LIMIT, this.roundTimerDiv);
 
             // asset stuff

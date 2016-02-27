@@ -173,7 +173,7 @@ PlayGame.prototype.drawScores = function (ctx) {
     drawTextWithOutline(ctx, font, this.playerOneScore, 45, 590, 'white', 'blue');
     drawTextWithOutline(ctx, font, this.playerTwoScore, 245, 590, 'white', 'green');
     drawTextWithOutline(ctx, font, this.playerThreeScore, 445, 590, 'white', 'red');
-    drawTextWithOutline(ctx, font, this.playerFourScore, 645, 590, 'white', 'yellow');
+    drawTextWithOutline(ctx, font, this.playerFourScore, 645, 590, 'white', 'rgb(255, 215, 0)');
 }
 
 function drawTextWithOutline(ctx, font, text, x, y, fillColor, outlineColor) {

@@ -136,7 +136,7 @@ var createFourthScene = function (gameEngine) {
 
     /*** Rows in Bottom-up fashion ***/
     /* row 1 */
-    platforms.push(makePlatform(gameEngine, 'l', -2, 480, 'vertical', 'hay', true));
+    platforms.push(makePlatform(gameEngine, 'l', -2, 480, 'vertical', 'hay', false));
     /* row 2 */
     platforms.push(makePlatform(gameEngine, 'm', 300, 375, 'diagonal', 'hay', false));
     /* row 3 */
@@ -168,7 +168,7 @@ var createSixthScene = function (gameEngine) {
 
     /*** Rows in Bottom-up fashion ***/
     /* row 1 */
-    platforms.push(makePlatform(gameEngine, 'l', -2, 480, 'vertical', 'hay', true));
+    platforms.push(makePlatform(gameEngine, 'l', -2, 480, 'vertical', 'hay', false));
     /* row 2 */
     platforms.push(makePlatform(gameEngine, 'm', 300, 375, 'diagonal', 'hay', false));
     /* row 3 */
@@ -200,7 +200,7 @@ var createEighthScene = function (gameEngine) {
 
     /*** Rows in Bottom-up fashion ***/
     /* row 1 */
-    platforms.push(makePlatform(gameEngine, 'l', -2, 480, 'vertical', 'hay', true));
+    platforms.push(makePlatform(gameEngine, 'l', -2, 480, 'vertical', 'hay', false));
     /* row 2 */
     platforms.push(makePlatform(gameEngine, 'm', 300, 375, 'diagonal', 'hay', false));
     /* row 3 */
@@ -232,7 +232,7 @@ var createTenthScene = function (gameEngine) {
 
     /*** Rows in Bottom-up fashion ***/
     /* row 1 */
-    platforms.push(makePlatform(gameEngine, 'l', -2, 480, 'vertical', 'hay', true));
+    platforms.push(makePlatform(gameEngine, 'l', -2, 480, 'vertical', 'hay', false));
     /* row 2 */
     platforms.push(makePlatform(gameEngine, 'm', 300, 375, 'diagonal', 'hay', false));
     /* row 3 */
@@ -264,7 +264,7 @@ var createTwelvethScene = function (gameEngine) {
 
     /*** Rows in Bottom-up fashion ***/
     /* row 1 */
-    platforms.push(makePlatform(gameEngine, 'l', -2, 480, 'vertical', 'hay', true));
+    platforms.push(makePlatform(gameEngine, 'l', -2, 480, 'vertical', 'hay', false));
     /* row 2 */
     platforms.push(makePlatform(gameEngine, 'm', 300, 375, 'diagonal', 'hay', false));
     /* row 3 */

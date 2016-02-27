@@ -662,7 +662,7 @@ Goat.prototype.draw = function (ctx) {
 
 
     // For the charging anim
-    if (this.charging) {
+    if (this.charging && this.chargePower == this.chargePowerMax) {
         if (this.right)
             this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 1, this.y - 20, this.scale + .2);
         else

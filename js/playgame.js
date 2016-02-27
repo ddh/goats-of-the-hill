@@ -17,17 +17,7 @@ function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.scene = null;
     this.roundSecondsElapsed = 0;
     this.timerStarted = false;
-    this.pOneScoreDiv = document.getElementById("playerOneScore");
-    this.pTwoScoreDiv = document.getElementById("playerTwoScore");
-    this.pThreeScoreDiv = document.getElementById("playerThreeScore");
-    this.pFourScoreDiv = document.getElementById("playerFourScore");
-    this.roundNumberDiv = document.getElementById('roundNumber');
     this.roundTimerDiv = document.getElementById('roundTimer');
-    this.transitionTitleDiv = document.getElementById('transitionTitle');
-    this.gameTitleDuringRoundDiv = document.getElementById('gameTitleDuringRound');
-
-    this.initDivs();
-
     Entity.call(this, game, 0, 0, 0, 0);
 }
 
@@ -55,7 +45,6 @@ PlayGame.prototype.update = function () {
             this.game.addEntity(this.scene);
             this.game.addEntity(this);
             this.initGoats();
-            this.initDivs();
         }
     }
 
@@ -79,7 +68,6 @@ PlayGame.prototype.update = function () {
             this.game.addEntity(this.scene);
             this.game.addEntity(this);
             this.initGoats();
-            this.initDivs();
         }
     }
 };
@@ -161,42 +149,42 @@ PlayGame.prototype.randomHillGenerator = function () {
 };
 
 PlayGame.prototype.draw = function (ctx) {
-    if (this.isInTransitionScene) this.drawPlayButton(ctx);
+    if (this.isInTransitionScene) {
+        this.drawPlayButton(ctx);
+    } else {
+        this.drawScores(ctx);
+        drawTextWithOutline(ctx, "32px Impact", this.roundTimerDiv.innerHTML, 350, 40, 'black', 'white');
+        drawTextWithOutline(ctx, "32px Impact", "Round #" + (ROUNDS_PLAYED + 1), 650, 40, 'purple', 'white');
+        drawTextWithOutline(ctx, "32px Impact", "Oh My Goat!", 20, 40, 'purple', 'white');
+    }
     Entity.prototype.draw.call(this, ctx);
 };
 
 PlayGame.prototype.drawPlayButton = function (ctx) {
-    ctx.fillStyle = "purple";
-    ctx.font = "24pt Impact";
     if (ROUNDS_PLAYED === 0) {
-        ctx.fillText("Click to play!", this.btnX, this.btnY);
+        drawTextWithOutline(ctx, "24pt Impact", "Click to play!", this.btnX, this.btnY, "purple", "white");
     } else {
-        ctx.fillText("Play again?", this.btnX, this.btnY);
+        drawTextWithOutline(ctx, "24pt Impact", "Play again?", this.btnX, this.btnY, 'purple', 'white');
     }
 };
 
-PlayGame.prototype.initDivs = function () {
-    if (this.isInTransitionScene) {
-        this.roundNumberDiv.innerHTML = "";
-        this.pOneScoreDiv.innerHTML = "";
-        this.pTwoScoreDiv.innerHTML = "";
-        this.pThreeScoreDiv.innerHTML = "";
-        this.pFourScoreDiv.innerHTML = "";
-        this.gameTitleDuringRoundDiv.innerHTML = "";
-        if (ROUNDS_PLAYED === 0) {
-            this.transitionTitleDiv.innerHTML = "Oh My Goat!";
-        } else {
-            this.transitionTitleDiv.innerHTML = "";
-        }
-    } else {
-        this.roundNumberDiv.innerHTML = "Round #" + (ROUNDS_PLAYED + 1);
-        this.pOneScoreDiv.innerHTML = "0";
-        this.pTwoScoreDiv.innerHTML = "0";
-        this.pThreeScoreDiv.innerHTML = "0";
-        this.pFourScoreDiv.innerHTML = "0";
-        this.gameTitleDuringRoundDiv.innerHTML = "Oh My Goat!";
-        this.transitionTitleDiv.innerHTML = "";
-    }
+PlayGame.prototype.drawScores = function (ctx) {
+    var font = "24px Impact"
+    drawTextWithOutline(ctx, font, this.playerOneScore, 45, 585, 'white', 'blue');
+    drawTextWithOutline(ctx, font, this.playerTwoScore, 245, 585, 'white', 'green');
+    drawTextWithOutline(ctx, font, this.playerThreeScore, 445, 585, 'white', 'red');
+    drawTextWithOutline(ctx, font, this.playerFourScore, 645, 585, 'white', 'yellow');
+}
+
+function drawTextWithOutline(ctx, font, text, x, y, fillColor, outlineColor) {
+    ctx.font = font;
+    ctx.strokeStyle = outlineColor;
+    ctx.lineWidth = 5;
+    ctx.lineJoin = 'miter';
+    ctx.miterLimit = 5;
+    ctx.strokeText(text, x, y);
+    ctx.fillStyle = fillColor;
+    ctx.fillText(text, x, y);
 };
 
 PlayGame.prototype.initFirstScene = function () {
@@ -207,13 +195,13 @@ PlayGame.prototype.updateScores = function () {
     for (var i = 0, len = this.game.goats.length; i < len; i++) {
         var score = this.game.goats[i].score;
         if (i === 0) { // player one
-            this.pOneScoreDiv.innerHTML = score.toString();
+            this.playerOneScore = score.toString();
         } else if (i === 1) { // player two
-            this.pTwoScoreDiv.innerHTML = score.toString();
+            this.playerTwoScore = score.toString();
         } else if (i === 2) { // player three
-            this.pThreeScoreDiv.innerHTML = score.toString();
+            this.playerThreeScore = score.toString();
         } else if (i === 3) { // player four
-            this.pFourScoreDiv.innerHTML = score.toString();
+            this.playerFourScore = score.toString();
         }
     }
 };

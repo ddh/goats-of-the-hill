@@ -22,7 +22,7 @@ Entity.prototype.draw = function (ctx) {
     if (this.game.enableDebug) {
         this.boundingBox.draw(ctx);  
         if (this instanceof Goat) {
-            this.rightAttackBB.draw(ctx);
+            this.rightAttackBB.draw(ctx); // TODO: I've seen the game crash on some occasions because this was undefined between stages
             this.leftAttackBB.draw(ctx);
         }
     } 

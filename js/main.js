@@ -3,6 +3,7 @@
 // asset manager is now constructed after class is defined (bottom of assetmanager.js)
 
 // Use asset manager to download images
+ASSET_MANAGER.queueDownload("./img/titleScreen.png");
 ASSET_MANAGER.queueDownload("./img/farm-gradient.png");
 ASSET_MANAGER.queueDownload("./img/farm.png");
 ASSET_MANAGER.queueDownload("./img/mountain.png");
@@ -59,8 +60,10 @@ ASSET_MANAGER.downloadAll(function () {
 
 var makeSceneSelector = function(gameEngine) {
     var scenes = [];
-
-    scenes.push(createTransitionScene(gameEngine)); // first scene
+    
+    scenes.push(new Scene([], new Background(gameEngine, ASSET_MANAGER.getAsset("./img/titleScreen.png"), 800, 600))); // Title screen
+    
+   // scenes.push(createTransitionScene(gameEngine)); // first scene
     scenes.push(createSecondScene(gameEngine)); // first round
 
     scenes.push(createTransitionScene(gameEngine)); // third scene

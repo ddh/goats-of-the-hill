@@ -74,10 +74,11 @@ function Goat(game, playerNumber, controls, sprite) {
     this.attackVelocity = 2.5;      // Initial attack velocity
 
     // Hit physics:
-    this.hit = {right: 0, pow: 0, timeHit: 0};// A hit object containing information about the collision
-    this.injured = false;           // Whether this goat was collided into
+    this.hit = {right: 0, pow: 0};  // A hit object containing information about the collision
     this.timeout = 0;
-    this.timeoutMax = 1;            // How many SECONDS an injured goat is immobolized for
+    this.timeoutMax = 100;          // How many updates an injured goat is immobolized for
+    this.hitTimeCounter = 0;        // Keeps track how long goat was injured for
+    this.injured = false;           // Whether this goat was collided into
     this.maxVictims = 1;            // The number of goats a goat can attack in one attack (TODO: POWERUP)
     this.invulnerable = false;      // If true, this goat cannot be attacked (TODO: POWERUP)
 
@@ -113,11 +114,11 @@ function Goat(game, playerNumber, controls, sprite) {
     this.attackLeftAnimation = new Animation(leftAsset, 1974, 0, 94, 90, 0.1, 1, true, false);
     this.attackRightAnimation = new Animation(rightAsset, 1974, 0, 94, 90, 0.1, 1, true, false);
 
-    this.injuredLeftAnimation = new Animation(leftAsset, 2068, 0, 94, 90, 0.2, 4, true, false);
-    this.injuredRightAnimation = new Animation(rightAsset, 2068, 0, 94, 90, 0.2, 4, true, false);
+    this.injuredLeftAnimation = new Animation(leftAsset, 2068, 0, 94, 90, 0.1, 4, true, false);
+    this.injuredRightAnimation = new Animation(rightAsset, 2068, 0, 94, 90, 0.1, 4, true, false);
 
-    this.leftStunnedAnimation = new Animation(leftAsset, 2538, 0, 94, 90, 0.2, 4, true, false);
-    this.rightStunnedAnimation = new Animation(rightAsset, 2538, 0, 94, 90, 0.2, 4, true, false);
+    this.leftStunnedAnimation = new Animation(leftAsset, 2538, 0, 94, 90, 0.1, 4, true, false);
+    this.rightStunnedAnimation = new Animation(rightAsset, 2538, 0, 94, 90, 0.1, 4, true, false);
 
     this.crownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/smallest-king-crown.png"), 0, 0, 40, 32, 0.1, 1, true, false);
     this.chargingAnimation = new Animation(ASSET_MANAGER.getAsset("./img/auras.png"), -15, 125, 97, 100, 0.1, 7, true, false);
@@ -533,24 +534,27 @@ Goat.prototype.update = function () {
     // TODO: 4. Tweak knockback durations and distance if needed
 
     if (this.injured) {
+        this.hitTimeCounter += this.game.clockTick;
 
-        // Knockback goat to right
+        // Knockback goats but keep them in bounds of stage
         if (this.hit.right) {
-            this.x += 1 * this.hit.pow;
+            if (this.x + this.width < this.game.surfaceWidth) this.x += 2 * this.hit.pow; // TODO: Magic numbers...
         } else {
-            this.x -= 1 * this.hit.pow;
+            if (this.x > 0)this.x -= 2 * this.hit.pow;
         }
-        this.timeout += 50 / this.hit.pow;
         this.chargePower = 1; // An injured goat cannot charge
+        this.timeout += 20 / this.hit.pow; // TODO: Magic numbers...
         this.runKey = false;
         this.jumpKey = false;
         this.leftKey = false;
         this.rightKey = false;
-    }
 
-    if (this.timeout >= this.timeoutMax) {
-        this.injured = false;
-        this.timeout = 0;
+        // Goat is knocked out for seconds equal to attacking goat's chargePower
+        if (this.timeout >= this.timeoutMax) {
+            this.injured = false;
+            this.timeout = 0;
+            this.hitTimeCounter = 0;
+        }
     }
 
 

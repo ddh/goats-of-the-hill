@@ -11,6 +11,7 @@ ASSET_MANAGER.queueDownload("./img/hay.png");
 ASSET_MANAGER.queueDownload("./img/hay2.png");
 ASSET_MANAGER.queueDownload("./img/hay3.png");
 ASSET_MANAGER.queueDownload("./img/sparkles.png");
+ASSET_MANAGER.queueDownload("./img/hill-arrow.png");
 ASSET_MANAGER.queueDownload("./img/blue-goat-left.png");
 ASSET_MANAGER.queueDownload("./img/blue-goat-right.png");
 ASSET_MANAGER.queueDownload("./img/green-goat-left.png");

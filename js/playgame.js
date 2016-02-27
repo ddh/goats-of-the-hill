@@ -22,6 +22,7 @@ function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.lastRoundWasTie = false;
     this.roundTimerDiv = document.getElementById('roundTimer');
     this.goatWhoWonLastRound = null;
+    this.highestScore = null;
     Entity.call(this, game, 0, 0, 0, 0);
 }
 
@@ -103,24 +104,24 @@ PlayGame.prototype.initGoats = function () {
 
 // Checks which goat is the leader and crowns them.
 PlayGame.prototype.scoreChecker = function () {
-    var highestScore = this.game.goats[0]; //sets a goat as king
+    this.highestScore = this.game.goats[0]; //sets a goat as king
     //checks which goat has the highest score
     for (var i = 1, len = this.game.goats.length; i < len; i++) {
         var goat = this.game.goats[i];
-        if (highestScore.score < goat.score) {
-            highestScore = goat;
+        if (this.highestScore.score < goat.score) {
+            this.highestScore = goat;
         }
     }
     //ensures other goats don't have the crown 
     for (var i = 0, len = this.game.goats.length; i < len; i++) {
-        if (highestScore != this.game.goats[i]) {
+        if (this.highestScore != this.game.goats[i]) {
             this.game.goats[i].king = false;
         }
     }
-    if (typeof highestScore.score !== 'undefined'
-        && typeof highestScore.score !== 'NaN'
-        && highestScore.score !== 0) { //Avoids start of game deciding who is king
-        highestScore.king = true;
+    if (typeof this.highestScore.score !== 'undefined'
+        && typeof this.highestScore.score !== 'NaN'
+        && this.highestScore.score !== 0) { //Avoids start of game deciding who is king
+        this.highestScore.king = true;
     }
 };
 
@@ -279,6 +280,7 @@ PlayGame.prototype.determineWinningGoat = function () {
         if (this.goatWhoWonLastRound !== goat && this.goatWhoWonLastRound.score === goat.score)
             this.lastRoundWasTie = true;
     }
+    console.log("Winning goat is " + this.highestScore.toString() + " scoreing = " + this.highestScore.score);
 };
 
 PlayGame.prototype.toString = function () {

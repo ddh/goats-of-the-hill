@@ -169,7 +169,7 @@ PlayGame.prototype.drawPlayButton = function (ctx) {
 };
 
 PlayGame.prototype.drawScores = function (ctx) {
-    var font = "32px Impact"
+    var font = "32px Impact";
     drawTextWithOutline(ctx, font, this.playerOneScore, 45, 590, 'white', 'blue');
     drawTextWithOutline(ctx, font, this.playerTwoScore, 245, 590, 'white', 'green');
     drawTextWithOutline(ctx, font, this.playerThreeScore, 445, 590, 'white', 'red');

@@ -82,6 +82,12 @@ function Goat(game, playerNumber, controls, sprite) {
     this.maxVictims = 1;            // The number of goats a goat can attack in one attack (TODO: POWERUP)
     this.invulnerable = false;      // If true, this goat cannot be attacked (TODO: POWERUP)
 
+    // Hit boxes for attacking:
+    this.rightAttackBB = new BoundingBox(this.boundingBox.x + 33, this.boundingBox.y + 4, 10, this.boundingBox.height * 0.8);
+    this.leftAttackBB = new BoundingBox(this.boundingBox.x, this.boundingBox.y + 4, 10, this.boundingBox.height * 0.8);
+
+    // Collectibles (Power-ups)
+
 
     // Animations:
     this.trim = {top: 50, bottom: 50, left: 50, right: 50}; //
@@ -249,8 +255,8 @@ Goat.prototype.update = function () {
             }
         }
 
-        // If AI's charge is decaying, attack at power 5, before losing it
-        if (this.chargeDecay && this.chargePower == 5) this.attackKey = false;
+        // If AI's charge is decaying, attack at power 2, before losing it
+        if (this.chargeDecay && this.chargePower == 2) this.attackKey = false;
 
     }
 
@@ -377,7 +383,7 @@ Goat.prototype.update = function () {
 
             // Determine goat's position upon landing on an entity
             if (this.y > this.base || this.entity) { // Should change to case where goat lands on a platform/goat
-                console.log(this + "'s final fall velocity was " + this.velocity.y);
+                //console.log(this + "'s final fall velocity was " + this.velocity.y);
                 this.falling = false;
                 this.airTime = 0;
                 this.jumps = 0;
@@ -423,7 +429,7 @@ Goat.prototype.update = function () {
         if (!this.jumping && !this.falling && this.entity) {
             if ((leftCornerBB.left > this.entity.boundingBox.right || leftCornerBB.right < this.entity.boundingBox.x) &&
                 (rightCornerBB.left > this.entity.boundingBox.right || rightCornerBB.right < this.entity.boundingBox.x)) {
-                console.log(this + " walked off " + this.entity);
+                //console.log(this + " walked off " + this.entity);
                 this.falling = true;
                 this.y += 2; // To prevent bug where goat alternates between falling and landing on same platform
                 this.entity = null;
@@ -463,7 +469,7 @@ Goat.prototype.update = function () {
 
         // On letting go of charging key, release an attack
         if (!this.attackKey) {
-            console.log(this + " stopped charging w/ power " + this.chargePower + " and held for " + this.chargeTime.toFixed(2) + "s.");
+            //console.log(this + " stopped charging w/ power " + this.chargePower + " and held for " + this.chargeTime.toFixed(2) + "s.");
             this.charging = false;
             this.chargeDecayCounter = 0;
             this.chargeTime = 0;
@@ -472,11 +478,7 @@ Goat.prototype.update = function () {
         }
     }
 
-// Hit boxes for attacking:
-    this.rightAttackBB = new BoundingBox(this.boundingBox.x + 33, this.boundingBox.y + 4, 10, this.boundingBox.height * 0.8);
-    this.leftAttackBB = new BoundingBox(this.boundingBox.x, this.boundingBox.y + 4, 10, this.boundingBox.height * 0.8);
-
-// The attack
+    // The attack
     if (this.attacking) {
         this.running = false;
 
@@ -668,7 +670,7 @@ Goat.prototype.draw = function (ctx) {
             this.crownAnimation.drawFrame(this.game.clockTick, ctx, this.x + this.scale * 13, this.y - this.scale * 30, this.scale);
         }
     }
-    
+
     // Display charge meter:
     ctx.strokeStyle = "rgb(255, 0, 0)";
     ctx.fillStyle = "rgba(255, 255, 0, .5)";

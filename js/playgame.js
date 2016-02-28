@@ -4,6 +4,10 @@
 var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds) TODO: change this value to 'team agreed upon' value
 var ROUNDS_PLAYED = 0;
 var GOLD_COLOR = "rgb(255, 215, 0)";
+var COLLECTIBLES = ['coin', 'speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
+//var COLLECTIBLES = ['coin'];
+
+
 
 function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.game = game;
@@ -22,13 +26,15 @@ function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.lastRoundWasTie = false;
     this.roundTimerDiv = document.getElementById('roundTimer');
     this.goatWhoWonLastRound = null;
+    this.powerUpTimer = 0;
     Entity.call(this, game, 0, 0, 0, 0);
 }
 
 PlayGame.prototype = new Entity();
 PlayGame.prototype.constructor = PlayGame;
 
-PlayGame.prototype.reset = function () {};
+PlayGame.prototype.reset = function () {
+};
 
 PlayGame.prototype.update = function () {
     Entity.prototype.update.call(this);
@@ -56,6 +62,7 @@ PlayGame.prototype.update = function () {
         // asset stuff
         this.scoreChecker();
         this.randomHillGenerator();
+        this.generateRandomCollectible();
         this.updateScores();
 
         if (this.roundSecondsElapsed >= ROUND_TIME_LIMIT) {
@@ -84,7 +91,7 @@ PlayGame.prototype.initGoats = function () {
     var goat1 = new Goat(this.game, 0, playerOneControls, "blue-goat");
     goat1.x = 30;
     this.game.addEntity(goat1);
-    
+
     var playerTwoControls = {jump: 87, left: 65, right: 68, attack: 83, run: 16}; // W,A,D,S,shift
     var goat2 = new Goat(this.game, 1, playerTwoControls, "green-goat");
     goat2.x = 230;
@@ -279,6 +286,21 @@ PlayGame.prototype.determineWinningGoat = function () {
         if (this.goatWhoWonLastRound !== goat && this.goatWhoWonLastRound.score === goat.score)
             this.lastRoundWasTie = true;
     }
+};
+
+PlayGame.prototype.generateRandomCollectible = function () {
+
+    // Generate powerup every x seconds
+    if (!this.isInTransitionScene) {
+        this.powerUpTimer += this.game.clockTick;
+        if (this.powerUpTimer / 1 > 10) {
+            this.powerUpTimer = 0;
+            var randomX = Math.floor(Math.random() * (this.game.surfaceWidth));
+            var randomY = Math.floor(Math.random() * (this.game.surfaceHeight));
+            var randomCollectible = Math.floor(Math.random() * (COLLECTIBLES.length));
+            this.game.addEntity(new Collectible(this.game, randomX, randomY, 16, 16, COLLECTIBLES[randomCollectible]));
+        }
+    } else this.powerUpTimer = 0;
 };
 
 PlayGame.prototype.toString = function () {

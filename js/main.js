@@ -3,15 +3,19 @@
 // asset manager is now constructed after class is defined (bottom of assetmanager.js)
 
 // Use asset manager to download images
+
+// Background Images
 ASSET_MANAGER.queueDownload("./img/titleScreen.png");
 ASSET_MANAGER.queueDownload("./img/farm-gradient.png");
 ASSET_MANAGER.queueDownload("./img/farm.png");
 ASSET_MANAGER.queueDownload("./img/mountain.png");
+
+// Platform Sprites
 ASSET_MANAGER.queueDownload("./img/hay.png");
 ASSET_MANAGER.queueDownload("./img/hay2.png");
 ASSET_MANAGER.queueDownload("./img/hay3.png");
-ASSET_MANAGER.queueDownload("./img/sparkles.png");
-ASSET_MANAGER.queueDownload("./img/hill-arrow.png");
+
+// Goat Sprites
 ASSET_MANAGER.queueDownload("./img/blue-goat-left.png");
 ASSET_MANAGER.queueDownload("./img/blue-goat-right.png");
 ASSET_MANAGER.queueDownload("./img/green-goat-left.png");
@@ -20,9 +24,6 @@ ASSET_MANAGER.queueDownload("./img/yellow-goat-left.png");
 ASSET_MANAGER.queueDownload("./img/yellow-goat-right.png");
 ASSET_MANAGER.queueDownload("./img/red-goat-left.png");
 ASSET_MANAGER.queueDownload("./img/red-goat-right.png");
-ASSET_MANAGER.queueDownload("./img/transparent_pixel.png");
-ASSET_MANAGER.queueDownload("./img/smallest-king-crown.png");
-ASSET_MANAGER.queueDownload("./img/simple-crown-animated.png");
 ASSET_MANAGER.queueDownload("./img/auras.png");
 ASSET_MANAGER.queueDownload("./img/blue-goat-attackAuraLeft.png");
 ASSET_MANAGER.queueDownload("./img/blue-goat-attackAuraRight.png");
@@ -32,6 +33,21 @@ ASSET_MANAGER.queueDownload("./img/yellow-goat-attackAuraLeft.png");
 ASSET_MANAGER.queueDownload("./img/yellow-goat-attackAuraRight.png");
 ASSET_MANAGER.queueDownload("./img/red-goat-attackAuraLeft.png");
 ASSET_MANAGER.queueDownload("./img/red-goat-attackAuraRight.png");
+
+// Collectible Sprites
+ASSET_MANAGER.queueDownload("./img/speedUp-collectible.png");
+ASSET_MANAGER.queueDownload("./img/coin-collectible.png");
+ASSET_MANAGER.queueDownload("./img/invincibility-collectible.png");
+ASSET_MANAGER.queueDownload("./img/attackUp-collectible.png");
+ASSET_MANAGER.queueDownload("./img/doubleJump-collectible.png");
+ASSET_MANAGER.queueDownload("./img/highJump-collectible.png");
+ASSET_MANAGER.queueDownload("./img/maxCharge-collectible.png");
+
+// Other
+ASSET_MANAGER.queueDownload("./img/hill-arrow.png");
+ASSET_MANAGER.queueDownload("./img/transparent_pixel.png");
+ASSET_MANAGER.queueDownload("./img/simple-crown-animated.png");
+
 
 ASSET_MANAGER.downloadAll(function () {
 

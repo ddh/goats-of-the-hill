@@ -14,8 +14,11 @@ function Collectible(game, x, y, width, height, type) {
     this.height = height;
 
     this.type = type;       // Name of collectible
-    this.timeAlive = 0;     // seconds the collectible has been on screen
-    this.timeExpire = 15;   // seconds until collectible disappears
+    this.timeExpire = 15;   // seconds until collectible is removed, if not picked up in time
+    this.lifetime = 10;     // seconds powerup lasts for when picked up
+    this.pickedUp = false;
+
+    this.goat;
 
     // Animations:
     var spriteSheet = ASSET_MANAGER.getAsset("./img/" + type + "-collectible.png");
@@ -31,16 +34,68 @@ Collectible.prototype.reset = function () {
 
 
 Collectible.prototype.update = function () {
-    // Cycle through each goat, seing if it can pick this collectible up:
-    for (var i = 0; i < this.game.goats.length; i++) {
-        var goat = this.game.goats[i];
-        if (this.boundingBox.collide(goat.boundingBox)) {
+
+    // While the collectible is on the screen, allow it to be picked up by a goat
+    if (!this.pickedUp) {
+        // Cycle through each goat, seing if it can pick this collectible up:
+        for (var i = 0; i < this.game.goats.length; i++) {
+            this.goat = this.game.goats[i];
+
+            // On pickup, apply effect to the goat
+            if (this.boundingBox.collide(this.goat.boundingBox)) {
+                switch (this.type) {
+                    case 'coin':
+                        break;
+                    case 'speedUp':
+                        this.goat.maxWalkSpeed *= 2;
+                        this.goat.maxRunSpeed *= 2;
+                        break;
+                    case 'doubleJump':
+                        this.goat.maxJumps++;
+                        break;
+                    case 'highJump':
+                        break;
+                    case 'maxCharge':
+                        this.goat.chargePower = 10;
+                        break;
+                    case'attackUp':
+                        break;
+                    case'invincibility':
+                        break;
+                    default:
+                        break;
+                }
+                console.log(this.goat + " picked up " + this);
+                this.pickedUp = true;
+                break; // Enforces only one goat per collectible
+            }
+        }
+
+        // Update lifetime of collectible, removing when expired:
+        this.timeExpire -= this.game.clockTick;
+        if (this.timeExpire < 0) {
+            this.removeFromWorld = true;
+            console.log(this + " expired");
+        }
+    }
+
+    // When the item was picked up
+    if (this.pickedUp) {
+
+        // Update how much time left powerup has effect on goat
+        this.lifetime -= this.game.clockTick;
+
+        // Once powerup time finished, revert effects applied to goat
+        if (this.lifetime < 0) {
             switch (this.type) {
                 case 'coin':
                     break;
                 case 'speedUp':
+                    this.goat.maxWalkSpeed /= 2;
+                    this.goat.maxRunSpeed /= 2;
                     break;
                 case 'doubleJump':
+                    this.goat.maxJumps--;
                     break;
                 case 'highJump':
                     break;
@@ -53,17 +108,13 @@ Collectible.prototype.update = function () {
                 default:
                     break;
             }
-            console.log(goat + " picked up " + this);
-            this.removeFromWorld = true; // Remove collectible on next gameengine update
-            break; // Enforces only one goat per collectible
-        }
-    }
 
-    // Update lifetime of collectible, removing when expired:
-    this.timeAlive += this.game.clockTick;
-    if (this.timeAlive / 1 > this.timeExpire) {
-        this.removeFromWorld = true;
-        console.log(this + " expired");
+            // Then remove this collectible from list of entity in game engine
+            this.removeFromWorld = true;
+
+        }
+
+
     }
 
 
@@ -71,8 +122,14 @@ Collectible.prototype.update = function () {
 };
 
 Collectible.prototype.draw = function (ctx) {
-    this.collectibleAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, 1);
-    Entity.prototype.draw.call(this, ctx);
+
+    // Only show the item on screen if it wasn't picked up yet
+    if (!this.pickedUp) {
+        this.collectibleAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, 1);
+        Entity.prototype.draw.call(this, ctx);
+    }
+
+
 };
 
 Collectible.prototype.toString = function () {

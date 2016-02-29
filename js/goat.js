@@ -47,7 +47,7 @@ function Goat(game, playerNumber, controls, sprite) {
     this.maxVelocityX = 3.0;
     this.walkSpeed = 0.5;           // (TODO: POWERUP)
     this.runSpeed = 1.5;            // (TODO: POWERUP)
-    this.maxWalkSpeed = 3.0
+    this.maxWalkSpeed = 3.0;
     this.maxRunSpeed = 6.0;
 
 
@@ -59,7 +59,7 @@ function Goat(game, playerNumber, controls, sprite) {
     this.airTime = 0;               // How long the jump key is held
     this.maxAirTime = 0.3;          // Max time the jump key can be held for variable jumping
     this.jumps = 0;                 // The number of times goat has jumped before landing
-    this.maxJumps = 2;              // Maximum number of jumps allowed (2=double-jumping, 3=triple, etc) (TODO: POWERUP)
+    this.maxJumps = 1;              // Maximum number of jumps allowed (2=double-jumping, 3=triple, etc) (TODO: POWERUP)
     this.allowJump = true;
 
     // Attack physics

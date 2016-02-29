@@ -82,6 +82,7 @@ GameEngine.prototype.prepForScene = function () {
 };
 
 GameEngine.prototype.startInput = function () {
+    // VERY USEFUL for finding keycodes: http://keycode.info/
     console.log('Starting input');
     var that = this;
 
@@ -111,6 +112,21 @@ GameEngine.prototype.startInput = function () {
             that.pauseKey ^= true;
         }
     })
+
+    // Toggling AI's
+    this.on = [];
+    var toggleAI = function (game, num) {
+        game.on[num] ^= true;
+        game.goats[num].resetAllKeys();
+        game.goats[num].aiEnabled = game.on[num];
+    };
+
+    this.ctx.canvas.addEventListener("keyup", function (e) {
+        if (e.which === 49) toggleAI(that, 0);
+        if (e.which === 50) toggleAI(that, 1);
+        if (e.which === 51) toggleAI(that, 2);
+        if (e.which === 52) toggleAI(that, 3);
+    }, false);
 
     /* === MOUSE SETTINGS === */
 
@@ -240,8 +256,8 @@ GameEngine.prototype.update = function () {
 
         // If player 3 or 4's controller is not connected, AI Goat takes over
         if (this.goats.length == 4) {
-            this.goats[2].playerNumber = (typeof navigator.getGamepads()[2] === 'undefined') ? "AI" : 2;
-            this.goats[3].playerNumber = (typeof navigator.getGamepads()[3] === 'undefined') ? "AI" : 3;
+            if (typeof navigator.getGamepads()[2] === 'undefined') this.goats[2].aiEnabled = true;
+            if (typeof navigator.getGamepads()[3] === 'undefined') this.goats[3].aiEnabled = true;
         }
 
         // Poll for gamepads

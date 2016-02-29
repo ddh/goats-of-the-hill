@@ -16,6 +16,7 @@ function getRandomIntInclusive(min, max) {
 function Goat(game, playerNumber, controls, sprite) {
     // Game properties:
     this.playerNumber = playerNumber;
+    this.aiEnabled = false;
     this.controls = controls;
     this.game = game;
     this.ctx = game.ctx;
@@ -200,7 +201,7 @@ Goat.prototype.update = function () {
 
     // AI Goat basically emulates key presses:
 
-    if (this.playerNumber == "AI" && !this.injured) {
+    if (this.aiEnabled && !this.injured) {
 
         // Find the hill
         function findHill(that) {

@@ -1,9 +1,14 @@
 // This code is based on Chris Marriott's Unicorn game found here:
 // https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 
+// Class Constants:
 var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds) TODO: change this value to 'team agreed upon' value
 var ROUNDS_PLAYED = 0;
 var GOLD_COLOR = "rgb(255, 215, 0)";
+var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
+//var COLLECTIBLES = ['invincibility']; //TODO: Using this as a means to test a powerup individually. Just comment out the above.
+var POWERUP_INTERVAL = 10;  // Every x sec a powerup spawns
+
 
 function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.game = game;
@@ -22,13 +27,15 @@ function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.lastRoundWasTie = false;
     this.roundTimerDiv = document.getElementById('roundTimer');
     this.goatWhoWonLastRound = null;
+    this.powerUpTimer = POWERUP_INTERVAL;
     Entity.call(this, game, 0, 0, 0, 0);
 }
 
 PlayGame.prototype = new Entity();
 PlayGame.prototype.constructor = PlayGame;
 
-PlayGame.prototype.reset = function () {};
+PlayGame.prototype.reset = function () {
+};
 
 PlayGame.prototype.update = function () {
     Entity.prototype.update.call(this);
@@ -47,6 +54,7 @@ PlayGame.prototype.update = function () {
             this.scene = this.sceneSelector.getNextScene();
             this.game.addEntity(this.scene);
             this.game.addEntity(this);
+            console.log("TRANSITION THING");
             this.initGoats();
         }
     }
@@ -56,6 +64,7 @@ PlayGame.prototype.update = function () {
         // asset stuff
         this.scoreChecker();
         this.randomHillGenerator();
+        this.generateRandomCollectible();
         this.updateScores();
 
         if (this.roundSecondsElapsed >= ROUND_TIME_LIMIT) {
@@ -73,7 +82,7 @@ PlayGame.prototype.update = function () {
             this.scene = this.sceneSelector.getNextScene();
             this.game.addEntity(this.scene);
             this.game.addEntity(this);
-            this.initGoats();
+            //this.initGoats(); // TODO: Taken out to prevent goats interacting between rounds
         }
     }
 };
@@ -84,7 +93,7 @@ PlayGame.prototype.initGoats = function () {
     var goat1 = new Goat(this.game, 0, playerOneControls, "blue-goat");
     goat1.x = 30;
     this.game.addEntity(goat1);
-    
+
     var playerTwoControls = {jump: 87, left: 65, right: 68, attack: 83, run: 16}; // W,A,D,S,shift
     var goat2 = new Goat(this.game, 1, playerTwoControls, "green-goat");
     goat2.x = 230;
@@ -279,6 +288,21 @@ PlayGame.prototype.determineWinningGoat = function () {
         if (this.goatWhoWonLastRound !== goat && this.goatWhoWonLastRound.score === goat.score)
             this.lastRoundWasTie = true;
     }
+};
+
+PlayGame.prototype.generateRandomCollectible = function () {
+
+    // Generate powerup every x seconds
+    if (!this.isInTransitionScene) {
+        this.powerUpTimer -= this.game.clockTick;
+        if (this.powerUpTimer < 0) {
+            this.powerUpTimer = POWERUP_INTERVAL;
+            var randomX = Math.floor(Math.random() * (this.game.surfaceWidth - 40)); // +40 to avoid spawning off screen
+            var randomY = Math.floor(Math.random() * (this.game.surfaceHeight - 100)); // +100 to avoid powerups in ground
+            var randomCollectible = Math.floor(Math.random() * (COLLECTIBLES.length));
+            this.game.addEntity(new Collectible(this.game, randomX, randomY, 40, 40, COLLECTIBLES[randomCollectible]));
+        }
+    } else this.powerUpTimer = POWERUP_INTERVAL;
 };
 
 PlayGame.prototype.toString = function () {

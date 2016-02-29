@@ -41,11 +41,9 @@ Collectible.prototype.update = function () {
         for (var i = 0; i < this.game.goats.length; i++) {
             this.goat = this.game.goats[i];
 
-            // On pickup, apply effect to the goat
-            if (this.boundingBox.collide(this.goat.boundingBox)) {
+            // On pickup, apply effect to the goat. Injured goats cannot pick up collectibles.
+            if (this.boundingBox.collide(this.goat.boundingBox) && !this.goat.injured) {
                 switch (this.type) {
-                    case 'coin':
-                        break;
                     case 'speedUp':
                         this.goat.maxWalkSpeed *= 2;
                         this.goat.maxRunSpeed *= 2;
@@ -54,6 +52,7 @@ Collectible.prototype.update = function () {
                         this.goat.maxJumps++;
                         break;
                     case 'highJump':
+                        this.goat.maxVelocityY++;
                         break;
                     case 'maxCharge':
                         this.goat.chargePower = 10;
@@ -88,8 +87,6 @@ Collectible.prototype.update = function () {
         // Once powerup time finished, revert effects applied to goat
         if (this.lifetime < 0) {
             switch (this.type) {
-                case 'coin':
-                    break;
                 case 'speedUp':
                     this.goat.maxWalkSpeed /= 2;
                     this.goat.maxRunSpeed /= 2;
@@ -98,6 +95,7 @@ Collectible.prototype.update = function () {
                     this.goat.maxJumps--;
                     break;
                 case 'highJump':
+                    this.goat.maxVelocityY--;
                     break;
                 case 'maxCharge':
                     break;

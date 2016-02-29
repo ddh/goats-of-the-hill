@@ -4,7 +4,7 @@
 var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds) TODO: change this value to 'team agreed upon' value
 var ROUNDS_PLAYED = 0;
 var GOLD_COLOR = "rgb(255, 215, 0)";
-var COLLECTIBLES = ['coin', 'speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
+var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
 //var COLLECTIBLES = ['coin'];
 
 

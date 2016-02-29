@@ -45,8 +45,8 @@ function Goat(game, playerNumber, controls, sprite) {
     this.friction = 0.75;
     this.speed = 0.5;
     this.maxVelocityX = 3.0;
-    this.walkSpeed = 0.5;           // (TODO: POWERUP)
-    this.runSpeed = 1.5;            // (TODO: POWERUP)
+    this.walkSpeed = 0.5;
+    this.runSpeed = 1.5;
     this.maxWalkSpeed = 3.0;
     this.maxRunSpeed = 6.0;
 
@@ -55,11 +55,11 @@ function Goat(game, playerNumber, controls, sprite) {
     this.velocity = {x: 0, y: 0};
     this.gravity = 0.5;
     this.terminalVelocity = 12;     // Max falling velocity
-    this.maxVelocityY = -6.0;       // Max jump velocity (more negative, higher jump) (TODO: POWERUP)
+    this.maxVelocityY = -6.0;       // Max jump velocity (more negative, higher jump)
     this.airTime = 0;               // How long the jump key is held
     this.maxAirTime = 0.3;          // Max time the jump key can be held for variable jumping
     this.jumps = 0;                 // The number of times goat has jumped before landing
-    this.maxJumps = 1;              // Maximum number of jumps allowed (2=double-jumping, 3=triple, etc) (TODO: POWERUP)
+    this.maxJumps = 1;              // Maximum number of jumps allowed (2=double-jumping, 3=triple, etc)
     this.allowJump = true;
 
     // Attack physics
@@ -77,10 +77,9 @@ function Goat(game, playerNumber, controls, sprite) {
     this.hit = {right: 0, pow: 0};  // A hit object containing information about the collision
     this.timeout = 0;
     this.timeoutMax = 100;          // How many updates an injured goat is immobolized for
-    this.hitTimeCounter = 0;        // Keeps track how long goat was injured for
     this.injured = false;           // Whether this goat was collided into
     this.maxVictims = 1;            // The number of goats a goat can attack in one attack (TODO: POWERUP)
-    this.invulnerable = false;      // If true, this goat cannot be attacked (TODO: POWERUP)
+    this.invincible = false;        // If true, this goat cannot be attacked (TODO: POWERUP)
 
     // Hit boxes for attacking:
     this.rightAttackBB = new BoundingBox(this.boundingBox.x + 33, this.boundingBox.y + 4, 10, this.boundingBox.height * 0.8);
@@ -536,7 +535,6 @@ Goat.prototype.update = function () {
     // TODO: 4. Tweak knockback durations and distance if needed
 
     if (this.injured) {
-        this.hitTimeCounter += this.game.clockTick;
 
         // Knockback goats but keep them in bounds of stage
         if (this.hit.right) {
@@ -555,7 +553,6 @@ Goat.prototype.update = function () {
         if (this.timeout >= this.timeoutMax) {
             this.injured = false;
             this.timeout = 0;
-            this.hitTimeCounter = 0;
         }
     }
 

@@ -21,7 +21,7 @@ function Collectible(game, x, y, width, height, type) {
     this.goat;
 
     // Animations:
-    var spriteSheet = ASSET_MANAGER.getAsset("./img/" + type + "-collectible.png");
+    var spriteSheet = ASSET_MANAGER.getAsset("./img/collectible-" + type + ".png");
     this.collectibleAnimation = new Animation(spriteSheet, 0, 0, width, height, 0.1, 1, true, false); // TODO: Careful, not all animations are the same
     Entity.call(this, game, x, y, width, height);
 }

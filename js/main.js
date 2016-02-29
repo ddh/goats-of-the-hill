@@ -35,13 +35,20 @@ ASSET_MANAGER.queueDownload("./img/red-goat-attackAuraLeft.png");
 ASSET_MANAGER.queueDownload("./img/red-goat-attackAuraRight.png");
 
 // Collectible Sprites
-ASSET_MANAGER.queueDownload("./img/speedUp-collectible.png");
-ASSET_MANAGER.queueDownload("./img/coin-collectible.png");
-ASSET_MANAGER.queueDownload("./img/invincibility-collectible.png");
-ASSET_MANAGER.queueDownload("./img/attackUp-collectible.png");
-ASSET_MANAGER.queueDownload("./img/doubleJump-collectible.png");
-ASSET_MANAGER.queueDownload("./img/highJump-collectible.png");
-ASSET_MANAGER.queueDownload("./img/maxCharge-collectible.png");
+ASSET_MANAGER.queueDownload("./img/collectible-speedUp.png");
+ASSET_MANAGER.queueDownload("./img/collectible-invincibility.png");
+ASSET_MANAGER.queueDownload("./img/collectible-attackUp.png");
+ASSET_MANAGER.queueDownload("./img/collectible-doubleJump.png");
+ASSET_MANAGER.queueDownload("./img/collectible-highJump.png");
+ASSET_MANAGER.queueDownload("./img/collectible-maxCharge.png");
+
+// Collectible Icons
+ASSET_MANAGER.queueDownload("./img/icon-speedUp.png");
+ASSET_MANAGER.queueDownload("./img/icon-invincibility.png");
+ASSET_MANAGER.queueDownload("./img/icon-attackUp.png");
+ASSET_MANAGER.queueDownload("./img/icon-doubleJump.png");
+ASSET_MANAGER.queueDownload("./img/icon-highJump.png");
+ASSET_MANAGER.queueDownload("./img/icon-maxCharge.png");
 
 // Other
 ASSET_MANAGER.queueDownload("./img/hill-arrow.png");
@@ -76,12 +83,12 @@ ASSET_MANAGER.downloadAll(function () {
     gameEngine.start();
 });
 
-var makeSceneSelector = function(gameEngine) {
+var makeSceneSelector = function (gameEngine) {
     var scenes = [];
-    
+
     scenes.push(new Scene([], new Background(gameEngine, ASSET_MANAGER.getAsset("./img/titleScreen.png"), 800, 600))); // Title screen
-    
-   // scenes.push(createTransitionScene(gameEngine)); // first scene
+
+    // scenes.push(createTransitionScene(gameEngine)); // first scene
     scenes.push(createSecondScene(gameEngine)); // first round
 
     scenes.push(createTransitionScene(gameEngine)); // third scene

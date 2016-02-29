@@ -52,7 +52,7 @@ Collectible.prototype.update = function () {
                         this.goat.maxJumps++;
                         break;
                     case 'highJump':
-                        this.goat.maxVelocityY++;
+                        this.goat.maxVelocityY--;
                         break;
                     case 'maxCharge':
                         this.goat.maximumAttack = true;
@@ -97,7 +97,7 @@ Collectible.prototype.update = function () {
                     this.goat.maxJumps--;
                     break;
                 case 'highJump':
-                    this.goat.maxVelocityY--;
+                    this.goat.maxVelocityY++;
                     break;
                 case 'maxCharge':
                     this.goat.maximumAttack = false;

@@ -5,7 +5,7 @@ var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds) TODO: change this value to '
 var ROUNDS_PLAYED = 0;
 var GOLD_COLOR = "rgb(255, 215, 0)";
 var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
-//var COLLECTIBLES = ['coin'];
+//var COLLECTIBLES = ['highJump'];
 
 
 function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
@@ -298,7 +298,7 @@ PlayGame.prototype.generateRandomCollectible = function () {
             var randomX = Math.floor(Math.random() * (this.game.surfaceWidth));
             var randomY = Math.floor(Math.random() * (this.game.surfaceHeight));
             var randomCollectible = Math.floor(Math.random() * (COLLECTIBLES.length));
-            this.game.addEntity(new Collectible(this.game, randomX, randomY, 16, 16, COLLECTIBLES[randomCollectible]));
+            this.game.addEntity(new Collectible(this.game, randomX, randomY, 32, 32, COLLECTIBLES[randomCollectible]));
         }
     } else this.powerUpTimer = 0;
 };

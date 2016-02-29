@@ -1,11 +1,13 @@
 // This code is based on Chris Marriott's Unicorn game found here:
 // https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 
+// Class Constants:
 var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds) TODO: change this value to 'team agreed upon' value
 var ROUNDS_PLAYED = 0;
 var GOLD_COLOR = "rgb(255, 215, 0)";
-var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
-//var COLLECTIBLES = ['highJump'];
+//var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
+var COLLECTIBLES = ['invincibility']; //TODO: Using this as a means to test a powerup individually. Just comment out the above.
+var POWERUP_INTERVAL = 10;  // Every x sec a powerup spawns
 
 
 function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
@@ -25,7 +27,7 @@ function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.lastRoundWasTie = false;
     this.roundTimerDiv = document.getElementById('roundTimer');
     this.goatWhoWonLastRound = null;
-    this.powerUpTimer = 0;
+    this.powerUpTimer = POWERUP_INTERVAL;
     Entity.call(this, game, 0, 0, 0, 0);
 }
 
@@ -292,15 +294,15 @@ PlayGame.prototype.generateRandomCollectible = function () {
 
     // Generate powerup every x seconds
     if (!this.isInTransitionScene) {
-        this.powerUpTimer += this.game.clockTick;
-        if (this.powerUpTimer / 1 > 10) {
-            this.powerUpTimer = 0;
+        this.powerUpTimer -= this.game.clockTick;
+        if (this.powerUpTimer < 0) {
+            this.powerUpTimer = POWERUP_INTERVAL;
             var randomX = Math.floor(Math.random() * (this.game.surfaceWidth));
             var randomY = Math.floor(Math.random() * (this.game.surfaceHeight));
             var randomCollectible = Math.floor(Math.random() * (COLLECTIBLES.length));
-            this.game.addEntity(new Collectible(this.game, randomX, randomY, 32, 32, COLLECTIBLES[randomCollectible]));
+            this.game.addEntity(new Collectible(this.game, randomX, randomY, 40, 40, COLLECTIBLES[randomCollectible]));
         }
-    } else this.powerUpTimer = 0;
+    } else this.powerUpTimer = POWERUP_INTERVAL;
 };
 
 PlayGame.prototype.toString = function () {

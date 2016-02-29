@@ -79,13 +79,14 @@ function Goat(game, playerNumber, controls, sprite) {
     this.timeoutMax = 100;          // How many updates an injured goat is immobolized for
     this.injured = false;           // Whether this goat was collided into
     this.maxVictims = 1;            // The number of goats a goat can attack in one attack (TODO: POWERUP)
-    this.invincible = false;        // If true, this goat cannot be attacked (TODO: POWERUP)
 
     // Hit boxes for attacking:
     this.rightAttackBB = new BoundingBox(this.boundingBox.x + 33, this.boundingBox.y + 4, 10, this.boundingBox.height * 0.8);
     this.leftAttackBB = new BoundingBox(this.boundingBox.x, this.boundingBox.y + 4, 10, this.boundingBox.height * 0.8);
 
     // Collectibles (Power-ups)
+    this.invincible = false;        // If true, this goat cannot be attacked (TODO: POWERUP)
+    this.maximumAttack = false;     // If true, goat's charge power is constantly maxed out
 
 
     // Animations:
@@ -450,6 +451,7 @@ Goat.prototype.update = function () {
             this.chargePower = Math.min(Math.ceil(this.chargeTime / 1), this.chargePowerMax);
             //console.log(this + " has Charge of: " + this.chargePower);
         }
+        if (this.maximumAttack) this.chargePower = this.chargePowerMax;
     }
 
     // While charging...
@@ -458,8 +460,8 @@ Goat.prototype.update = function () {
         // Enable decay if charge held for too long
         if (this.chargeTime / 1 >= this.chargeDecayTime + this.chargePower) this.chargeDecay = true;
 
-        // On decay, decrement the charge power
-        if (this.chargeDecay) {
+        // On decay, decrement the charge power. Unless maxAtatck powerup enabled.
+        if (this.chargeDecay && !this.maximumAttack) {
             this.chargeDecayCounter += this.game.clockTick;
             this.chargePower = Math.max(Math.floor(this.chargePowerMax - this.chargeDecayCounter) / 1, 1);
             console.log(this + "'s charge power decayed to " + this.chargePower);
@@ -502,14 +504,14 @@ Goat.prototype.update = function () {
             if (victims < this.maxVictims) {
                 if (this.right) {
                     // Goats who are already injured cannot be attacked
-                    if (this.rightAttackBB.collide(goat.leftAttackBB) && goat != this && !goat.injured) {
+                    if (this.rightAttackBB.collide(goat.leftAttackBB) && goat != this && !goat.injured && !goat.invincible) {
                         this.transferHit(goat);
                         this.finishAttack();
                         victims++;
                         break; // Can only attack one goat at a time
                     }
                 } else {
-                    if (this.leftAttackBB.collide(goat.rightAttackBB) && goat != this && !goat.injured) {
+                    if (this.leftAttackBB.collide(goat.rightAttackBB) && goat != this && !goat.injured && !goat.invincible) {
                         this.transferHit(goat);
                         this.finishAttack();
                         victims++;
@@ -702,7 +704,7 @@ Goat.prototype.finishAttack = function () {
     console.log(this + " attacked with power of " + this.chargePower);
     this.attacking = false;
     this.attackTimeCounter = 0;
-    this.chargePower = 1;
+    this.chargePower = (this.maximumAttack) ? this.chargePowerMax : 1;
 };
 
 Goat.prototype.transferHit = function (goat) {

@@ -55,11 +55,13 @@ Collectible.prototype.update = function () {
                         this.goat.maxVelocityY++;
                         break;
                     case 'maxCharge':
-                        this.goat.chargePower = 10;
+                        this.goat.maximumAttack = true;
                         break;
                     case'attackUp':
+                        this.goat.maxVictims += 4;
                         break;
                     case'invincibility':
+                        this.goat.invincible = true;
                         break;
                     default:
                         break;
@@ -98,10 +100,13 @@ Collectible.prototype.update = function () {
                     this.goat.maxVelocityY--;
                     break;
                 case 'maxCharge':
+                    this.goat.maximumAttack = false;
                     break;
                 case'attackUp':
+                    this.goat.maxVictims -= 4;
                     break;
                 case'invincibility':
+                    this.goat.invincible = false;
                     break;
                 default:
                     break;
@@ -109,13 +114,8 @@ Collectible.prototype.update = function () {
 
             // Then remove this collectible from list of entity in game engine
             this.removeFromWorld = true;
-
         }
-
-
     }
-
-
     Entity.prototype.update.call(this);
 };
 

@@ -4,7 +4,7 @@
 var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds) TODO: change this value to 'team agreed upon' value
 var ROUNDS_PLAYED = 0;
 var GOLD_COLOR = "rgb(255, 215, 0)";
-var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
+var COLLECTIBLES = ['maxCharge'];
 //var COLLECTIBLES = ['coin'];
 
 
@@ -53,6 +53,7 @@ PlayGame.prototype.update = function () {
             this.scene = this.sceneSelector.getNextScene();
             this.game.addEntity(this.scene);
             this.game.addEntity(this);
+            console.log("TRANSITION THING");
             this.initGoats();
         }
     }
@@ -80,7 +81,7 @@ PlayGame.prototype.update = function () {
             this.scene = this.sceneSelector.getNextScene();
             this.game.addEntity(this.scene);
             this.game.addEntity(this);
-            this.initGoats();
+            //this.initGoats(); // TODO: Taken out to prevent goats interacting between rounds
         }
     }
 };

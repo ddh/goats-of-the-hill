@@ -47,7 +47,7 @@ function GameEngine() {
     this.keys = {}; // TODO: use map to correlate certain e.which's or keys to booleans or elapsed times
     this.gamepads = [];
     this.pauseKey = false;
-
+    this.sceneSelector = null;
 }
 
 GameEngine.prototype.init = function (ctx) {
@@ -184,7 +184,7 @@ GameEngine.prototype.addEntity = function (entity) {
         this.goats.push(entity);
         this.entities.push(entity);
         this.collidables.push(entity);
-    } else if (entity instanceof PlayGame) {
+    } else if (entity instanceof Round) {
         this.playGame = entity; // keep this field in game engine for now, may take it out later...
         this.entities.push(entity);
     } else if (entity instanceof Collectible) {
@@ -205,7 +205,7 @@ GameEngine.prototype.draw = function () {
     for (var i = 0, len = this.entities.length; i < len; i++) {
         var ent = this.entities[i];
         if (this.playGame.isInTransitionScene) {
-            if (ent instanceof Background || ent instanceof PlayGame) this.entities[i].draw(this.ctx);
+            if (ent instanceof Background || ent instanceof Round) this.entities[i].draw(this.ctx);
         } else {
             this.entities[i].draw(this.ctx);
         }

@@ -3,14 +3,9 @@
 
 // Class Constants:
 var ROUND_TIME_LIMIT = 20; // 1 minute (in seconds) TODO: change this value to 'team agreed upon' value
-var ROUNDS_PLAYED = 0;
 var GOLD_COLOR = "rgb(255, 215, 0)";
-var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
-//var COLLECTIBLES = ['invincibility']; //TODO: Using this as a means to test a powerup individually. Just comment out the above.
-var POWERUP_INTERVAL = 10;  // Every x sec a powerup spawns
 
-
-function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
+function Round(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.game = game;
     this.btnX = btnX;
     this.btnY = btnY;
@@ -29,18 +24,18 @@ function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     //this.roundTimerDiv = document.getElementById('roundTimer'); // TODO: Round countdown refactor; flagged for removal
     this.highestScore = null;
     this.powerUpTimer = POWERUP_INTERVAL;
-    this.goatScores = [];
+    //this.goatScores = []; // TODO: moved to Scene Selector; flagged for removal
 
     Entity.call(this, game, 0, 0, 0, 0);
 }
 
-PlayGame.prototype = new Entity();
-PlayGame.prototype.constructor = PlayGame;
+Round.prototype = new Scene();
+Round.prototype.constructor = Round;
 
-PlayGame.prototype.reset = function () {
+Round.prototype.reset = function () {
 };
 
-PlayGame.prototype.update = function () {
+Round.prototype.update = function () {
     Entity.prototype.update.call(this);
 
     // ACTUAL ROUND JUST STARTED
@@ -96,7 +91,7 @@ PlayGame.prototype.update = function () {
     }
 };
 
-PlayGame.prototype.initGoats = function () {
+Round.prototype.initGoats = function () {
     /* === Goats === */
     var playerOneControls = {jump: 38, left: 37, right: 39, attack: 40, run: 18}; // ↑,←,→,↓,alt
     var goat1 = new Goat(this.game, 0, playerOneControls, "blue-goat", "blue");
@@ -120,7 +115,7 @@ PlayGame.prototype.initGoats = function () {
 };
 
 // Checks which goat is the leader and crowns them.
-PlayGame.prototype.scoreChecker = function () {
+Round.prototype.scoreChecker = function () {
     this.highestScore = this.game.goats[0]; //sets a goat as king
     //checks which goat has the highest score
     for (var i = 1, len = this.game.goats.length; i < len; i++) {
@@ -143,7 +138,7 @@ PlayGame.prototype.scoreChecker = function () {
 };
 
 //Helper function for the hill
-PlayGame.prototype.randomHillGenerator = function () {
+Round.prototype.randomHillGenerator = function () {
     var len = this.game.platforms.length;
     if (len !== 0 && this.hill) { //there is a hill
         if (this.randomizeHill) { // It's a random hill style
@@ -172,7 +167,7 @@ PlayGame.prototype.randomHillGenerator = function () {
     }
 };
 
-PlayGame.prototype.draw = function (ctx) {
+Round.prototype.draw = function (ctx) {
     if (this.isInTransitionScene) {
         this.drawPlayButton(ctx);
         var winningGoatString = "";
@@ -200,7 +195,7 @@ PlayGame.prototype.draw = function (ctx) {
     Entity.prototype.draw.call(this, ctx);
 };
 
-PlayGame.prototype.drawPlayButton = function (ctx) {
+Round.prototype.drawPlayButton = function (ctx) {
     if (ROUNDS_PLAYED === 0) {
         drawTextWithOutline(ctx, "24pt Impact", "Click to play!", this.btnX, this.btnY + 120, "purple", "white");
     } else {
@@ -208,7 +203,7 @@ PlayGame.prototype.drawPlayButton = function (ctx) {
     }
 };
 
-PlayGame.prototype.drawScores = function (ctx) {
+Round.prototype.drawScores = function (ctx) {
     var font = "32px Impact";
     drawTextWithOutline(ctx, font, this.game.goats[0].score, 45, 590, 'white', 'blue');
     drawTextWithOutline(ctx, font, this.game.goats[1].score, 245, 590, 'white', 'green');
@@ -227,11 +222,11 @@ var drawTextWithOutline = function (ctx, font, text, x, y, fillColor, outlineCol
     ctx.fillText(text, x, y);
 };
 
-PlayGame.prototype.initFirstScene = function () {
+Round.prototype.initFirstScene = function () {
     this.scene = this.sceneSelector.scenes[0];
 };
 
-PlayGame.prototype.generateRandomCollectible = function () {
+Round.prototype.generateRandomCollectible = function () {
 
     // Generate powerup every x seconds
     if (!this.isInTransitionScene) {
@@ -246,6 +241,6 @@ PlayGame.prototype.generateRandomCollectible = function () {
     } else this.powerUpTimer = POWERUP_INTERVAL;
 };
 
-PlayGame.prototype.toString = function () {
-    return 'PlayGame';
+Round.prototype.toString = function () {
+    return 'Round';
 };

@@ -6,6 +6,16 @@ function maxSpeedEnforcement(speed, maxSpeed) {
     }
 }
 
+// Audio:
+var soundFX = new Howl({
+    autoplay: false,
+    urls: ['./audio/goat_sfx.wav'], // Sound 'sprite' containing all sfx
+    sprite: {
+        jump: [0, 154],
+        land: [154, 143]
+    }
+});
+
 // Returns a random integer between min (included) and max (included)
 // Using Math.round() will give you a non-uniform distribution!
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
@@ -87,6 +97,7 @@ function Goat(game, playerNumber, controls, sprite) {
     // Collectibles (Power-ups)
     this.invincible = false;        // If true, this goat cannot be attacked (TODO: POWERUP)
     this.maximumAttack = false;     // If true, goat's charge power is constantly maxed out
+    this.powerUps = [];             // Holds what powerups this goat currently has
 
 
     // Animations:
@@ -132,15 +143,6 @@ function Goat(game, playerNumber, controls, sprite) {
     this.attackAuraLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/" + this.sprite + "-attackAuraLeft.png"), 3, 0, 44, 150, .1, 4, true, false);
     this.attackAuraRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/" + this.sprite + "-attackAuraRight.png"), 16, 0, 43, 150, .1, 4, true, true);
 
-    // Audio:
-    this.soundFX = new Howl({
-        autoplay: false,
-        urls: ['./audio/goat_sfx.wav'], // Sound 'sprite' containing all sfx
-        sprite: {
-            jump: [0, 154],
-            land: [154, 143]
-        }
-    });
 
     // Action states:
     this.right = true; // Facing right (true) or left (false)
@@ -335,7 +337,7 @@ Goat.prototype.update = function () {
             this.jumping = true;
             this.ramping = true; // ramp up velocity instead of immediate impulse
             this.entity = null;
-            this.soundFX.play('jump');
+            soundFX.play('jump');
             console.log(this + " Jumped");
             this.base = 535; // Keep track of the goat's last bottom-y value
         }
@@ -505,14 +507,14 @@ Goat.prototype.update = function () {
                 if (this.right) {
                     // Goats who are already injured cannot be attacked
                     if (this.rightAttackBB.collide(goat.leftAttackBB) && goat != this && !goat.injured && !goat.invincible) {
-                        this.transferHit(goat);
+                        transferHit(this, goat);
                         this.finishAttack();
                         victims++;
                         break; // Can only attack one goat at a time
                     }
                 } else {
                     if (this.leftAttackBB.collide(goat.rightAttackBB) && goat != this && !goat.injured && !goat.invincible) {
-                        this.transferHit(goat);
+                        transferHit(this, goat);
                         this.finishAttack();
                         victims++;
                         break; // Can only attack one goat at a time
@@ -671,11 +673,7 @@ Goat.prototype.draw = function (ctx) {
     }
 
     // Display charge meter:
-    ctx.strokeStyle = "rgb(255, 0, 0)";
-    ctx.fillStyle = "rgba(255, 255, 0, .5)";
-    drawRoundedRect(ctx, this.boundingBox.x, this.boundingBox.y + this.boundingBox.height + 10, this.boundingBox.width, 10, 2);
-    ctx.fillStyle = "rgba(0, 255, 0, 1)";
-    drawRoundedRect(ctx, this.boundingBox.x, this.boundingBox.y + this.boundingBox.height + 10, (this.chargePower / this.chargePowerMax) * this.boundingBox.width, 10, 2);
+    drawChargeMeter(this);
 
     Entity.prototype.draw.call(this, ctx);
 };
@@ -707,14 +705,27 @@ Goat.prototype.finishAttack = function () {
     this.chargePower = (this.maximumAttack) ? this.chargePowerMax : 1;
 };
 
-Goat.prototype.transferHit = function (goat) {
-    console.log(this + " attacked " + goat + (this.right ? " from the left!" : " from the right!"));
-    goat.injured = true;
-    goat.hit = {right: this.right, pow: this.chargePower};
+
+var transferHit = function (thisGoat, otherGoat) {
+    console.log(thisGoat + " attacked " + otherGoat + (thisGoat.right ? " from the left!" : " from the right!"));
+    otherGoat.injured = true;
+    otherGoat.hit = {right: thisGoat.right, pow: thisGoat.chargePower};
 };
 
 Goat.prototype.resetAllKeys = function () {
     this.leftKey = this.rightKey = this.jumpKey = this.runKey = this.attackKey = false;
+};
+
+var drawChargeMeter = function (goat) {
+    goat.ctx.strokeStyle = "rgb(255, 0, 0)";
+    goat.ctx.fillStyle = "rgba(255, 255, 0, .5)";
+    drawRoundedRect(goat.ctx, goat.boundingBox.x, goat.boundingBox.y + goat.boundingBox.height + 10, goat.boundingBox.width, 10, 2);
+    goat.ctx.fillStyle = "rgba(0, 255, 0, 1)";
+    drawRoundedRect(goat.ctx, goat.boundingBox.x, goat.boundingBox.y + goat.boundingBox.height + 10, (goat.chargePower / goat.chargePowerMax) * goat.boundingBox.width, 10, 2);
+};
+
+var drawPowerupsHeld = function (goat) {
+    goat.ctx.drawImage()
 };
 
 Goat.prototype.toString = function () {

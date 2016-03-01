@@ -78,12 +78,15 @@ ASSET_MANAGER.downloadAll(function () {
         volume: 0.5
     }).play();
 
-    /* === Game Logistics === */
-    var pg = new PlayGame(gameEngine, 320, 300, true, true, 8);
-    pg.sceneSelector = makeSceneSelector(gameEngine); // also initializes Scenes
-    pg.initFirstScene();
-    gameEngine.loadScene(pg.scene);
-    gameEngine.addEntity(pg);
+    /* === OLD Game Logistics === */
+    //var pg = new Round(gameEngine, 320, 300, true, true, 8);
+    //pg.sceneSelector = makeSceneSelector(gameEngine); // also initializes Scenes
+    //pg.initFirstScene();
+    //gameEngine.loadScene(pg.scene);
+    //gameEngine.addEntity(pg);
+
+    /* === NEW Game Logistics === */
+    gameEngine.sceneSelector = makeSceneSelector(gameEngine);
 
     /* === START GAME === */
     gameEngine.start();

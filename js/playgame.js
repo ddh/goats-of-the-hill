@@ -210,10 +210,16 @@ PlayGame.prototype.drawPlayButton = function (ctx) {
 
 PlayGame.prototype.drawScores = function (ctx) {
     var font = "32px Impact";
-    drawTextWithOutline(ctx, font, this.game.goats[0].score, 45, 590, 'white', 'blue');
-    drawTextWithOutline(ctx, font, this.game.goats[1].score, 245, 590, 'white', 'green');
-    drawTextWithOutline(ctx, font, this.game.goats[2].score, 445, 590, 'white', 'red');
-    drawTextWithOutline(ctx, font, this.game.goats[3].score, 645, 590, 'white', GOLD_COLOR);
+
+    // Draw scores
+    for (var i = 0; i < this.game.goats.length; i++) {
+        drawTextWithOutline(ctx, font, this.game.goats[i].score, 45 + 200 * i, 590, 'white', this.game.goats[i].color);
+        // Draw crown
+        if (this.game.goats[i].king) ctx.drawImage(ASSET_MANAGER.getAsset("./img/crown.png"), 45 + 200 * i, 520, 50, 50);
+
+    }
+
+
 };
 
 var drawTextWithOutline = function (ctx, font, text, x, y, fillColor, outlineColor) {

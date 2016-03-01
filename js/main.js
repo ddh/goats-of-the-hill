@@ -10,11 +10,16 @@ ASSET_MANAGER.queueDownload("./img/farm-gradient.png");
 ASSET_MANAGER.queueDownload("./img/farm.png");
 ASSET_MANAGER.queueDownload("./img/scoreBoard.png");
 ASSET_MANAGER.queueDownload("./img/mountain.png");
+ASSET_MANAGER.queueDownload("./img/space.png");
 
 // Platform Sprites
 ASSET_MANAGER.queueDownload("./img/hay.png");
 ASSET_MANAGER.queueDownload("./img/hay2.png");
 ASSET_MANAGER.queueDownload("./img/hay3.png");
+ASSET_MANAGER.queueDownload("./img/spaceTile.png");
+ASSET_MANAGER.queueDownload("./img/spaceTile2.png");
+ASSET_MANAGER.queueDownload("./img/spaceTile3.png");
+ASSET_MANAGER.queueDownload("./img/millenniumFalcon.png");
 
 // Goat Sprites
 ASSET_MANAGER.queueDownload("./img/blue-goat-left.png");

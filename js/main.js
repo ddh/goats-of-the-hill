@@ -3,14 +3,23 @@
 // asset manager is now constructed after class is defined (bottom of assetmanager.js)
 
 // Use asset manager to download images
+
+// Background Images
 ASSET_MANAGER.queueDownload("./img/titleScreen.png");
 ASSET_MANAGER.queueDownload("./img/farm-gradient.png");
 ASSET_MANAGER.queueDownload("./img/farm.png");
+<<<<<<< HEAD
 ASSET_MANAGER.queueDownload("./img/scoreBoard.png");
+=======
+ASSET_MANAGER.queueDownload("./img/mountain.png");
+
+// Platform Sprites
+>>>>>>> fa512468d937af1361d823ecabf72431ef0eff3a
 ASSET_MANAGER.queueDownload("./img/hay.png");
 ASSET_MANAGER.queueDownload("./img/hay2.png");
 ASSET_MANAGER.queueDownload("./img/hay3.png");
-ASSET_MANAGER.queueDownload("./img/sparkles.png");
+
+// Goat Sprites
 ASSET_MANAGER.queueDownload("./img/blue-goat-left.png");
 ASSET_MANAGER.queueDownload("./img/blue-goat-right.png");
 ASSET_MANAGER.queueDownload("./img/green-goat-left.png");
@@ -19,9 +28,6 @@ ASSET_MANAGER.queueDownload("./img/yellow-goat-left.png");
 ASSET_MANAGER.queueDownload("./img/yellow-goat-right.png");
 ASSET_MANAGER.queueDownload("./img/red-goat-left.png");
 ASSET_MANAGER.queueDownload("./img/red-goat-right.png");
-ASSET_MANAGER.queueDownload("./img/transparent_pixel.png");
-ASSET_MANAGER.queueDownload("./img/smallest-king-crown.png");
-ASSET_MANAGER.queueDownload("./img/simple-crown-animated.png");
 ASSET_MANAGER.queueDownload("./img/auras.png");
 ASSET_MANAGER.queueDownload("./img/blue-goat-attackAuraLeft.png");
 ASSET_MANAGER.queueDownload("./img/blue-goat-attackAuraRight.png");
@@ -31,6 +37,28 @@ ASSET_MANAGER.queueDownload("./img/yellow-goat-attackAuraLeft.png");
 ASSET_MANAGER.queueDownload("./img/yellow-goat-attackAuraRight.png");
 ASSET_MANAGER.queueDownload("./img/red-goat-attackAuraLeft.png");
 ASSET_MANAGER.queueDownload("./img/red-goat-attackAuraRight.png");
+
+// Collectible Sprites
+ASSET_MANAGER.queueDownload("./img/collectible-speedUp.png");
+ASSET_MANAGER.queueDownload("./img/collectible-invincibility.png");
+ASSET_MANAGER.queueDownload("./img/collectible-attackUp.png");
+ASSET_MANAGER.queueDownload("./img/collectible-doubleJump.png");
+ASSET_MANAGER.queueDownload("./img/collectible-highJump.png");
+ASSET_MANAGER.queueDownload("./img/collectible-maxCharge.png");
+
+// Collectible Icons
+ASSET_MANAGER.queueDownload("./img/icon-speedUp.png");
+ASSET_MANAGER.queueDownload("./img/icon-invincibility.png");
+ASSET_MANAGER.queueDownload("./img/icon-attackUp.png");
+ASSET_MANAGER.queueDownload("./img/icon-doubleJump.png");
+ASSET_MANAGER.queueDownload("./img/icon-highJump.png");
+ASSET_MANAGER.queueDownload("./img/icon-maxCharge.png");
+
+// Other
+ASSET_MANAGER.queueDownload("./img/hill-arrow.png");
+ASSET_MANAGER.queueDownload("./img/transparent_pixel.png");
+ASSET_MANAGER.queueDownload("./img/simple-crown-animated.png");
+
 
 ASSET_MANAGER.downloadAll(function () {
 
@@ -59,12 +87,10 @@ ASSET_MANAGER.downloadAll(function () {
     gameEngine.start();
 });
 
-var makeSceneSelector = function(gameEngine) {
+var makeSceneSelector = function (gameEngine) {
     var scenes = [];
-    
     scenes.push(new Scene([], new Background(gameEngine, ASSET_MANAGER.getAsset("./img/titleScreen.png"), 800, 600)));
     
-   // scenes.push(createTransitionScene(gameEngine)); // first scene
     scenes.push(createSecondScene(gameEngine)); // first round
 
     scenes.push(createTransitionScene(gameEngine)); // third scene

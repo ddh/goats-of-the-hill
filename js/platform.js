@@ -11,7 +11,7 @@ function Platform(game, size, x, y, movement, platType, isHill) {
     this.velocity = {x: 3, y: 3};
     this.movement = movement;
     this.isHill = isHill;
-    this.hillAnimation = new Animation(ASSET_MANAGER.getAsset("./img/sparkles.png"), 10, 0, 193, 180, .1, 29, true, true);
+    this.hillAnimation = new Animation(ASSET_MANAGER.getAsset("./img/hill-arrow.png"), 0, 0, 120, 120, .1, 10, true, false);
     Entity.call(this, game, x, y, obj.width, obj.height);
 }
 
@@ -47,7 +47,7 @@ Platform.prototype.update = function () {
             }
             break;
         case 'horizontal':
-            if(this.isHill) { // the target platform to win points
+            if (this.isHill) { // the target platform to win points
                 this.x += this.velocity.x;
                 this.velocity.y = 0;
                 if (this.x <= 0 || this.x + this.width >= this.game.ctx.canvas.width) {
@@ -94,12 +94,12 @@ Platform.prototype.update = function () {
 
 Platform.prototype.draw = function (ctx) {
 
-    if(this.isHill) {
+    if (this.isHill) {
         var scaleBy = .6;
         var offsetFromLeftEdge = (this.width - 115) / 2; // this offset is used with centerAlignX
         var centerAlignX = this.x + offsetFromLeftEdge;
 
-        this.hillAnimation.drawFrame(this.game.clockTick, ctx, centerAlignX, this.y - 70, scaleBy); //draws sparkles parallel with platform
+        this.hillAnimation.drawFrame(this.game.clockTick, ctx, this.x + (this.width / 2) - (this.hillAnimation.frameWidth / 3), this.y - 100, scaleBy); //draws sparkles parallel with platform
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     } else {
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);

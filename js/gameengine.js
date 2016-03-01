@@ -106,8 +106,8 @@ GameEngine.prototype.startInput = function () {
         }
     }, false);
 
-    this.ctx.canvas.addEventListener("keydown", function(e) {
-        if(e.which===27) {
+    this.ctx.canvas.addEventListener("keydown", function (e) {
+        if (e.which === 27) {
             that.pauseKey ^= true;
         }
     })
@@ -187,6 +187,8 @@ GameEngine.prototype.addEntity = function (entity) {
     } else if (entity instanceof PlayGame) {
         this.playGame = entity; // keep this field in game engine for now, may take it out later...
         this.entities.push(entity);
+    } else if (entity instanceof Collectible) {
+        this.entities.push(entity);
     }
     if (typeof entity !== 'undefined') console.log('added ' + entity.toString());
 };
@@ -258,8 +260,7 @@ GameEngine.prototype.update = function () {
 
 GameEngine.prototype.loop = function () {
 
-
-    if(!this.pauseKey) {
+    if (!this.pauseKey) {
         // 1. Advance game a 'tick' on the game timer
         this.clockTick = this.timer.tick();
 

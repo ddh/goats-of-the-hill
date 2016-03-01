@@ -113,7 +113,7 @@ GameEngine.prototype.startInput = function () {
         }
     })
 
-    // Toggling AI's
+    // Toggle AI function via keys:
     this.on = [];
     var toggleAI = function (game, num) {
         game.on[num] ^= true;
@@ -121,11 +121,12 @@ GameEngine.prototype.startInput = function () {
         game.goats[num].aiEnabled = game.on[num];
     };
 
+    // Pressing 1,2,3,or 4 toggles AI on/off
     this.ctx.canvas.addEventListener("keyup", function (e) {
-        if (e.which === 49) toggleAI(that, 0);
-        if (e.which === 50) toggleAI(that, 1);
-        if (e.which === 51) toggleAI(that, 2);
-        if (e.which === 52) toggleAI(that, 3);
+        if (e.which === 49) toggleAI(that, 0); // 1 Number Row key
+        if (e.which === 50) toggleAI(that, 1); // 2 Number Row key
+        if (e.which === 51) toggleAI(that, 2); // 3 Number Row key
+        if (e.which === 52) toggleAI(that, 3); // 4 Number Row key
     }, false);
 
     /* === MOUSE SETTINGS === */
@@ -271,6 +272,8 @@ GameEngine.prototype.update = function () {
                 this.goats[i].runKey = buttonPressed(gamepad.buttons[6]);
             }
         }
+
+        // Poll for player 2 input (to determine whether
     }
 };
 

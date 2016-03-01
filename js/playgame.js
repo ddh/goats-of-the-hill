@@ -2,12 +2,12 @@
 // https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 
 // Class Constants:
-var ROUND_TIME_LIMIT = 15; // 1 minute (in seconds) TODO: change this value to 'team agreed upon' value
+var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds) TODO: change this value to 'team agreed upon' value
 var ROUNDS_PLAYED = 0;
 var GOLD_COLOR = "rgb(255, 215, 0)";
 var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
 //var COLLECTIBLES = ['invincibility']; //TODO: Using this as a means to test a powerup individually. Just comment out the above.
-var POWERUP_INTERVAL = 10;  // Every x sec a powerup spawns
+var POWERUP_INTERVAL = 1;  // Every x sec a powerup spawns
 
 
 function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
@@ -247,7 +247,7 @@ PlayGame.prototype.generateRandomCollectible = function () {
         if (this.powerUpTimer < 0) {
             this.powerUpTimer = POWERUP_INTERVAL;
             var randomX = Math.floor(Math.random() * (this.game.surfaceWidth - 40)); // +40 to avoid spawning off screen
-            var randomY = Math.floor(Math.random() * (this.game.surfaceHeight - 100)); // +100 to avoid powerups in ground
+            var randomY = Math.floor(Math.random() * ((this.game.surfaceHeight - 100) - 50) + 50); // +100 to avoid powerups in ground
             var randomCollectible = Math.floor(Math.random() * (COLLECTIBLES.length));
             this.game.addEntity(new Collectible(this.game, randomX, randomY, 40, 40, COLLECTIBLES[randomCollectible]));
         }

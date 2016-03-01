@@ -269,20 +269,6 @@ GameEngine.prototype.update = function () {
 
     }
 
-    // Automatically set an idle goat to AI after some time has passed
-    for (var i = 0; i < this.goats.length; i++) {
-        // 1. If none of the keys are being pressed:
-        if (!this.goats[i].rightKey && !this.goats[i].leftKey && !this.goats[i].jumpKey && !this.goats[i].runKey && !this.goats[i].attackKey) {
-            // 2. Increment the time this goat has been idle for
-            this.idleTime[i] += this.clockTick;
-            // 3. Then check if it's been idle long enough to enable AI
-            if (this.idleTime[i] / 1 > MAX_IDLE_TIME) {
-                this.goats[i].aiEnabled = true;
-                console.log("AI enabled for " + this.goats[i]);
-            }
-        }
-    }
-
     // If player 3 or 4's controller is not connected, AI Goat takes over
     if (this.goats.length == 4) {
         if (typeof navigator.getGamepads()[2] === 'undefined') this.goats[2].aiEnabled = true;

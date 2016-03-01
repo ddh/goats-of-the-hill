@@ -55,6 +55,7 @@ ASSET_MANAGER.queueDownload("./img/icon-maxCharge.png");
 ASSET_MANAGER.queueDownload("./img/hill-arrow.png");
 ASSET_MANAGER.queueDownload("./img/transparent_pixel.png");
 ASSET_MANAGER.queueDownload("./img/simple-crown-animated.png");
+ASSET_MANAGER.queueDownload("./img/crown.png");
 
 
 ASSET_MANAGER.downloadAll(function () {

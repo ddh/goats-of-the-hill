@@ -8,13 +8,10 @@
 ASSET_MANAGER.queueDownload("./img/titleScreen.png");
 ASSET_MANAGER.queueDownload("./img/farm-gradient.png");
 ASSET_MANAGER.queueDownload("./img/farm.png");
-<<<<<<< HEAD
 ASSET_MANAGER.queueDownload("./img/scoreBoard.png");
-=======
 ASSET_MANAGER.queueDownload("./img/mountain.png");
 
 // Platform Sprites
->>>>>>> fa512468d937af1361d823ecabf72431ef0eff3a
 ASSET_MANAGER.queueDownload("./img/hay.png");
 ASSET_MANAGER.queueDownload("./img/hay2.png");
 ASSET_MANAGER.queueDownload("./img/hay3.png");
@@ -94,10 +91,10 @@ var makeSceneSelector = function (gameEngine) {
     // scenes.push(createTransitionScene(gameEngine)); // first scene
     scenes.push(createSecondScene(gameEngine)); // first round
 
-    scenes.push(createTransitionScene(gameEngine)); // third scene
+    scenes.push(new Scene([], new Background(gameEngine, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), 800, 600)));
     scenes.push(createFourthScene(gameEngine)); // second round
 
-    scenes.push(createTransitionScene(gameEngine)); // fifth scene
+    scenes.push(new Scene([], new Background(gameEngine, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), 800, 600)));
     scenes.push(createSixthScene(gameEngine)); // third round
 
     scenes.push(createTransitionScene(gameEngine)); // seventh scene

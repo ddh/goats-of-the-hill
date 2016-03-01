@@ -665,8 +665,8 @@ Goat.prototype.draw = function (ctx) {
     }
 
     // Display player indicator
-    drawTextWithOutline(this.game.ctx, "24px Impact", (this.aiEnabled) ? "AI" : "P" + (this.playerNumber+1), this.x + this.scale * 36, this.y - this.scale * 30, this.color, 'white');
-    drawTextWithOutline(this.game.ctx, "6px Impact", "▼", this.x + this.scale * 48, this.y - this.scale*10, this.color, 'white');
+    drawTextWithOutline(this.game.ctx, "24px Impact", (this.aiEnabled) ? "AI" : "P" + (this.playerNumber + 1), this.x + this.scale * 36, (this.y - this.scale * 30) + Math.sin(this.game.timer.gameTime * 10), this.color, 'white');
+    drawTextWithOutline(this.game.ctx, "6px Impact", "▼", this.x + this.scale * 48, (this.y - this.scale * 10) + Math.sin(this.game.timer.gameTime * 10), this.color, 'white');
 
     // For drawing CROWN:
     if (this.king) {

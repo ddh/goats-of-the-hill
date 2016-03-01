@@ -123,7 +123,8 @@ Collectible.prototype.draw = function (ctx) {
 
     // Only show the item on screen if it wasn't picked up yet
     if (!this.pickedUp) {
-        this.collectibleAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, 1);
+        // Floaty animation thanks to Math.sin()
+        this.collectibleAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y + Math.sin(this.game.timer.gameTime * 5) * 5, 1);
         Entity.prototype.draw.call(this, ctx);
     }
 

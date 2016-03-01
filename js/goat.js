@@ -23,14 +23,20 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function Goat(game, playerNumber, controls, sprite) {
+function Goat(game, playerNumber, controls, sprite, color) {
     // Game properties:
     this.playerNumber = playerNumber;
     this.controls = controls;
     this.game = game;
     this.ctx = game.ctx;
     this.sprite = sprite;
-
+    this.color = color;
+    if (color === "rgb(255, 215, 0)") {
+        this.playerColor = "yellow";
+    } else {
+        this.playerColor = color;
+    }
+    
     // Control keys:
     this.jumpKey = false;
     this.leftKey = false;

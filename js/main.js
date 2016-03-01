@@ -8,18 +8,10 @@
 ASSET_MANAGER.queueDownload("./img/titleScreen.png");
 ASSET_MANAGER.queueDownload("./img/farm-gradient.png");
 ASSET_MANAGER.queueDownload("./img/farm.png");
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 4ebba764a7c5af6bbcc345a31e5e2135637aeeca
 ASSET_MANAGER.queueDownload("./img/scoreBoard.png");
 ASSET_MANAGER.queueDownload("./img/mountain.png");
 
 // Platform Sprites
-<<<<<<< HEAD
->>>>>>> fa512468d937af1361d823ecabf72431ef0eff3a
-=======
->>>>>>> 4ebba764a7c5af6bbcc345a31e5e2135637aeeca
 ASSET_MANAGER.queueDownload("./img/hay.png");
 ASSET_MANAGER.queueDownload("./img/hay2.png");
 ASSET_MANAGER.queueDownload("./img/hay3.png");

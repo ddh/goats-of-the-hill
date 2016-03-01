@@ -75,9 +75,7 @@ PlayGame.prototype.update = function () {
             // logistic stuff
             this.isInTransitionScene = true;
             this.roundTimer = ROUND_TIME_LIMIT;
-            //this.roundTimerDiv.innerHTML = ""; // TODO: Round countdown refactor; flagged for removal
             ROUNDS_PLAYED++;
-            //this.roundSecondsElapsed = 0; // TODO: Round countdown refactor; flagged for removal
             this.lastRoundWasTie = false;
 
             for (var i = 0; i < this.game.goats.length; i++) {
@@ -116,7 +114,7 @@ PlayGame.prototype.initGoats = function () {
     this.game.addEntity(goat3);
 
     var playerFourControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0};
-    var goat4 = new Goat(this.game, 3, playerFourControls, "yellow-goat", "rgb(255, 215, 0)");
+    var goat4 = new Goat(this.game, 3, playerFourControls, "yellow-goat", GOLD_COLOR);
     goat4.x = 630;
     this.game.addEntity(goat4);
 };
@@ -177,14 +175,12 @@ PlayGame.prototype.randomHillGenerator = function () {
 PlayGame.prototype.draw = function (ctx) {
     if (this.isInTransitionScene) {
         this.drawPlayButton(ctx);
-        var statX, statY = 100;
         var winningGoatString = "";
 
         if (!this.lastRoundWasTie) {
             if (!this.isInTitleScreenScene) {
 
                 winningGoatString = this.highestScore.playerColor.toUpperCase() + " wins scoring : " + this.highestScore.score;
-                //statX = 200;
                 drawTextWithOutline(ctx, "45px Impact", winningGoatString, 210, 105, this.highestScore.color, 'white'); // winner #1
                 drawTextWithOutline(ctx, "40px Impact", this.goatScores[1].score, 310, 202, this.goatScores[1].color, 'white'); // winner #2
                 drawTextWithOutline(ctx, "40px Impact", this.goatScores[2].score, 585, 288, this.goatScores[2].color, 'white'); // winner #3
@@ -193,7 +189,6 @@ PlayGame.prototype.draw = function (ctx) {
         } else {
             if (!this.isInTitleScreenScene) {
                 statStr = "Last round was a tie!";
-                statX = 280;
             }
         }
     } else {
@@ -235,42 +230,6 @@ var drawTextWithOutline = function (ctx, font, text, x, y, fillColor, outlineCol
 PlayGame.prototype.initFirstScene = function () {
     this.scene = this.sceneSelector.scenes[0];
 };
-
-// TODO: Round countdown refactor; flagged for removal
-//// Taken from Stackflow: http://stackoverflow.com/questions/29139357/javascript-countdown-timer-will-not-display-twice
-//PlayGame.prototype.startTimer = function (duration, display) {
-//    this.timerStarted = true;
-//    var start = Date.now(), diff, minutes, seconds;
-//
-//    var that = this; // now children, don't forget about closure!
-//
-//    function timer() {
-//        diff = duration - (((Date.now() - start) / 1000) | 0);
-//
-//        minutes = (diff / 60) | 0;
-//        seconds = (diff % 60) | 0;
-//
-//        minutes = minutes < 10 ? "0" + minutes : minutes;
-//        seconds = seconds < 10 ? "0" + seconds : seconds;
-//
-//        if (!that.isInTransitionScene) {
-//            display.innerHTML = minutes + ":" + seconds;
-//            that.roundSecondsElapsed = ROUND_TIME_LIMIT - ((minutes * 60) + seconds);
-//        } else {
-//            display.innerHTML = "";
-//            that.roundSecondsElapsed = 0;
-//        }
-//
-//        if (diff <= 0) {
-//            start = Date.now() + 1000;
-//        }
-//
-//        if (that.isInTransitionScene) start = 0;
-//    }
-//
-//    timer();
-//    setInterval(timer, 1000 / 60);
-//};
 
 PlayGame.prototype.generateRandomCollectible = function () {
 

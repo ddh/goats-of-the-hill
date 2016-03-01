@@ -82,6 +82,8 @@ BoundingBox.prototype.update = function (entity) {
     // Set the trim of each entity, depending on its animation if need be.
     if (entity instanceof Goat) {
         entity.trim = {top: 10, bottom: 17, left: 12, right: 19};
+        entity.rightAttackBB = new BoundingBox(this.x + 33, this.y + 4, 10, this.height * 0.8);
+        entity.leftAttackBB = new BoundingBox(this.x, this.y + 4, 10, this.height * 0.8);
     } else if (entity instanceof Platform) { // ie. for platforms, etc.
         entity.trim = {top: 10, bottom: 15, left: 5, right: 10};
     } else {

@@ -2,7 +2,7 @@
 // https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 
 // Class Constants:
-var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds) TODO: change this value to 'team agreed upon' value
+var ROUND_TIME_LIMIT = 15; // 1 minute (in seconds) TODO: change this value to 'team agreed upon' value
 var ROUNDS_PLAYED = 0;
 var GOLD_COLOR = "rgb(255, 215, 0)";
 var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
@@ -193,7 +193,14 @@ PlayGame.prototype.draw = function (ctx) {
         }
     } else {
         this.drawScores(ctx);
-        drawTextWithOutline(ctx, "32px Impact", Math.floor(this.roundTimer / 1), 350, 40, 'black', 'white');
+        if (Math.floor(this.roundTimer / 1) == 0) {
+            drawTextWithOutline(ctx, "200px Impact", "TIME!", 180, 300, 'red', 'white');
+        }
+        else if (this.roundTimer / 1 < 10) {
+            drawTextWithOutline(ctx, "200px Impact", Math.floor(this.roundTimer / 1), 350, 300, 'red', 'white');
+        } else {
+            drawTextWithOutline(ctx, "50px Impact", Math.floor(this.roundTimer / 1), 380, 60, 'black', 'white');
+        }
         drawTextWithOutline(ctx, "32px Impact", "Round #" + (ROUNDS_PLAYED + 1), 650, 40, 'purple', 'white');
         drawTextWithOutline(ctx, "32px Impact", "Oh My Goat!", 20, 40, 'purple', 'white');
     }
@@ -209,23 +216,18 @@ PlayGame.prototype.drawPlayButton = function (ctx) {
 };
 
 PlayGame.prototype.drawScores = function (ctx) {
-    var font = "32px Impact";
-
     // Draw scores
     for (var i = 0; i < this.game.goats.length; i++) {
-        drawTextWithOutline(ctx, font, this.game.goats[i].score, 45 + 200 * i, 590, 'white', this.game.goats[i].color);
+        drawTextWithOutline(ctx, "32px Impact", this.game.goats[i].score, 45 + 200 * i, 590, 'white', this.game.goats[i].color);
         // Draw crown
         if (this.game.goats[i].king) ctx.drawImage(ASSET_MANAGER.getAsset("./img/crown.png"), 45 + 200 * i, 520, 50, 50);
-
     }
-
-
 };
 
 var drawTextWithOutline = function (ctx, font, text, x, y, fillColor, outlineColor) {
     ctx.font = font;
     ctx.strokeStyle = outlineColor;
-    ctx.lineWidth = 5;
+    ctx.lineWidth = 4;
     ctx.lineJoin = 'miter';
     ctx.miterLimit = 5;
     ctx.strokeText(text, x, y);

@@ -5,6 +5,7 @@
 var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds)
 var GOLD_COLOR = "rgb(255, 215, 0)";
 
+// TODO: add in params for Background & Platforms
 function Round(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.game = game;
     this.btnX = btnX;
@@ -14,7 +15,7 @@ function Round(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.randomizeHill = randomizeHill;
     this.randomHillSpeed = randomHillSpeed;
     this.randomHillClockTickTracker = 0;
-    this.sceneSelector = null;
+    this.sceneManager = null;
     this.scene = null;
     this.isInTitleScreenScene = true;
     this.roundTimer = ROUND_TIME_LIMIT;
@@ -26,7 +27,9 @@ function Round(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
     this.powerUpTimer = POWERUP_INTERVAL;
     //this.goatScores = []; // TODO: moved to Scene Selector; flagged for removal
 
-    Entity.call(this, game, 0, 0, 0, 0);
+    this.secondsElapsed = 0; // TODO: link this with game engine's timer
+
+    Scene.call(this, game, 0, 0, 0, 0);
 }
 
 Round.prototype = new Scene();
@@ -49,7 +52,7 @@ Round.prototype.update = function () {
 
             // asset stuff
             this.game.prepForScene();
-            this.scene = this.sceneSelector.getNextScene();
+            this.scene = this.sceneManager.getNextScene();
             this.game.addEntity(this.scene);
             this.game.addEntity(this);
             console.log("TRANSITION THING");
@@ -83,7 +86,7 @@ Round.prototype.update = function () {
             // asset stuff
             this.isInTitleScreenScene = false; // 'cause at least one round has now been played
             this.game.prepForScene();
-            this.scene = this.sceneSelector.getNextScene();
+            this.scene = this.sceneManager.getNextScene();
             this.game.addEntity(this.scene);
             this.game.addEntity(this);
             //this.initGoats(); // TODO: Taken out to prevent goats interacting between rounds
@@ -220,10 +223,6 @@ var drawTextWithOutline = function (ctx, font, text, x, y, fillColor, outlineCol
     ctx.strokeText(text, x, y);
     ctx.fillStyle = fillColor;
     ctx.fillText(text, x, y);
-};
-
-Round.prototype.initFirstScene = function () {
-    this.scene = this.sceneSelector.scenes[0];
 };
 
 Round.prototype.generateRandomCollectible = function () {

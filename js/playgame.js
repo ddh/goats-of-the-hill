@@ -193,7 +193,14 @@ PlayGame.prototype.draw = function (ctx) {
         }
     } else {
         this.drawScores(ctx);
-        drawTextWithOutline(ctx, "32px Impact", Math.floor(this.roundTimer / 1), 350, 40, 'black', 'white');
+        if (Math.floor(this.roundTimer / 1) == 0) {
+            drawTextWithOutline(ctx, "200px Impact", "TIME!", 180, 300, 'red', 'white');
+        }
+        else if (this.roundTimer / 1 < 10) {
+            drawTextWithOutline(ctx, "200px Impact", Math.floor(this.roundTimer / 1), 350, 300, 'red', 'white');
+        } else {
+            drawTextWithOutline(ctx, "50px Impact", Math.floor(this.roundTimer / 1), 380, 60, 'black', 'white');
+        }
         drawTextWithOutline(ctx, "32px Impact", "Round #" + (ROUNDS_PLAYED + 1), 650, 40, 'purple', 'white');
         drawTextWithOutline(ctx, "32px Impact", "Oh My Goat!", 20, 40, 'purple', 'white');
     }
@@ -209,17 +216,18 @@ PlayGame.prototype.drawPlayButton = function (ctx) {
 };
 
 PlayGame.prototype.drawScores = function (ctx) {
-    var font = "32px Impact";
-    drawTextWithOutline(ctx, font, this.game.goats[0].score, 45, 590, 'white', 'blue');
-    drawTextWithOutline(ctx, font, this.game.goats[1].score, 245, 590, 'white', 'green');
-    drawTextWithOutline(ctx, font, this.game.goats[2].score, 445, 590, 'white', 'red');
-    drawTextWithOutline(ctx, font, this.game.goats[3].score, 645, 590, 'white', GOLD_COLOR);
+    // Draw scores
+    for (var i = 0; i < this.game.goats.length; i++) {
+        drawTextWithOutline(ctx, "32px Impact", this.game.goats[i].score, 45 + 200 * i, 590, 'white', this.game.goats[i].color);
+        // Draw crown
+        if (this.game.goats[i].king) ctx.drawImage(ASSET_MANAGER.getAsset("./img/crown.png"), 45 + 200 * i, 520, 50, 50);
+    }
 };
 
 var drawTextWithOutline = function (ctx, font, text, x, y, fillColor, outlineColor) {
     ctx.font = font;
     ctx.strokeStyle = outlineColor;
-    ctx.lineWidth = 5;
+    ctx.lineWidth = 4;
     ctx.lineJoin = 'miter';
     ctx.miterLimit = 5;
     ctx.strokeText(text, x, y);
@@ -239,7 +247,7 @@ PlayGame.prototype.generateRandomCollectible = function () {
         if (this.powerUpTimer < 0) {
             this.powerUpTimer = POWERUP_INTERVAL;
             var randomX = Math.floor(Math.random() * (this.game.surfaceWidth - 40)); // +40 to avoid spawning off screen
-            var randomY = Math.floor(Math.random() * (this.game.surfaceHeight - 100)); // +100 to avoid powerups in ground
+            var randomY = Math.floor(Math.random() * ((this.game.surfaceHeight - 100) - 50) + 50); // +100 to avoid powerups in ground
             var randomCollectible = Math.floor(Math.random() * (COLLECTIBLES.length));
             this.game.addEntity(new Collectible(this.game, randomX, randomY, 40, 40, COLLECTIBLES[randomCollectible]));
         }

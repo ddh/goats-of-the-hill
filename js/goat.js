@@ -150,7 +150,6 @@ function Goat(game, playerNumber, controls, sprite, color) {
     this.attackAuraLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/" + this.sprite + "-attackAuraLeft.png"), 3, 0, 44, 150, .1, 4, true, false);
     this.attackAuraRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/" + this.sprite + "-attackAuraRight.png"), 16, 0, 43, 150, .1, 4, true, true);
 
-
     // Action states:
     this.right = true; // Facing right (true) or left (false)
     this.standing = true;
@@ -664,6 +663,10 @@ Goat.prototype.draw = function (ctx) {
         else
             this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 12, this.y - 20, this.scale + .2);
     }
+
+    // Display player indicator
+    drawTextWithOutline(this.game.ctx, "24px Impact", (this.aiEnabled) ? "AI" : "P" + (this.playerNumber + 1), this.x + this.scale * 36, (this.y - this.scale * 30) + Math.sin(this.game.timer.gameTime * 10), this.color, 'white');
+    drawTextWithOutline(this.game.ctx, "6px Impact", "▼", this.x + this.scale * 48, (this.y - this.scale * 10) + Math.sin(this.game.timer.gameTime * 10), this.color, 'white');
 
     // For drawing CROWN:
     if (this.king) {

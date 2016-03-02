@@ -4,133 +4,103 @@
 // Class Constants:
 var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds)
 var GOLD_COLOR = "rgb(255, 215, 0)";
+var MAX_IDLE_TIME = 10;    // *Currently turned off* - How many seconds of inactivity before goat AI kicks in on an idle player.
+var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
+var POWERUP_INTERVAL = 10;  // Every x sec a powerup spawns
+//var COLLECTIBLES = ['invincibility']; //TODO: Using this as a means to test a powerup individually. Just comment out the above.
 
-// TODO: add in params for Background & Platforms
-function Round(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
+function Round(game, background, platforms, randomizeHill, randomHillSpeed) {
     this.game = game;
-    this.btnX = btnX;
-    this.btnY = btnY;
-    this.hill = hill;
-    this.isInTransitionScene = true; // false if round is currently running
+    this.background = background;
+    this.platforms = platforms;
+    this.entities = [];
+    this.collidables = [];
     this.randomizeHill = randomizeHill;
     this.randomHillSpeed = randomHillSpeed;
     this.randomHillClockTickTracker = 0;
-    this.sceneManager = null;
-    this.scene = null;
-    this.isInTitleScreenScene = true;
     this.roundTimer = ROUND_TIME_LIMIT;
-    //this.roundSecondsElapsed = 0; // TODO: Round countdown refactor; flagged for removal
-    this.timerStarted = false;
-    this.lastRoundWasTie = false;
-    //this.roundTimerDiv = document.getElementById('roundTimer'); // TODO: Round countdown refactor; flagged for removal
-    this.highestScore = null;
     this.powerUpTimer = POWERUP_INTERVAL;
-    //this.goatScores = []; // TODO: moved to Scene Selector; flagged for removal
+    this.highestScore = null;
+    this.idleTime = [0, 0, 0, 0];   // How long each goat has been idle for. Used to determine when to enable AI.
+    this.goats = []; // used for storing goats for this round (will be wiped when Round is over)
+    this.goatScores = { // stores goat scores during particular round (data passed from round to scoreboard scene)
+        0: [],          // player 1
+        1: [],          // player 2
+        2: [],          // player 3
+        3: []           // player 4
+    };
+    this.type = "Round"; // used to overload superclass constructor
 
-    this.secondsElapsed = 0; // TODO: link this with game engine's timer
-
-    Scene.call(this, game, 0, 0, 0, 0);
+    Scene.call(this, this.game, this.background, this.type);
 }
 
 Round.prototype = new Scene();
 Round.prototype.constructor = Round;
 
-Round.prototype.reset = function () {
-};
+Round.prototype.initAllEntities = function () {
+    // 1. Goats list
+    this.initGoats();
 
-Round.prototype.update = function () {
-    Entity.prototype.update.call(this);
+    // 2. Entities list
+    this.entities.push(this.background);
+    this.entities.push.apply(this.platforms);
+    this.entities.push.apply(this.goats);
 
-    // ACTUAL ROUND JUST STARTED
-    if (this.game.click) {
-        console.log("click detected");
-        if (this.isInTransitionScene) {
-            // logistic stuff
-            this.isInTransitionScene = false;
-            this.randomHillClockTickTracker = 0;
-            //if (!this.timerStarted) this.startTimer(ROUND_TIME_LIMIT, this.roundTimerDiv); // TODO: Round countdown refactor; flagged for removal
+    // 3. Collidables list
+    this.collidables.push.apply(this.goats);
+    this.collidables.push.apply(this.platforms);
 
-            // asset stuff
-            this.game.prepForScene();
-            this.scene = this.sceneManager.getNextScene();
-            this.game.addEntity(this.scene);
-            this.game.addEntity(this);
-            console.log("TRANSITION THING");
-            this.initGoats();
-        }
-    }
-
-    // TRANSITION SCENE JUST STARTED
-    if (!this.isInTransitionScene) {
-        // asset stuff
-        this.roundTimer -= this.game.clockTick;
-        this.scoreChecker();
-        this.randomHillGenerator();
-        this.generateRandomCollectible();
-        this.goatScores = [];
-
-        if (this.roundTimer / 1 < 0) {
-            // logistic stuff
-            this.isInTransitionScene = true;
-            this.roundTimer = ROUND_TIME_LIMIT;
-            ROUNDS_PLAYED++;
-            this.lastRoundWasTie = false;
-
-            for (var i = 0; i < this.game.goats.length; i++) {
-                this.goatScores.push(this.game.goats[i]);
-            }
-
-            this.goatScores.sort(function (a, b) {
-                return b.score - a.score;
-            });
-            // asset stuff
-            this.isInTitleScreenScene = false; // 'cause at least one round has now been played
-            this.game.prepForScene();
-            this.scene = this.sceneManager.getNextScene();
-            this.game.addEntity(this.scene);
-            this.game.addEntity(this);
-            //this.initGoats(); // TODO: Taken out to prevent goats interacting between rounds
-        }
-    }
+    // 4. Platforms list (initialized in constructor)
 };
 
 Round.prototype.initGoats = function () {
     /* === Goats === */
     var playerOneControls = {jump: 87, left: 65, right: 68, attack: 83, run: 16}; // W,A,D,S,shift
     var goat1 = new Goat(this.game, 0, playerOneControls, "blue-goat", "blue");
+    goat1.initControls();
     goat1.x = 30;
-    this.game.addEntity(goat1);
+    this.goats.push(goat1);
 
     var playerTwoControls = {jump: 38, left: 37, right: 39, attack: 40, run: 18}; // ↑,←,→,↓,alt
     var goat2 = new Goat(this.game, 1, playerTwoControls, "green-goat", "green");
+    goat2.initControls();
     goat2.x = 230;
-    this.game.addEntity(goat2);
+    this.goats.push(goat2);
 
     var playerThreeControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0};
     var goat3 = new Goat(this.game, 2, playerThreeControls, "red-goat", "red");
+    goat3.initControls();
     goat3.x = 430;
-    this.game.addEntity(goat3);
+    this.goats.push(goat3);
 
     var playerFourControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0};
     var goat4 = new Goat(this.game, 3, playerFourControls, "yellow-goat", GOLD_COLOR);
+    goat4.initControls();
     goat4.x = 630;
-    this.game.addEntity(goat4);
+    this.goats.push(goat4);
+};
+
+Round.prototype.deleteAllEntities = function () {
+    this.goats = [];
+    this.platforms = [];
+    this.entities = [];
+    this.collidables = [];
 };
 
 // Checks which goat is the leader and crowns them.
 Round.prototype.scoreChecker = function () {
-    this.highestScore = this.game.goats[0]; //sets a goat as king
+    this.highestScore = this.goats[0]; //sets a goat as king
     //checks which goat has the highest score
-    for (var i = 1, len = this.game.goats.length; i < len; i++) {
-        var goat = this.game.goats[i];
+    for (var i = 1, len = this.goats.length; i < len; i++) {
+        var goat = this.goats[i];
         if (this.highestScore.score < goat.score) {
             this.highestScore = goat;
         }
     }
     //ensures other goats don't have the crown 
-    for (var i = 0, len = this.game.goats.length; i < len; i++) {
-        if (this.highestScore != this.game.goats[i]) {
-            this.game.goats[i].king = false;
+    for (var i = 0, len = this.goats.length; i < len; i++) {
+        if (this.highestScore != this.goats[i]) {
+            this.goats[i].king = false;
         }
     }
     if (typeof this.highestScore.score !== 'undefined'
@@ -142,91 +112,43 @@ Round.prototype.scoreChecker = function () {
 
 //Helper function for the hill
 Round.prototype.randomHillGenerator = function () {
-    var len = this.game.platforms.length;
-    if (len !== 0 && this.hill) { //there is a hill
+    var len = this.platforms.length;
+    if (len !== 0) { // there is a hill b/c there is at least 1 platform
         if (this.randomizeHill) { // It's a random hill style
             if (!this.isInTransitionScene) this.randomHillClockTickTracker += this.game.clockTick;
             if (this.randomHillClockTickTracker >= this.randomHillSpeed) {
                 console.log("potential for hill change");
                 this.randomHillClockTickTracker = 0;
                 for (var i = 1; i < len; i++) { // finds the current hill and disables it.
-                    if (this.game.platforms[i].isHill) {
-                        this.game.platforms[i].isHill = false;
+                    if (this.platforms[i].isHill) {
+                        this.platforms[i].isHill = false;
                     }
                 }
                 // ***NOTE: if no platforms in scene, len is 0 so multiplying by zero is BAAAADD !!! :P
                 var randomPlatformIndex = Math.floor((Math.random() * len));
                 //do not include 0 (ground platform)
                 if (randomPlatformIndex !== 0) {
-                    this.game.platforms[randomPlatformIndex].isHill = true; // sets a new platform as the hill
+                    this.platforms[randomPlatformIndex].isHill = true; // sets a new platform as the hill
                 } else {
                     while (randomPlatformIndex == 0) { // checks to make sure its not the ground platform
                         randomPlatformIndex = Math.floor((Math.random() * len));
                     }
-                    this.game.platforms[randomPlatformIndex].isHill = true; // sets a new platform as the hill
+                    this.platforms[randomPlatformIndex].isHill = true; // sets a new platform as the hill
                 }
             }
         }
     }
 };
 
-Round.prototype.draw = function (ctx) {
-    if (this.isInTransitionScene) {
-        this.drawPlayButton(ctx);
-        var winningGoatString = "";
-
-        if (!this.lastRoundWasTie) {
-            if (!this.isInTitleScreenScene) {
-
-                winningGoatString = this.highestScore.playerColor.toUpperCase() + " wins scoring : " + this.highestScore.score;
-                drawTextWithOutline(ctx, "45px Impact", winningGoatString, 210, 105, this.highestScore.color, 'white'); // winner #1
-                drawTextWithOutline(ctx, "40px Impact", this.goatScores[1].score, 310, 202, this.goatScores[1].color, 'white'); // winner #2
-                drawTextWithOutline(ctx, "40px Impact", this.goatScores[2].score, 585, 288, this.goatScores[2].color, 'white'); // winner #3
-                drawTextWithOutline(ctx, "40px Impact", this.goatScores[3].score, 220, 368, this.goatScores[3].color, 'white'); // winner #4
-            }
-        } else {
-            if (!this.isInTitleScreenScene) {
-                statStr = "Last round was a tie!";
-            }
-        }
-    } else {
-        this.drawScores(ctx);
-        drawTextWithOutline(ctx, "32px Impact", Math.floor(this.roundTimer / 1), 350, 40, 'black', 'white');
-        drawTextWithOutline(ctx, "32px Impact", "Round #" + (ROUNDS_PLAYED + 1), 650, 40, 'purple', 'white');
-        drawTextWithOutline(ctx, "32px Impact", "Oh My Goat!", 20, 40, 'purple', 'white');
-    }
-    Entity.prototype.draw.call(this, ctx);
-};
-
-Round.prototype.drawPlayButton = function (ctx) {
-    if (ROUNDS_PLAYED === 0) {
-        drawTextWithOutline(ctx, "24pt Impact", "Click to play!", this.btnX, this.btnY + 120, "purple", "white");
-    } else {
-        drawTextWithOutline(ctx, "24pt Impact", "Play again?", this.btnX + 10, this.btnY + 160, 'purple', 'white');
-    }
-};
-
 Round.prototype.drawScores = function (ctx) {
     var font = "32px Impact";
-    drawTextWithOutline(ctx, font, this.game.goats[0].score, 45, 590, 'white', 'blue');
-    drawTextWithOutline(ctx, font, this.game.goats[1].score, 245, 590, 'white', 'green');
-    drawTextWithOutline(ctx, font, this.game.goats[2].score, 445, 590, 'white', 'red');
-    drawTextWithOutline(ctx, font, this.game.goats[3].score, 645, 590, 'white', GOLD_COLOR);
-};
-
-var drawTextWithOutline = function (ctx, font, text, x, y, fillColor, outlineColor) {
-    ctx.font = font;
-    ctx.strokeStyle = outlineColor;
-    ctx.lineWidth = 5;
-    ctx.lineJoin = 'miter';
-    ctx.miterLimit = 5;
-    ctx.strokeText(text, x, y);
-    ctx.fillStyle = fillColor;
-    ctx.fillText(text, x, y);
+    drawTextWithOutline(ctx, font, this.goats[0].score, 45, 590, 'white', 'blue');
+    drawTextWithOutline(ctx, font, this.goats[1].score, 245, 590, 'white', 'green');
+    drawTextWithOutline(ctx, font, this.goats[2].score, 445, 590, 'white', 'red');
+    drawTextWithOutline(ctx, font, this.goats[3].score, 645, 590, 'white', GOLD_COLOR);
 };
 
 Round.prototype.generateRandomCollectible = function () {
-
     // Generate powerup every x seconds
     if (!this.isInTransitionScene) {
         this.powerUpTimer -= this.game.clockTick;
@@ -235,11 +157,102 @@ Round.prototype.generateRandomCollectible = function () {
             var randomX = Math.floor(Math.random() * (this.game.surfaceWidth - 40)); // +40 to avoid spawning off screen
             var randomY = Math.floor(Math.random() * (this.game.surfaceHeight - 100)); // +100 to avoid powerups in ground
             var randomCollectible = Math.floor(Math.random() * (COLLECTIBLES.length));
-            this.game.addEntity(new Collectible(this.game, randomX, randomY, 40, 40, COLLECTIBLES[randomCollectible]));
+            this.entities.push(new Collectible(this.game, randomX, randomY, 40, 40, COLLECTIBLES[randomCollectible]));
         }
     } else this.powerUpTimer = POWERUP_INTERVAL;
 };
 
 Round.prototype.toString = function () {
-    return 'Round';
+    return 'Round ' + (ROUNDS_PLAYED + 1);
 };
+
+/***********************************************
+ *  START OF SCENE 'INTERFACE' IMPLEMENTATION  *
+ ***********************************************/
+
+// performs variable initialization
+Round.prototype.startScene = function () {
+    this.initAllEntities();
+};
+
+// performs cleanup operations
+Round.prototype.endScene = function () {
+    this.deleteAllEntities();
+};
+
+// checks if timer is done to indicate round is over
+Round.prototype.isSceneDone = function () {
+    return (this.roundTimer / 1 < 0);
+};
+
+Round.prototype.reset = function () {};
+
+Round.prototype.draw = function (ctx) {
+    // 1. Clear the window (Removes previously drawn things from canvas)
+    this.game.ctx.clearRect(0, 0, this.game.ctx.canvas.width, this.game.ctx.canvas.height);
+
+    // 2. Save (What are we saving exactly here?)
+    this.game.ctx.save();
+
+    // 3. Draw each entity onto canvas
+    for (var i = 0, len = this.entities.length; i < len; i++) {
+        this.entities[i].draw(this.game.ctx);
+
+    }
+
+    // 4. Restore previous state
+    this.game.ctx.restore();
+
+    this.drawScores(ctx);
+    drawTextWithOutline(ctx, "32px Impact", Math.floor(this.roundTimer / 1), 350, 40, 'black', 'white');
+    drawTextWithOutline(ctx, "32px Impact", "Round #" + (ROUNDS_PLAYED + 1), 650, 40, 'purple', 'white');
+    drawTextWithOutline(ctx, "32px Impact", "Oh My Goat!", 20, 40, 'purple', 'white');
+};
+
+Round.prototype.update = function () {
+    this.roundTimer -= this.game.clockTick;
+    this.scoreChecker();
+    this.randomHillGenerator();
+    this.generateRandomCollectible();
+
+    // If player 3 or 4's controller is not connected, AI Goat takes over
+    if (this.goats.length == 4) {
+        if (typeof navigator.getGamepads()[2] === 'undefined') this.goats[2].aiEnabled = true;
+        if (typeof navigator.getGamepads()[3] === 'undefined') this.goats[3].aiEnabled = true;
+    }
+
+    // Poll for gamepads
+    for (var i = 0; i < this.goats.length; i++) {
+        var gamepad = navigator.getGamepads()[i];
+        if (gamepad) {
+            this.goats[i].jumpKey = buttonPressed(gamepad.buttons[0]);
+            this.goats[i].leftKey = gamepad.axes[0] < -0.5;
+            this.goats[i].rightKey = gamepad.axes[0] > 0.5;
+            this.goats[i].attackKey = buttonPressed(gamepad.buttons[7]);
+            this.goats[i].runKey = buttonPressed(gamepad.buttons[6]);
+        }
+    }
+
+    // entity management code from GameEngine
+    if (typeof this.entities !== 'undefined') {
+        var entitiesCount = this.entities.length;
+
+        // Cycle through the list of entities in GameEngine.
+        for (var i = 0; i < entitiesCount; i++) {
+            var entity = this.entities[i];
+
+            // Only update those not flagged for removal, for optimization
+            if (typeof entity !== 'undefined' && !entity.removeFromWorld) entity.update();
+        }
+
+        // Removal of flagged entities
+        for (var j = this.entities.length - 1; j >= 0; --j) {
+            if (this.entities[j].removeFromWorld) this.entities.splice(j, 1);
+        }
+
+    }
+};
+
+/***********************************************
+ *   END OF SCENE 'INTERFACE' IMPLEMENTATION   *
+ ***********************************************/

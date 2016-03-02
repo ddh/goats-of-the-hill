@@ -34,6 +34,15 @@ var drawTextWithOutline = function (ctx, font, text, x, y, fillColor, outlineCol
     ctx.fillText(text, x, y);
 };
 
+var drawPlayButton = function (ctx) {
+    var btnX = 320, btnY = 300;
+    if (ROUNDS_PLAYED === 0) {
+        drawTextWithOutline(ctx, "24pt Impact", "Click to play!", btnX, btnY + 120, "purple", "white");
+    } else {
+        drawTextWithOutline(ctx, "24pt Impact", "Play again?", btnX + 10, btnY + 160, 'purple', 'white');
+    }
+};
+
 /***********************************************
  *          START OF SCENE 'INTERFACE'         *
  ***********************************************/
@@ -69,6 +78,7 @@ function SceneManager(currentScene) {
         2: [],          // player 3
         3: []           // player 4
     };
+    this.highestScoreFromLastRound = {};
 }
 
 SceneManager.prototype = new Entity();
@@ -76,27 +86,33 @@ SceneManager.prototype.constructor = SceneManager;
 
 SceneManager.prototype.update = function() {
     // check if Scene is done, then start transition to next Scene
-    if (this.currentScene.isDone()) {
+    if (this.currentScene.isSceneDone()) {
         if (this.currentScene.type === "Round") {
-            this.storeScoresFromCurrentRound();
+            this.storeScoresFromLastRound();
             ROUNDS_PLAYED++;
         }
         this.currentScene.endScene();
         this.currentScene = this.currentScene.next;
         this.currentScene.startScene();
-    } else { // else, if not done, continue updating current Scene
+    } else { // else, if Scene not done, continue updating current Scene
         this.currentScene.update();
     }
 };
 
-SceneManager.prototype.storeScoresFromCurrentRound = function () {
+SceneManager.prototype.storeScoresFromLastRound = function () {
+    var max = 0;
     for (var i = 0, len = this.currentScene.goats.length; i < len; i++) {
-        this.goatScores[i].push(this.currentScene.goats[i].score);
+        var currScore = this.currentScene.goats[i].score;
+        this.goatScores[i].push(currScore);
+        if (max < currScore) {
+            this.highestScoreFromLastRound['player'] = i;
+            this.highestScoreFromLastRound['score'] = currScore;
+        }
     }
 };
 
-SceneManager.prototype.draw = function() {
-    this.currentScene.draw();
+SceneManager.prototype.draw = function(ctx) {
+    this.currentScene.draw(ctx);
 };
 
 SceneManager.prototype.reset = function () {

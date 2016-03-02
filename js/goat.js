@@ -235,8 +235,8 @@ Goat.prototype.update = function () {
 
         // Find the hill
         function findHill(that) {
-            for (var i = 0, len = that.game.platforms.length; i < len; i++) {
-                if (that.game.platforms[i].isHill) return that.game.platforms[i];
+            for (var i = 0, len = that.game.sceneManager.currentScene.platforms.length; i < len; i++) {
+                if (that.game.sceneManager.currentScene.platforms[i].isHill) return that.game.sceneManager.currentScene.platforms[i];
             }
         }
 
@@ -441,8 +441,8 @@ Goat.prototype.update = function () {
 
     // Jumping onto an entity
     if (this.falling) {
-        for (var i = 0, length = this.game.collidables.length; i < length; i++) {
-            var entity = this.game.collidables[i];
+        for (var i = 0, length = this.game.sceneManager.currentScene.collidables.length; i < length; i++) {
+            var entity = this.game.sceneManager.currentScene.collidables[i];
             if (entity != this && this.falling && (leftCornerBB.collide(entity.boundingBox) ||
                 rightCornerBB.collide(entity.boundingBox)) && (this.boundingBox.bottom - this.velocity.y * 1.5 <= entity.boundingBox.y)) {
                 console.log(this + " collided with " + entity);

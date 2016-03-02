@@ -32,11 +32,18 @@ function Goat(game, playerNumber, controls, sprite, color) {
     this.ctx = game.ctx;
     this.sprite = sprite;
     this.color = color;
-    if (color === "rgb(255, 215, 0)") {
+    if (color === GOLD_COLOR) {
         this.playerColor = "yellow";
     } else {
         this.playerColor = color;
     }
+
+    // Scoring
+    this.scoring = false;       // Whether the goat is currently scoring points
+    this.newPoints = 0;         // Points currently being accrued by a goat when on the hill
+    this.pointsLifetime;
+    this.score = 0;             // TODO: KEEP THIS IN THE CONSTRUCTOR ELSE SCORE IS EITHER UNDEFINED OR NaN
+    this.king = false;
 
     // Control keys:
     this.jumpKey = false;
@@ -65,7 +72,6 @@ function Goat(game, playerNumber, controls, sprite, color) {
     this.maxWalkSpeed = 3.0;
     this.maxRunSpeed = 6.0;
 
-
     // Jump physics
     this.velocity = {x: 0, y: 0};
     this.gravity = 0.5;
@@ -86,7 +92,7 @@ function Goat(game, playerNumber, controls, sprite, color) {
     this.chargePowerMax = 5;        // Maximum charge power (ticks) (TODO: POWERUP)
     this.attackTimeCounter = 0;
     this.attackTimeMax = 20;        // How many UPDATES the attack lasts for
-    this.attackVelocity = 2.5;      // Initial attack velocity
+    this.attackVelocity = 4;      // Initial attack velocity
 
     // Hit physics:
     this.hit = {right: 0, pow: 0};  // A hit object containing information about the collision
@@ -96,8 +102,8 @@ function Goat(game, playerNumber, controls, sprite, color) {
     this.maxVictims = 1;            // The number of goats a goat can attack in one attack (TODO: POWERUP)
 
     // Hit boxes for attacking:
-    this.rightAttackBB = new BoundingBox(this.boundingBox.x + 33, this.boundingBox.y + 4, 10, this.boundingBox.height * 0.8);
-    this.leftAttackBB = new BoundingBox(this.boundingBox.x, this.boundingBox.y + 4, 10, this.boundingBox.height * 0.8);
+    this.rightAttackBB = new BoundingBox(this.x + this.width - this.width / 4, this.y + this.height / 10, this.width / 4, this.height * 0.8);
+    this.leftAttackBB = new BoundingBox(this.x, this.y + this.height / 10, this.width / 4, this.height * 0.8);
 
     // Collectibles (Power-ups)
     this.invincible = false;        // If true, this goat cannot be attacked (TODO: POWERUP)
@@ -148,7 +154,6 @@ function Goat(game, playerNumber, controls, sprite, color) {
     this.attackAuraLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/" + this.sprite + "-attackAuraLeft.png"), 3, 0, 44, 150, .1, 4, true, false);
     this.attackAuraRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/" + this.sprite + "-attackAuraRight.png"), 16, 0, 43, 150, .1, 4, true, true);
 
-
     // Action states:
     this.right = true; // Facing right (true) or left (false)
     this.standing = true;
@@ -159,12 +164,6 @@ function Goat(game, playerNumber, controls, sprite, color) {
     this.charging = false;
     this.attacking = false;
     this.stunned = false;
-    this.king = false;
-
-    // TODO: KEEP THIS IN THE CONSTRUCTOR ELSE SCORE IS EITHER UNDEFINED OR NaN
-    this.score = 0;
-
-    // this.boundingBox = new BoundingBox(this.x, this.y, this.width, this.height);
 
     Entity.call(this, game, 0, this.y, this.width, this.height);
 }
@@ -477,7 +476,7 @@ Goat.prototype.update = function () {
         this.attacking = false;
         this.chargeTime += this.game.clockTick;
         if (!this.chargeDecay) {
-            this.chargePower = Math.min(Math.ceil(this.chargeTime / 1), this.chargePowerMax);
+            this.chargePower = Math.min(Math.ceil(this.chargeTime / 0.25), this.chargePowerMax);
             //console.log(this + " has Charge of: " + this.chargePower);
         }
         if (this.maximumAttack) this.chargePower = this.chargePowerMax;
@@ -568,9 +567,9 @@ Goat.prototype.update = function () {
 
         // Knockback goats but keep them in bounds of stage
         if (this.hit.right) {
-            if (this.x + this.width < this.game.surfaceWidth) this.x += 2 * this.hit.pow; // TODO: Magic numbers...
+            if (this.x + this.width < this.game.surfaceWidth) this.x += 3 * this.hit.pow; // TODO: Magic numbers...
         } else {
-            if (this.x > 0)this.x -= 2 * this.hit.pow;
+            if (this.x > 0)this.x -= 3 * this.hit.pow;
         }
         this.chargePower = 1; // An injured goat cannot charge
         this.timeout += 20 / this.hit.pow; // TODO: Magic numbers...
@@ -600,17 +599,24 @@ Goat.prototype.update = function () {
 
     // Increments goat's score count:
     if (this.entity && this.entity.isHill && !isMounted(this, this.game.sceneManager.currentScene.goats)) {
-        var incrementScore = true;
+        this.scoring = true;
         for (var i = 0, len = this.game.sceneManager.currentScene.goats.length; i < len; i++) {
             var goat = this.game.sceneManager.currentScene.goats[i];
+            // Checks if this goat is standing on another
             if (goat != this && this.entity == goat.entity) {
-                incrementScore = false;
+                this.scoring = false;
+                this.newPoints = 0;
             }
         }
-        if (incrementScore) {
+        if (this.scoring) {
             this.score += 1;
+            this.newPoints++;
+            this.pointsLifetime = 1;
             //console.log("score = " + this.score);
         }
+    }
+    if (this.entity && !this.entity.isHill || this.jumping) {
+        this.scoring = false;
     }
     // helper function to prevent goat on goat on hill from gaining points
     function isMounted(thisGoat, goats) {
@@ -680,12 +686,16 @@ Goat.prototype.draw = function (ctx) {
 
 
     // For the charging anim
-    if (this.charging && this.chargePower == this.chargePowerMax) {
+    if ((this.charging && this.chargePower == this.chargePowerMax) || this.maximumAttack) {
         if (this.right)
             this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 1, this.y - 20, this.scale + .2);
         else
             this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 12, this.y - 20, this.scale + .2);
     }
+
+    // Display player indicator
+    drawTextWithOutline(this.game.ctx, "24px Impact", (this.aiEnabled) ? "AI" : "P" + (this.playerNumber + 1), this.x + this.scale * 36, (this.y - this.scale * 30) + Math.sin(this.game.timer.gameTime * 10), this.color, 'white');
+    drawTextWithOutline(this.game.ctx, "6px Impact", "▼", this.x + this.scale * 48, (this.y - this.scale * 10) + Math.sin(this.game.timer.gameTime * 10), this.color, 'white');
 
     // For drawing CROWN:
     if (this.king) {
@@ -698,6 +708,15 @@ Goat.prototype.draw = function (ctx) {
 
     // Display charge meter:
     drawChargeMeter(this);
+
+    // Draw powerups held (icons):
+    drawPowerupsHeld(this);
+
+    // Draw powerups held (visual effects):
+    drawPowerupsVisuals(this);
+
+    // Draw points above head if currently being earned:
+    drawPointsAccruing(this);
 
     Entity.prototype.draw.call(this, ctx);
 };
@@ -719,7 +738,7 @@ function drawRoundedRect(ctx, x, y, width, height, radius) {
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
-};
+}
 
 
 Goat.prototype.finishAttack = function () {
@@ -757,12 +776,34 @@ var drawChargeMeter = function (goat) {
     goat.ctx.fillStyle = "rgba(255, 255, 0, .5)";
     drawRoundedRect(goat.ctx, goat.boundingBox.x, goat.boundingBox.y + goat.boundingBox.height + 10, goat.boundingBox.width, 10, 2);
     goat.ctx.fillStyle = "rgba(0, 255, 0, 1)";
-    drawRoundedRect(goat.ctx, goat.boundingBox.x, goat.boundingBox.y + goat.boundingBox.height + 10, (goat.chargePower / goat.chargePowerMax) * goat.boundingBox.width, 10, 2);
+    drawRoundedRect(goat.ctx, goat.boundingBox.x, goat.boundingBox.y + goat.boundingBox.height + 10, goat.boundingBox.width * ((goat.maximumAttack) ? 1 : (goat.chargePower / goat.chargePowerMax)), 10, 2);
 };
 
-//var drawPowerupsHeld = function (goat) {
-//    goat.ctx.drawImage()
-//};
+var drawPowerupsHeld = function (goat) {
+    for (var i = 0; i < goat.powerUps.length; i++) {
+        goat.ctx.drawImage(ASSET_MANAGER.getAsset("./img/icon-" + goat.powerUps[i] + ".png"), goat.boundingBox.x + i * 20, goat.boundingBox.y + goat.boundingBox.height + 25, 16, 16);
+    }
+
+};
+
+var drawPowerupsVisuals = function (goat) {
+    // TODO: Draw visuals pertaining to powerups
+};
+
+var drawPointsAccruing = function (goat) {
+    if (goat.scoring) {
+        drawTextWithOutline(goat.ctx, "24px Impact", "+" + goat.newPoints, goat.x + goat.scale * 100, goat.y + goat.height / 2, goat.color, 'white');
+    } else {
+        if (goat.pointsLifetime > 0.1) {
+            goat.pointsLifetime -= goat.game.clockTick;
+            goat.ctx.globalAlpha = goat.pointsLifetime;
+            drawTextWithOutline(goat.ctx, "24px Impact", "+" + goat.newPoints, goat.x + goat.scale * 80, goat.y + goat.height / 2 - Math.cos(goat.pointsLifetime) * 50, goat.color, 'white');
+            goat.ctx.globalAlpha = 1;
+        } else {
+            goat.newPoints = 0;
+        }
+    }
+};
 
 Goat.prototype.toString = function () {
     return 'Goat ' + this.playerNumber;

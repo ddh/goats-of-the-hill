@@ -1,8 +1,8 @@
 /*
  Collectibles: Pickups or powerups. Generated randomly during round. Grants goats temporary abilities.
  */
-
-
+var LIFETIME = 10;      // Constant for how long powerup's effects last for when picked up.
+var TIME_EXPIRE = 15;   // Constant for how long powerup stays on screen before disappearing.
 function Collectible(game, x, y, width, height, type) {
 
 
@@ -13,9 +13,9 @@ function Collectible(game, x, y, width, height, type) {
     this.width = width;
     this.height = height;
 
-    this.type = type;       // Name of collectible
-    this.timeExpire = 15;   // seconds until collectible is removed, if not picked up in time
-    this.lifetime = 10;     // seconds powerup lasts for when picked up
+    this.type = type;               // Name of collectible
+    this.timeExpire = TIME_EXPIRE;  // seconds until collectible is removed, if not picked up in time
+    this.lifetime = LIFETIME;       // seconds powerup lasts for when picked up
     this.pickedUp = false;
 
     this.goat;
@@ -58,6 +58,9 @@ Collectible.prototype.update = function () {
                         this.goat.maximumAttack = true;
                         break;
                     case'attackUp':
+                        this.goat.scale *= 1.5;
+                        this.goat.width *= 1.5;
+                        this.goat.height *= 1.5;
                         this.goat.maxVictims += 4;
                         break;
                     case'invincibility':
@@ -66,6 +69,8 @@ Collectible.prototype.update = function () {
                     default:
                         break;
                 }
+                // Add the powerup from the goat's array of powerups
+                this.goat.powerUps.push(this.type);
                 console.log(this.goat + " picked up " + this);
                 this.pickedUp = true;
                 break; // Enforces only one goat per collectible
@@ -103,6 +108,9 @@ Collectible.prototype.update = function () {
                     this.goat.maximumAttack = false;
                     break;
                 case'attackUp':
+                    this.goat.scale /= 1.5;
+                    this.goat.width /= 1.5;
+                    this.goat.height /= 1.5;
                     this.goat.maxVictims -= 4;
                     break;
                 case'invincibility':
@@ -111,6 +119,9 @@ Collectible.prototype.update = function () {
                 default:
                     break;
             }
+
+            // Remove the powerup from the goat's array of powerups
+            this.goat.powerUps.splice(this.goat.powerUps.indexOf(this.type), 1);
 
             // Then remove this collectible from list of entity in game engine
             this.removeFromWorld = true;
@@ -123,7 +134,8 @@ Collectible.prototype.draw = function (ctx) {
 
     // Only show the item on screen if it wasn't picked up yet
     if (!this.pickedUp) {
-        this.collectibleAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y, 1);
+        // Floaty animation thanks to Math.sin()
+        this.collectibleAnimation.drawFrame(this.game.clockTick, ctx, this.x, this.y + Math.sin(this.timeExpire * 5) * 5, 1);
         Entity.prototype.draw.call(this, ctx);
     }
 

@@ -43,12 +43,12 @@ Round.prototype.initAllEntities = function () {
 
     // 2. Entities list
     this.entities.push(this.background);
-    this.entities.push.apply(this.platforms);
-    this.entities.push.apply(this.goats);
+    this.entities.push.apply(this.entities, this.platforms);
+    this.entities.push.apply(this.entities, this.goats);
 
     // 3. Collidables list
-    this.collidables.push.apply(this.goats);
-    this.collidables.push.apply(this.platforms);
+    this.collidables.push.apply(this.collidables, this.goats);
+    this.collidables.push.apply(this.collidables, this.platforms);
 
     // 4. Platforms list (initialized in constructor)
 };
@@ -187,6 +187,7 @@ Round.prototype.reset = function () {};
 
 Round.prototype.draw = function (ctx) {
     for (var i = 0, len = this.entities.length; i < len; i++) {
+        console.log(this.entities[i].toString());
         this.entities[i].draw(ctx);
     }
 

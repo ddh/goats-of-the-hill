@@ -25,7 +25,7 @@ EndGame.prototype.reset = function () {
 
 EndGame.prototype.draw = function (ctx) {
     for (var i = 0, len = this.entities.length; i < len; i++) {
-        this.entities[i].draw(this.game.ctx);
+        this.entities[i].draw(ctx);
     }
 };
 

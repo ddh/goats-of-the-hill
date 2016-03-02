@@ -58,6 +58,9 @@ Collectible.prototype.update = function () {
                         this.goat.maximumAttack = true;
                         break;
                     case'attackUp':
+                        this.goat.scale *= 1.5;
+                        this.goat.width *= 1.5;
+                        this.goat.height *= 1.5;
                         this.goat.maxVictims += 4;
                         break;
                     case'invincibility':
@@ -66,6 +69,8 @@ Collectible.prototype.update = function () {
                     default:
                         break;
                 }
+                // Add the powerup from the goat's array of powerups
+                this.goat.powerUps.push(this.type);
                 console.log(this.goat + " picked up " + this);
                 this.pickedUp = true;
                 break; // Enforces only one goat per collectible
@@ -103,6 +108,9 @@ Collectible.prototype.update = function () {
                     this.goat.maximumAttack = false;
                     break;
                 case'attackUp':
+                    this.goat.scale /= 1.5;
+                    this.goat.width /= 1.5;
+                    this.goat.height /= 1.5;
                     this.goat.maxVictims -= 4;
                     break;
                 case'invincibility':
@@ -111,6 +119,9 @@ Collectible.prototype.update = function () {
                 default:
                     break;
             }
+
+            // Remove the powerup from the goat's array of powerups
+            this.goat.powerUps.splice(this.goat.powerUps.indexOf(this.type), 1);
 
             // Then remove this collectible from list of entity in game engine
             this.removeFromWorld = true;

@@ -7,7 +7,6 @@ function Scoreboard(game, background) {
     this.type = "Scoreboard"; // used to overload superclass constructor
 
     this.entities = [];
-    this.entities.push(this.background);
 
     this.highestScore = 0; // to be changed "on the fly" in Round Scene's update() method
 
@@ -26,20 +25,10 @@ Scoreboard.prototype.reset = function () {
 };
 
 Scoreboard.prototype.draw = function (ctx) {
-    // 1. Clear the window (Removes previously drawn things from canvas)
-    this.game.ctx.clearRect(0, 0, this.game.ctx.canvas.width, this.game.ctx.canvas.height);
-
-    // 2. Save (What are we saving exactly here?)
-    this.game.ctx.save();
-
-    // 3. Draw each entity onto canvas
     for (var i = 0, len = this.entities.length; i < len; i++) {
         this.entities[i].draw(this.game.ctx);
 
     }
-
-    // 4. Restore previous state
-    this.game.ctx.restore();
 
     if (ROUNDS_PLAYED <= 2) drawPlayButton(ctx);
 
@@ -72,7 +61,7 @@ Scoreboard.prototype.update = function () {
 
 // performs variable initialization
 Scoreboard.prototype.startScene = function () {
-
+    this.entities.push(this.background);
 };
 
 // performs cleanup operations

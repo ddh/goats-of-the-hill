@@ -2,7 +2,7 @@
 // https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 
 // Class Constants:
-var ROUND_TIME_LIMIT = 20; // 1 minute (in seconds) TODO: change this value to 'team agreed upon' value
+var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds) TODO: change this value to 'team agreed upon' value
 var ROUNDS_PLAYED = 0;
 var GOLD_COLOR = "rgb(255, 215, 0)";
 var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
@@ -98,12 +98,12 @@ PlayGame.prototype.update = function () {
 
 PlayGame.prototype.initGoats = function () {
     /* === Goats === */
-    var playerOneControls = {jump: 38, left: 37, right: 39, attack: 40, run: 18}; // ↑,←,→,↓,alt
+    var playerOneControls = {jump: 87, left: 65, right: 68, attack: 83, run: 16}; // W,A,D,S,shift
     var goat1 = new Goat(this.game, 0, playerOneControls, "blue-goat", "blue");
     goat1.x = 30;
     this.game.addEntity(goat1);
 
-    var playerTwoControls = {jump: 87, left: 65, right: 68, attack: 83, run: 16}; // W,A,D,S,shift
+    var playerTwoControls = {jump: 38, left: 37, right: 39, attack: 40, run: 18}; // ↑,←,→,↓,alt
     var goat2 = new Goat(this.game, 1, playerTwoControls, "green-goat", "green");
     goat2.x = 230;
     this.game.addEntity(goat2);

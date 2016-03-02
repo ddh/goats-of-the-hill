@@ -54,7 +54,7 @@ Scene.prototype.update = function () {};
  ***********************************************/
 
 /*
- * The Scene 'Selector' actually manages loading scene assets into the game engine and transitions between scenes.
+ * The Scene Manager handles loading scene assets into the game engine and transitions between scenes.
  */
 
 // Class constants:

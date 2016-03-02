@@ -99,8 +99,8 @@ GameEngine.prototype.startInput = function () {
     this.on = [];
     var toggleAI = function (game, num) {
         game.on[num] ^= true;
-        game.goats[num].resetAllKeys();
-        game.goats[num].aiEnabled = game.on[num];
+        game.sceneManager.currentScene.goats[num].resetAllKeys();
+        game.sceneManager.currentScene.goats[num].aiEnabled = game.on[num];
     };
 
     // Pressing 1,2,3,or 4 toggles AI on/off

@@ -99,18 +99,18 @@ SceneManager.prototype.update = function() {
             this.passAlongLastRoundsScores();
         }
         if (this.currentScene.type === "Title") {
-            // TODO: comment in these prints to see end game stats in console
-            //for (var i = 0; i < 4; i++) {
-            //    var total = 0;
-            //    var str = "player " + (i+1) + "'s scores are: ";
-            //    for (var j = 0; j < this.goatScoresList[i].length; j++) {
-            //        var currScore = this.goatScoresList[i][j];
-            //        total += currScore;
-            //        str += currScore + ", ";
-            //    }
-            //    str += "with a total of " + total;
-            //    console.log(str);
-            //}
+            // TODO: toggle these prints to see end game stats in console
+            for (var i = 0; i < 4; i++) {
+                var total = 0;
+                var str = "player " + (i+1) + "'s scores are: ";
+                for (var j = 0; j < this.goatScoresList[i].length; j++) {
+                    var currScore = this.goatScoresList[i][j];
+                    total += currScore;
+                    str += currScore + ", ";
+                }
+                str += "with a total of " + total;
+                console.log(str);
+            }
 
             ROUNDS_PLAYED = 0;
             this.goatScoresList = { // serves as temp storage for goat scores between rounds (data passed from scene to scene)

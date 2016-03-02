@@ -51,11 +51,9 @@ function Goat(game, playerNumber, controls, sprite, color) {
     this.y = 200;   // game.platforms[0].y // Ground platforms' y
     this.width = 96 * this.scale;
     this.height = 95 * this.scale;
-    if (this.game.playGame.isInTransitionScene) {
-        this.entity = null; // there is no ground platform
-    } else {
-        this.entity = this.game.platforms[0];
-    }
+
+    this.entity = this.game.sceneManager.currentScene.platforms[0];
+
     this.standingOn = null;
 
     // Movement physics:
@@ -176,20 +174,15 @@ Goat.prototype.constructor = Goat;
 
 Goat.prototype.reset = function () {
 
-
     this.resetActionStates();
 
     this.score = 0;
     this.king = false;
 
     this.x = 0;
-    if (this.game.playGame.isInTransitionScene) {
-        this.y = 0; // there is no ground platform
-        this.entity = null;
-    } else {
-        this.y = this.game.platforms[0].y - this.height;
-        this.entity = this.game.platforms[0]; // This should be the ground platform
-    }
+
+    this.y = this.game.sceneManager.currentScene.platforms[0].y - this.height;
+    this.entity = this.game.sceneManager.currentScene.platforms[0]; // This should be the ground platform
 
     // this.boundingbox = new BoundingBox(this.x, this.y, this.standAnimation.frameWidth, this.standAnimation.frameHeight);
 };
@@ -231,7 +224,6 @@ Goat.prototype.initControls = function () {
 
 // Based off of Chris Marriott's Unicorn's update method: https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 Goat.prototype.update = function () {
-
 
     /****************************************
      *              AI Goat                 *
@@ -286,8 +278,8 @@ Goat.prototype.update = function () {
 
         // Or Goat will attack the king if it detects a collision with king
         if (this.chargePower >= getRandomIntInclusive(3, this.chargePowerMax)) {
-            for (var i = 0; i < this.game.goats.length; i++) {
-                var otherGoat = this.game.goats[i];
+            for (var i = 0; i < this.game.sceneManager.currentScene.goats.length; i++) {
+                var otherGoat = this.game.sceneManager.currentScene.goats[i];
                 if (this.boundingBox.collide(otherGoat.boundingBox) && this != otherGoat) {
                     this.attackKey = false;
                 }
@@ -298,7 +290,6 @@ Goat.prototype.update = function () {
         if (this.chargeDecay && this.chargePower == 2) this.attackKey = false;
 
     }
-
 
     /****************************************
      *              Position                *
@@ -476,7 +467,6 @@ Goat.prototype.update = function () {
         }
     }
 
-
     /****************************************
      *              Attacking               *
      ****************************************/
@@ -538,8 +528,8 @@ Goat.prototype.update = function () {
 
         // If attack collides with another goat:
         var victims = 0;
-        for (var i = 0, len = this.game.goats.length; i < len; i++) {
-            var goat = this.game.goats[i];
+        for (var i = 0, len = this.game.sceneManager.currentScene.goats.length; i < len; i++) {
+            var goat = this.game.sceneManager.currentScene.goats[i];
             if (victims < this.maxVictims) {
                 if (this.right) {
                     // Goats who are already injured cannot be attacked
@@ -564,7 +554,6 @@ Goat.prototype.update = function () {
 
         }
     }
-
 
     /****************************************
      *              On Hit                  *
@@ -597,7 +586,6 @@ Goat.prototype.update = function () {
         }
     }
 
-
     /****************************************
      *              Powerups                *
      ****************************************/
@@ -611,10 +599,10 @@ Goat.prototype.update = function () {
      ****************************************/
 
     // Increments goat's score count:
-    if (this.entity && this.entity.isHill && !isMounted(this, this.game.goats)) {
+    if (this.entity && this.entity.isHill && !isMounted(this, this.game.sceneManager.currentScene.goats)) {
         var incrementScore = true;
-        for (var i = 0, len = this.game.goats.length; i < len; i++) {
-            var goat = this.game.goats[i];
+        for (var i = 0, len = this.game.sceneManager.currentScene.goats.length; i < len; i++) {
+            var goat = this.game.sceneManager.currentScene.goats[i];
             if (goat != this && this.entity == goat.entity) {
                 incrementScore = false;
             }
@@ -634,8 +622,7 @@ Goat.prototype.update = function () {
     }
 
     Entity.prototype.update.call(this);
-}
-;
+};
 
 Goat.prototype.draw = function (ctx) {
 

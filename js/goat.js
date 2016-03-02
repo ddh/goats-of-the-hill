@@ -738,9 +738,9 @@ var drawChargeMeter = function (goat) {
     drawRoundedRect(goat.ctx, goat.boundingBox.x, goat.boundingBox.y + goat.boundingBox.height + 10, (goat.chargePower / goat.chargePowerMax) * goat.boundingBox.width, 10, 2);
 };
 
-var drawPowerupsHeld = function (goat) {
-    goat.ctx.drawImage()
-};
+//var drawPowerupsHeld = function (goat) {
+//    goat.ctx.drawImage()
+//};
 
 Goat.prototype.toString = function () {
     return 'Goat ' + this.playerNumber;

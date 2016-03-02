@@ -2,7 +2,7 @@
 // https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 
 // Class Constants:
-var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds)
+var ROUND_TIME_LIMIT = 5; // 1 minute (in seconds)
 var GOLD_COLOR = "rgb(255, 215, 0)";
 var MAX_IDLE_TIME = 10;    // *Currently turned off* - How many seconds of inactivity before goat AI kicks in on an idle player.
 var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
@@ -20,10 +20,10 @@ function Round(game, background, platforms, randomizeHill, randomHillSpeed) {
     this.randomHillClockTickTracker = 0;
     this.roundTimer = ROUND_TIME_LIMIT;
     this.powerUpTimer = POWERUP_INTERVAL;
-    this.highestScore = null;
+    this.highestScoreGoat = null;
     this.idleTime = [0, 0, 0, 0];   // How long each goat has been idle for. Used to determine when to enable AI.
     this.goats = []; // used for storing goats for this round (will be wiped when Round is over)
-    this.goatScores = { // stores goat scores during particular round (data passed from round to scoreboard scene)
+    this.goatScoresList = { // stores goat scores during particular round (data passed from round to scoreboard scene)
         0: [],          // player 1
         1: [],          // player 2
         2: [],          // player 3
@@ -89,24 +89,24 @@ Round.prototype.deleteAllEntities = function () {
 
 // Checks which goat is the leader and crowns them.
 Round.prototype.scoreChecker = function () {
-    this.highestScore = this.goats[0]; //sets a goat as king
+    this.highestScoreGoat = this.goats[0]; //sets a goat as king
     //checks which goat has the highest score
     for (var i = 1, len = this.goats.length; i < len; i++) {
         var goat = this.goats[i];
-        if (this.highestScore.score < goat.score) {
-            this.highestScore = goat;
+        if (this.highestScoreGoat.score < goat.score) {
+            this.highestScoreGoat = goat;
         }
     }
     //ensures other goats don't have the crown 
     for (var i = 0, len = this.goats.length; i < len; i++) {
-        if (this.highestScore != this.goats[i]) {
+        if (this.highestScoreGoat != this.goats[i]) {
             this.goats[i].king = false;
         }
     }
-    if (typeof this.highestScore.score !== 'undefined'
-        && typeof this.highestScore.score !== 'NaN'
-        && this.highestScore.score !== 0) { //Avoids start of game deciding who is king
-        this.highestScore.king = true;
+    if (typeof this.highestScoreGoat.score !== 'undefined'
+        && typeof this.highestScoreGoat.score !== 'NaN'
+        && this.highestScoreGoat.score !== 0) { //Avoids start of game deciding who is king
+        this.highestScoreGoat.king = true;
     }
 };
 
@@ -142,24 +142,22 @@ Round.prototype.randomHillGenerator = function () {
 
 Round.prototype.drawScores = function (ctx) {
     var font = "32px Impact";
-    drawTextWithOutline(ctx, font, this.goats[0].score, 45, 590, 'white', 'blue');
-    drawTextWithOutline(ctx, font, this.goats[1].score, 245, 590, 'white', 'green');
-    drawTextWithOutline(ctx, font, this.goats[2].score, 445, 590, 'white', 'red');
-    drawTextWithOutline(ctx, font, this.goats[3].score, 645, 590, 'white', GOLD_COLOR);
+    drawTextWithOutline(ctx, font, this.goats[0].score, 75, 590, 'white', 'blue');
+    drawTextWithOutline(ctx, font, this.goats[1].score, 275, 590, 'white', 'green');
+    drawTextWithOutline(ctx, font, this.goats[2].score, 475, 590, 'white', 'red');
+    drawTextWithOutline(ctx, font, this.goats[3].score, 675, 590, 'white', GOLD_COLOR);
 };
 
 Round.prototype.generateRandomCollectible = function () {
     // Generate powerup every x seconds
-    if (!this.isInTransitionScene) {
-        this.powerUpTimer -= this.game.clockTick;
-        if (this.powerUpTimer < 0) {
-            this.powerUpTimer = POWERUP_INTERVAL;
-            var randomX = Math.floor(Math.random() * (this.game.surfaceWidth - 40)); // +40 to avoid spawning off screen
-            var randomY = Math.floor(Math.random() * (this.game.surfaceHeight - 100)); // +100 to avoid powerups in ground
-            var randomCollectible = Math.floor(Math.random() * (COLLECTIBLES.length));
-            this.entities.push(new Collectible(this.game, randomX, randomY, 40, 40, COLLECTIBLES[randomCollectible]));
-        }
-    } else this.powerUpTimer = POWERUP_INTERVAL;
+    this.powerUpTimer -= this.game.clockTick;
+    if (this.powerUpTimer < 0) {
+        this.powerUpTimer = POWERUP_INTERVAL;
+        var randomX = Math.floor(Math.random() * (this.game.surfaceWidth - 40)); // +40 to avoid spawning off screen
+        var randomY = Math.floor(Math.random() * (this.game.surfaceHeight - 100)); // +100 to avoid powerups in ground
+        var randomCollectible = Math.floor(Math.random() * (COLLECTIBLES.length));
+        this.entities.push(new Collectible(this.game, randomX, randomY, 40, 40, COLLECTIBLES[randomCollectible]));
+    }
 };
 
 Round.prototype.toString = function () {
@@ -193,7 +191,11 @@ Round.prototype.draw = function (ctx) {
     }
 
     this.drawScores(ctx);
-    drawTextWithOutline(ctx, "32px Impact", Math.floor(this.roundTimer / 1), 350, 40, 'black', 'white');
+
+    var secondsLeft = Math.floor(this.roundTimer / 1);
+    if (secondsLeft < 0) secondsLeft = 0;
+    drawTextWithOutline(ctx, "32px Impact", secondsLeft, 400, 40, 'black', 'white');
+
     drawTextWithOutline(ctx, "32px Impact", "Round #" + (ROUNDS_PLAYED + 1), 650, 40, 'purple', 'white');
     drawTextWithOutline(ctx, "32px Impact", "Oh My Goat!", 20, 40, 'purple', 'white');
 };

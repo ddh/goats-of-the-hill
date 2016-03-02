@@ -114,7 +114,7 @@ var makeSceneManager = function (gameEngine) {
     r3.next = sb3;
     sb3.next = titleScene;  // TODO: link will change once EndGame Scene added
 
-    return new SceneManager(titleScene);
+    return new SceneManager(gameEngine, titleScene);
 };
 
 var createFirstRound = function (gameEngine) {

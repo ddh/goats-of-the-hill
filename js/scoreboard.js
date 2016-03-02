@@ -8,7 +8,14 @@ function Scoreboard(game, background) {
 
     this.entities = [];
 
-    this.highestScore = 0; // to be changed "on the fly" in Round Scene's update() method
+    this.highestScoreGoat = null; // to be changed "on the fly" in Round SceneManager's update() method
+    this.goats = [];
+    this.goatScoresList = {
+        0: [],          // player 1
+        1: [],          // player 2
+        2: [],          // player 3
+        3: []           // player 4
+    };
 
     Scene.call(this, this.game, this.background, this.type);
 }
@@ -29,13 +36,17 @@ Scoreboard.prototype.draw = function (ctx) {
         this.entities[i].draw(ctx);
     }
 
-    if (ROUNDS_PLAYED <= 2) drawPlayButton(ctx);
+    if (ROUNDS_PLAYED <= 2) {
+        drawPlayButton(ctx);
+    } else {
+        drawTextWithOutline(ctx, "40px Impact", "See Game Stats!", 270, 500, "purple", "white");
+    }
 
-    var winningGoatString = this.highestScore.playerColor.toUpperCase() + " wins scoring : " + this.highestScore.score;
-    drawTextWithOutline(ctx, "45px Impact", winningGoatString, 210, 105, this.highestScore.color, 'white');         // winner #1
-    drawTextWithOutline(ctx, "40px Impact", this.goatScores[1].score, 310, 202, this.goatScores[1].color, 'white'); // winner #2
-    drawTextWithOutline(ctx, "40px Impact", this.goatScores[2].score, 585, 288, this.goatScores[2].color, 'white'); // winner #3
-    drawTextWithOutline(ctx, "40px Impact", this.goatScores[3].score, 220, 368, this.goatScores[3].color, 'white'); // winner #4
+    var winningGoatString = this.highestScoreGoat.playerColor.toUpperCase() + " wins scoring : " + this.highestScoreGoat.score;
+    drawTextWithOutline(ctx, "45px Impact", winningGoatString, 270, 105, this.highestScoreGoat.color, 'white');         // winner #1
+    drawTextWithOutline(ctx, "40px Impact", this.goats[1].score, 310, 202, this.goats[1].color, 'white'); // winner #2
+    drawTextWithOutline(ctx, "40px Impact", this.goats[2].score, 585, 288, this.goats[2].color, 'white'); // winner #3
+    drawTextWithOutline(ctx, "40px Impact", this.goats[3].score, 220, 368, this.goats[3].color, 'white'); // winner #4
 };
 
 Scoreboard.prototype.update = function () {

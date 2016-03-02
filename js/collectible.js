@@ -38,8 +38,8 @@ Collectible.prototype.update = function () {
     // While the collectible is on the screen, allow it to be picked up by a goat
     if (!this.pickedUp) {
         // Cycle through each goat, seing if it can pick this collectible up:
-        for (var i = 0; i < this.game.goats.length; i++) {
-            this.goat = this.game.goats[i];
+        for (var i = 0; i < this.game.sceneManager.currentScene.goats.length; i++) {
+            this.goat = this.game.sceneManager.currentScene.goats[i];
 
             // On pickup, apply effect to the goat. Injured goats cannot pick up collectibles.
             if (this.boundingBox.collide(this.goat.boundingBox) && !this.goat.injured) {

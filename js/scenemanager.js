@@ -70,15 +70,17 @@ Scene.prototype.reset = function () {};
 // Class constants:
 var ROUNDS_PLAYED = 0;
 
-function SceneManager(currentScene) {
+function SceneManager(game, currentScene) {
+    this.game = game;
     this.currentScene = currentScene; // TODO: all Scenes for game stored in linkedlist attached to this head pointer
-    this.goatScores = { // serves as temp storage for goat scores between rounds (data passed from scene to scene)
+    this.goatScoresList = { // serves as temp storage for goat scores between rounds (data passed from scene to scene)
         0: [],          // player 1
         1: [],          // player 2
         2: [],          // player 3
         3: []           // player 4
     };
-    this.highestScoreFromLastRound = {};
+    this.highestScoreGoat = null;
+    this.goats = []; // serves as temp storage for goat from last round (to be sorted)
 }
 
 SceneManager.prototype = new Entity();
@@ -93,6 +95,21 @@ SceneManager.prototype.update = function() {
         }
         this.currentScene.endScene();
         this.currentScene = this.currentScene.next;
+        if (this.currentScene.type === "Scoreboard") { // TODO: handle logic for EndGame later...
+            this.passAlongLastRoundsScores();
+        }
+        if (this.currentScene.type === "Title") {
+            ROUNDS_PLAYED = 0;
+            this.goatScoresList = { // serves as temp storage for goat scores between rounds (data passed from scene to scene)
+                0: [],          // player 1
+                1: [],          // player 2
+                2: [],          // player 3
+                3: []           // player 4
+            };
+            this.highestScoreGoat = null;
+            this.goats = []; // serves as temp storage for goat from last round (to be sorted)
+            this.reinitRoundsAndLinks();
+        }
         this.currentScene.startScene();
     } else { // else, if Scene not done, continue updating current Scene
         this.currentScene.update();
@@ -100,22 +117,53 @@ SceneManager.prototype.update = function() {
 };
 
 SceneManager.prototype.storeScoresFromLastRound = function () {
-    var max = 0;
+    // keeps track of goat with highest score from last round
+    this.highestScoreGoat = this.currentScene.highestScoreGoat;
+
+    // handles aggregating scores from prev rounds
     for (var i = 0, len = this.currentScene.goats.length; i < len; i++) {
-        var currScore = this.currentScene.goats[i].score;
-        this.goatScores[i].push(currScore);
-        if (max < currScore) {
-            this.highestScoreFromLastRound['player'] = i;
-            this.highestScoreFromLastRound['score'] = currScore;
-        }
+        this.goatScoresList[i].push(this.currentScene.goats[i].score);
     }
+    // handles indvl goat scores
+    this.goats = this.currentScene.goats;
+    this.goats.sort(function (a, b) {
+        return b.score - a.score;
+    });
+};
+
+SceneManager.prototype.passAlongLastRoundsScores = function () {
+    this.currentScene.highestScoreGoat = this.highestScoreGoat;
+    this.currentScene.goats = this.goats;
+    this.currentScene.goatScoresList = this.goatScoresList;
+};
+
+// TODO: once main's linkedlist control flow is finalized, this will need to change too!
+SceneManager.prototype.reinitRoundsAndLinks = function () {
+    // 1. Create all Scenes necessary for game
+    // ---
+    var r1 = createFirstRound(this.game); // first round
+    var sb1 = new Scoreboard(this.game, new Background(this.game, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
+    var r2 = createSecondRound(this.game); // second round
+    var sb2 = new Scoreboard(this.game, new Background(this.game, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
+    var r3 = createThirdRound(this.game); // third round
+    var sb3 = new Scoreboard(this.game, new Background(this.game, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
+
+    // 2. Link up all Scenes in correct sequence before returning SceneManager with a reference to the title Scene
+    // ---
+    this.currentScene.next = r1;
+    r1.next = sb1;
+    sb1.next = r2;
+    r2.next = sb2;
+    sb2.next = r3;
+    r3.next = sb3;
+    sb3.next = this.currentScene;
 };
 
 SceneManager.prototype.draw = function(ctx) {
     this.currentScene.draw(ctx);
 };
 
-SceneManager.prototype.reset = function () {
+SceneManager.prototype.reset = function () {;
     this.currentScene.reset();
 };
 

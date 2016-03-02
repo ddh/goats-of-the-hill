@@ -26,6 +26,7 @@ function getRandomIntInclusive(min, max) {
 function Goat(game, playerNumber, controls, sprite, color) {
     // Game properties:
     this.playerNumber = playerNumber;
+    this.aiEnabled = false;
     this.controls = controls;
     this.game = game;
     this.ctx = game.ctx;
@@ -36,7 +37,7 @@ function Goat(game, playerNumber, controls, sprite, color) {
     } else {
         this.playerColor = color;
     }
-    
+
     // Control keys:
     this.jumpKey = false;
     this.leftKey = false;
@@ -174,15 +175,10 @@ Goat.prototype = new Entity();
 Goat.prototype.constructor = Goat;
 
 Goat.prototype.reset = function () {
-    this.right = true;
-    this.standing = true;
-    this.skidding = false
-    this.jumping = false;
-    this.falling = false;
-    this.running = false;
-    this.charging = false;
-    this.attacking = false;
-    this.stunned = false;
+
+
+    this.resetActionStates();
+
     this.score = 0;
     this.king = false;
 
@@ -208,7 +204,7 @@ Goat.prototype.update = function () {
 
     // AI Goat basically emulates key presses:
 
-    if (this.playerNumber == "AI" && !this.injured) {
+    if (this.aiEnabled && !this.injured) {
 
         // Find the hill
         function findHill(that) {
@@ -720,6 +716,18 @@ var transferHit = function (thisGoat, otherGoat) {
 
 Goat.prototype.resetAllKeys = function () {
     this.leftKey = this.rightKey = this.jumpKey = this.runKey = this.attackKey = false;
+};
+
+Goat.prototype.resetActionStates = function (goat) {
+    this.right = true;
+    this.standing = true;
+    this.skidding = false
+    this.jumping = false;
+    this.falling = false;
+    this.running = false;
+    this.charging = false;
+    this.attacking = false;
+    this.stunned = false;
 };
 
 var drawChargeMeter = function (goat) {

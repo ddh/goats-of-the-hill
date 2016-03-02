@@ -32,12 +32,14 @@ function buttonPressed(b) {
     }
 }
 
+var MAX_IDLE_TIME = 10;         // How many seconds of inactivity before goat AI kicks in on an idle player.
+
 function GameEngine() {
     this.entities = [];
     this.platforms = [];
     this.goats = [];
     this.collidables = [];
-    this.enableDebug = false; // debugging flag for drawing bounding boxes
+    this.enableDebug = false;   // debugging flag for drawing bounding boxes
     this.ctx = null;
     this.click = null;
     this.mouse = null;
@@ -48,6 +50,7 @@ function GameEngine() {
     this.gamepads = [];
     this.pauseKey = false;
     this.sceneSelector = null;
+    this.idleTime = [0, 0, 0, 0];   // How long each goat has been idle for. Used to determine when to enable AI.
 }
 
 GameEngine.prototype.init = function (ctx) {
@@ -82,35 +85,52 @@ GameEngine.prototype.prepForScene = function () {
 };
 
 GameEngine.prototype.startInput = function () {
+    // NOTE: VERY USEFUL for finding keycodes: http://keycode.info/
     console.log('Starting input');
     var that = this;
 
     /* === KEYBOARD EVENTS === */
 
-    // Prevent some keyboard navigation defaults:
-    // http://stackoverflow.com/questions/8916620/disable-arrow-key-scrolling-in-users-browser
     this.ctx.canvas.addEventListener("keydown", function (e) {
-        // space and arrow keys (32:spacebar, 37:left, 38:up, 39:right, 40:down)
-        if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) e.preventDefault();
-    }, false);
 
-    this.ctx.canvas.addEventListener("keydown", function (e) {
+        // Prevent some keyboard navigation defaults:
+        // http://stackoverflow.com/questions/8916620/disable-arrow-key-scrolling-in-users-browser
+        if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) e.preventDefault(); // Spacebar, ←,↑,→,↓
+
+        // Debug: Toggling King
         if (e.which === 75) {
             that.kKey ^= true;
-            //console.log("king turned " + (that.kKey ? "on" : "off"));
+            console.log("king turned " + (that.kKey ? "on" : "off"));
         }
+
+        // Debug: Enabling drawing of bounding boxes
         if (e.which === 70) {
             that.enableDebug ^= true; // 'F' key to toggle debug
             console.log("debugging turned " + (that.enableDebug ? "on" : "off"));
+        }
 
+        // Pauses the game engine's loop()
+        if (e.which === 27) {
+            that.pauseKey ^= true;
+            console.log("Game Engine loop" + (that.pauseKey ? "paused" : "unpaused"));
         }
     }, false);
 
-    this.ctx.canvas.addEventListener("keydown", function (e) {
-        if (e.which === 27) {
-            that.pauseKey ^= true;
-        }
-    })
+    // Toggle AI function via keys:
+    this.on = [];
+    var toggleAI = function (game, num) {
+        game.on[num] ^= true;
+        game.goats[num].resetAllKeys();
+        game.goats[num].aiEnabled = game.on[num];
+    };
+
+    // Pressing 1,2,3,or 4 toggles AI on/off
+    this.ctx.canvas.addEventListener("keyup", function (e) {
+        if (e.which === 49) toggleAI(that, 0); // 1 Number Row key
+        if (e.which === 50) toggleAI(that, 1); // 2 Number Row key
+        if (e.which === 51) toggleAI(that, 2); // 3 Number Row key
+        if (e.which === 52) toggleAI(that, 3); // 4 Number Row key
+    }, false);
 
     /* === MOUSE SETTINGS === */
 
@@ -180,11 +200,30 @@ GameEngine.prototype.addEntity = function (entity) {
                 if (e.which === goat.controls.attack) goat.attackKey = false;
                 if (e.which === goat.controls.run) goat.runKey = false;
             });
+
+            // Determines if a goat is now controlled by human; disabling AI
+            gameEngine.ctx.canvas.addEventListener("keyup", function (e) {
+                if (e.which === goat.controls.jump ||
+                    e.which === goat.controls.right ||
+                    e.which === goat.controls.left ||
+                    e.which === goat.controls.attack ||
+                    e.which === goat.controls.run) {
+                    if (goat.aiEnabled) {
+                        console.log("AI disabled for " + goat);
+                        gameEngine.idleTime[goat.playerNumber] = 0;
+                        console.log(gameEngine.idleTime[goat.playerNumber]);
+                        goat.resetAllKeys();
+                        goat.aiEnabled = false;
+                    }
+                }
+            });
         })(entity, this);
         this.goats.push(entity);
         this.entities.push(entity);
         this.collidables.push(entity);
     } else if (entity instanceof Round) {
+        if (entity.playerNumber == 1)entity.aiEnabled = true; // Set goat[1] as AI to start
+    } else if (entity instanceof PlayGame) {
         this.playGame = entity; // keep this field in game engine for now, may take it out later...
         this.entities.push(entity);
     } else if (entity instanceof Collectible) {
@@ -222,40 +261,34 @@ GameEngine.prototype.update = function () {
             var entity = this.entities[i];
 
             // Only update those not flagged for removal, for optimization
-            if (typeof entity !== 'undefined' && !entity.removeFromWorld) {
-                entity.update();
-                //console.log(entity.toString() + " updated");
-            }
+            if (typeof entity !== 'undefined' && !entity.removeFromWorld) entity.update();
         }
 
         // Removal of flagged entities
         for (var j = this.entities.length - 1; j >= 0; --j) {
-            if (this.entities[j].removeFromWorld) {
-                this.entities.splice(j, 1);
-            }
+            if (this.entities[j].removeFromWorld) this.entities.splice(j, 1);
         }
 
+    }
 
-        // TODO: Find cleaner way (ie upon gamepad disconnect/connect listeners to trigger AI Goats):
+    // If player 3 or 4's controller is not connected, AI Goat takes over
+    if (this.goats.length == 4) {
+        if (typeof navigator.getGamepads()[2] === 'undefined') this.goats[2].aiEnabled = true;
+        if (typeof navigator.getGamepads()[3] === 'undefined') this.goats[3].aiEnabled = true;
+    }
 
-        // If player 3 or 4's controller is not connected, AI Goat takes over
-        if (this.goats.length == 4) {
-            this.goats[2].playerNumber = (typeof navigator.getGamepads()[2] === 'undefined') ? "AI" : 2;
-            this.goats[3].playerNumber = (typeof navigator.getGamepads()[3] === 'undefined') ? "AI" : 3;
-        }
-
-        // Poll for gamepads
-        for (var i = 0; i < this.goats.length; i++) {
-            var gamepad = navigator.getGamepads()[i];
-            if (gamepad) {
-                this.goats[i].jumpKey = buttonPressed(gamepad.buttons[0]);
-                this.goats[i].leftKey = gamepad.axes[0] < -0.5;
-                this.goats[i].rightKey = gamepad.axes[0] > 0.5;
-                this.goats[i].attackKey = buttonPressed(gamepad.buttons[7]);
-                this.goats[i].runKey = buttonPressed(gamepad.buttons[6]);
-            }
+    // Poll for gamepads
+    for (var i = 0; i < this.goats.length; i++) {
+        var gamepad = navigator.getGamepads()[i];
+        if (gamepad) {
+            this.goats[i].jumpKey = buttonPressed(gamepad.buttons[0]);
+            this.goats[i].leftKey = gamepad.axes[0] < -0.5;
+            this.goats[i].rightKey = gamepad.axes[0] > 0.5;
+            this.goats[i].attackKey = buttonPressed(gamepad.buttons[7]);
+            this.goats[i].runKey = buttonPressed(gamepad.buttons[6]);
         }
     }
+
 };
 
 GameEngine.prototype.loop = function () {

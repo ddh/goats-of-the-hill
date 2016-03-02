@@ -663,7 +663,7 @@ Goat.prototype.draw = function (ctx) {
 
 
     // For the charging anim
-    if (this.charging && this.chargePower == this.chargePowerMax) {
+    if ((this.charging && this.chargePower == this.chargePowerMax) || this.maximumAttack) {
         if (this.right)
             this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 1, this.y - 20, this.scale + .2);
         else
@@ -753,7 +753,7 @@ var drawChargeMeter = function (goat) {
     goat.ctx.fillStyle = "rgba(255, 255, 0, .5)";
     drawRoundedRect(goat.ctx, goat.boundingBox.x, goat.boundingBox.y + goat.boundingBox.height + 10, goat.boundingBox.width, 10, 2);
     goat.ctx.fillStyle = "rgba(0, 255, 0, 1)";
-    drawRoundedRect(goat.ctx, goat.boundingBox.x, goat.boundingBox.y + goat.boundingBox.height + 10, (goat.chargePower / goat.chargePowerMax) * goat.boundingBox.width, 10, 2);
+    drawRoundedRect(goat.ctx, goat.boundingBox.x, goat.boundingBox.y + goat.boundingBox.height + 10, goat.boundingBox.width * ((goat.maximumAttack) ? 1 : (goat.chargePower / goat.chargePowerMax)), 10, 2);
 };
 
 var drawPowerupsHeld = function (goat) {

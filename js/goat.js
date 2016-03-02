@@ -41,7 +41,7 @@ function Goat(game, playerNumber, controls, sprite, color) {
     // Scoring
     this.scoring = false;       // Whether the goat is currently scoring points
     this.newPoints = 0;         // Points currently being accrued by a goat when on the hill
-    this.pointsLifetime = 1;
+    this.pointsLifetime;
     this.score = 0;             // TODO: KEEP THIS IN THE CONSTRUCTOR ELSE SCORE IS EITHER UNDEFINED OR NaN
     this.king = false;
 

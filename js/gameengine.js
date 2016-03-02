@@ -11,7 +11,6 @@ window.requestAnimFrame = (function () {
         };
 })();
 
-
 /***************************
  *      Gamepad Suport     *
  ***************************/
@@ -32,13 +31,7 @@ function buttonPressed(b) {
     }
 }
 
-var MAX_IDLE_TIME = 10;         // How many seconds of inactivity before goat AI kicks in on an idle player.
-
 function GameEngine() {
-    this.entities = [];
-    this.platforms = [];
-    this.goats = [];
-    this.collidables = [];
     this.enableDebug = false;   // debugging flag for drawing bounding boxes
     this.ctx = null;
     this.click = null;
@@ -49,8 +42,7 @@ function GameEngine() {
     this.keys = {}; // TODO: use map to correlate certain e.which's or keys to booleans or elapsed times
     this.gamepads = [];
     this.pauseKey = false;
-    this.sceneSelector = null;
-    this.idleTime = [0, 0, 0, 0];   // How long each goat has been idle for. Used to determine when to enable AI.
+    this.sceneManager = null;
 }
 
 GameEngine.prototype.init = function (ctx) {
@@ -69,19 +61,6 @@ GameEngine.prototype.start = function () {
         that.loop();
         requestAnimFrame(gameLoop, that.ctx.canvas);
     })();
-};
-
-
-GameEngine.prototype.loadScene = function (scene) {
-    this.addEntity(scene);
-};
-
-GameEngine.prototype.prepForScene = function () {
-    this.platforms = [];
-    this.collidables = [];
-    this.goats = [];
-    this.entities = [];
-    this.playGame = null;
 };
 
 GameEngine.prototype.startInput = function () {
@@ -167,128 +146,23 @@ GameEngine.prototype.startInput = function () {
     console.log('Input started');
 };
 
-GameEngine.prototype.addEntity = function (entity) {
-    if (entity instanceof Scene) {
-        // 1) Add Background entity
-        this.entities.push(entity.background);
-
-        // 2) Add Platform entities
-        // Note: push.apply allows you to append array contents all at once (no need for loops)
-        // Note: setting each array individually here to avoid shallow copying mistakes
-        if (entity.platforms.length > 0) {
-            this.platforms.push.apply(this.platforms, entity.platforms);
-            this.collidables.push.apply(this.collidables, entity.platforms);
-            this.entities.push.apply(this.entities, entity.platforms);
-        }
-
-        // 3) *Note: Goat entities already persist in game engine
-    } else if (entity instanceof Goat) {
-        // Add key listeners associated with goat
-        // "closure" is needed so listener knows what element to refer to
-        (function (goat, gameEngine) {
-            gameEngine.ctx.canvas.addEventListener("keydown", function (e) {
-                if (e.which === goat.controls.jump) goat.jumpKey = true;
-                if (e.which === goat.controls.right) goat.rightKey = true;
-                if (e.which === goat.controls.left) goat.leftKey = true;
-                if (e.which === goat.controls.attack) goat.attackKey = true;
-                if (e.which === goat.controls.run) goat.runKey = true;
-            }, false);
-            gameEngine.ctx.canvas.addEventListener("keyup", function (e) {
-                if (e.which === goat.controls.jump) goat.jumpKey = false;
-                if (e.which === goat.controls.right) goat.rightKey = false;
-                if (e.which === goat.controls.left) goat.leftKey = false;
-                if (e.which === goat.controls.attack) goat.attackKey = false;
-                if (e.which === goat.controls.run) goat.runKey = false;
-            });
-
-            // Determines if a goat is now controlled by human; disabling AI
-            gameEngine.ctx.canvas.addEventListener("keyup", function (e) {
-                if (e.which === goat.controls.jump ||
-                    e.which === goat.controls.right ||
-                    e.which === goat.controls.left ||
-                    e.which === goat.controls.attack ||
-                    e.which === goat.controls.run) {
-                    if (goat.aiEnabled) {
-                        console.log("AI disabled for " + goat);
-                        gameEngine.idleTime[goat.playerNumber] = 0;
-                        console.log(gameEngine.idleTime[goat.playerNumber]);
-                        goat.resetAllKeys();
-                        goat.aiEnabled = false;
-                    }
-                }
-            });
-        })(entity, this);
-        this.goats.push(entity);
-        this.entities.push(entity);
-        this.collidables.push(entity);
-    } else if (entity instanceof Round) {
-        if (entity.playerNumber == 1)entity.aiEnabled = true; // Set goat[1] as AI to start
-    } else if (entity instanceof PlayGame) {
-        this.playGame = entity; // keep this field in game engine for now, may take it out later...
-        this.entities.push(entity);
-    } else if (entity instanceof Collectible) {
-        this.entities.push(entity);
-    }
-    if (typeof entity !== 'undefined') console.log('added ' + entity.toString());
-};
-
 GameEngine.prototype.draw = function () {
 
     // 1. Clear the window (Removes previously drawn things from canvas)
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-    // 2. Save (What are we saving exactly here?)
+    // 2. Save old state
     this.ctx.save();
 
-    // 3. Draw each entity onto canvas
-    for (var i = 0, len = this.entities.length; i < len; i++) {
-        var ent = this.entities[i];
-        if (this.playGame.isInTransitionScene) {
-            if (ent instanceof Background || ent instanceof Round) this.entities[i].draw(this.ctx);
-        } else {
-            this.entities[i].draw(this.ctx);
-        }
-    }
+    // 3. Draw all entities from current scene onto canvas
+    this.sceneManager.draw(this.ctx);
+
+    // 4. Restore old state
     this.ctx.restore();
 };
 
 GameEngine.prototype.update = function () {
-    if (typeof this.entities !== 'undefined') {
-        var entitiesCount = this.entities.length;
-
-        // Cycle through the list of entities in GameEngine.
-        for (var i = 0; i < entitiesCount; i++) {
-            var entity = this.entities[i];
-
-            // Only update those not flagged for removal, for optimization
-            if (typeof entity !== 'undefined' && !entity.removeFromWorld) entity.update();
-        }
-
-        // Removal of flagged entities
-        for (var j = this.entities.length - 1; j >= 0; --j) {
-            if (this.entities[j].removeFromWorld) this.entities.splice(j, 1);
-        }
-
-    }
-
-    // If player 3 or 4's controller is not connected, AI Goat takes over
-    if (this.goats.length == 4) {
-        if (typeof navigator.getGamepads()[2] === 'undefined') this.goats[2].aiEnabled = true;
-        if (typeof navigator.getGamepads()[3] === 'undefined') this.goats[3].aiEnabled = true;
-    }
-
-    // Poll for gamepads
-    for (var i = 0; i < this.goats.length; i++) {
-        var gamepad = navigator.getGamepads()[i];
-        if (gamepad) {
-            this.goats[i].jumpKey = buttonPressed(gamepad.buttons[0]);
-            this.goats[i].leftKey = gamepad.axes[0] < -0.5;
-            this.goats[i].rightKey = gamepad.axes[0] > 0.5;
-            this.goats[i].attackKey = buttonPressed(gamepad.buttons[7]);
-            this.goats[i].runKey = buttonPressed(gamepad.buttons[6]);
-        }
-    }
-
+    this.sceneManager.update();
 };
 
 GameEngine.prototype.loop = function () {
@@ -313,9 +187,7 @@ GameEngine.prototype.loop = function () {
 };
 
 GameEngine.prototype.reset = function () {
-    for (var i = 0; i < this.entities.length; i++) {
-        this.entities[i].reset();
-    }
+    this.sceneManager.reset();
 };
 
 GameEngine.prototype.toString = function gameEngineToString() {

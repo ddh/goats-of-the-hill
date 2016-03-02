@@ -194,6 +194,41 @@ Goat.prototype.reset = function () {
     // this.boundingbox = new BoundingBox(this.x, this.y, this.standAnimation.frameWidth, this.standAnimation.frameHeight);
 };
 
+Goat.prototype.initControls = function () {
+    var that = this; // closure
+    this.game.ctx.canvas.addEventListener("keydown", function (e) {
+        if (e.which === that.controls.jump) that.jumpKey = true;
+        if (e.which === that.controls.right) that.rightKey = true;
+        if (e.which === that.controls.left) that.leftKey = true;
+        if (e.which === that.controls.attack) that.attackKey = true;
+        if (e.which === that.controls.run) that.runKey = true;
+    }, false);
+    this.game.ctx.canvas.addEventListener("keyup", function (e) {
+        if (e.which === that.controls.jump) that.jumpKey = false;
+        if (e.which === that.controls.right) that.rightKey = false;
+        if (e.which === that.controls.left) that.leftKey = false;
+        if (e.which === that.controls.attack) that.attackKey = false;
+        if (e.which === that.controls.run) that.runKey = false;
+    });
+
+    // Determines if a goat is now controlled by human; disabling AI
+    this.game.ctx.canvas.addEventListener("keyup", function (e) {
+        if (e.which === that.controls.jump ||
+            e.which === that.controls.right ||
+            e.which === that.controls.left ||
+            e.which === that.controls.attack ||
+            e.which === that.controls.run) {
+            if (that.aiEnabled) {
+                console.log("AI disabled for " + that.toString());
+                that.game.sceneManager.currentScene.idleTime[that.playerNumber] = 0;
+                console.log(that.game.sceneManager.currentScene.idleTime[that.playerNumber]);
+                that.resetAllKeys();
+                that.aiEnabled = false;
+            }
+        }
+    });
+};
+
 // Based off of Chris Marriott's Unicorn's update method: https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 Goat.prototype.update = function () {
 

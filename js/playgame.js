@@ -7,7 +7,7 @@ var ROUNDS_PLAYED = 0;
 var GOLD_COLOR = "rgb(255, 215, 0)";
 var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
 //var COLLECTIBLES = ['invincibility']; //TODO: Using this as a means to test a powerup individually. Just comment out the above.
-var POWERUP_INTERVAL = 10;  // Every x sec a powerup spawns
+var POWERUP_INTERVAL = 5;  // Every x sec a powerup spawns
 
 
 function PlayGame(game, btnX, btnY, hill, randomizeHill, randomHillSpeed) {
@@ -98,12 +98,12 @@ PlayGame.prototype.update = function () {
 
 PlayGame.prototype.initGoats = function () {
     /* === Goats === */
-    var playerOneControls = {jump: 87, left: 65, right: 68, attack: 83, run: 16}; // W,A,D,S,shift
+    var playerOneControls = {jump: 87, left: 65, right: 68, attack: 70, run: 16}; // W A D F shift
     var goat1 = new Goat(this.game, 0, playerOneControls, "blue-goat", "blue");
     goat1.x = 30;
     this.game.addEntity(goat1);
 
-    var playerTwoControls = {jump: 38, left: 37, right: 39, attack: 40, run: 18}; // ↑,←,→,↓,alt
+    var playerTwoControls = {jump: 38, left: 37, right: 39, attack: 191, run: 190}; // ↑ ← → / .
     var goat2 = new Goat(this.game, 1, playerTwoControls, "green-goat", "green");
     goat2.x = 230;
     this.game.addEntity(goat2);
@@ -193,14 +193,7 @@ PlayGame.prototype.draw = function (ctx) {
         }
     } else {
         this.drawScores(ctx);
-        if (Math.floor(this.roundTimer / 1) == 0) {
-            drawTextWithOutline(ctx, "200px Impact", "TIME!", 180, 300, 'red', 'white');
-        }
-        else if (this.roundTimer / 1 < 10) {
-            drawTextWithOutline(ctx, "200px Impact", Math.floor(this.roundTimer / 1), 350, 300, 'red', 'white');
-        } else {
-            drawTextWithOutline(ctx, "50px Impact", Math.floor(this.roundTimer / 1), 380, 60, 'black', 'white');
-        }
+        this.drawTimer(ctx);
         drawTextWithOutline(ctx, "32px Impact", "Round #" + (ROUNDS_PLAYED + 1), 650, 40, 'purple', 'white');
         drawTextWithOutline(ctx, "32px Impact", "Oh My Goat!", 20, 40, 'purple', 'white');
     }
@@ -221,6 +214,17 @@ PlayGame.prototype.drawScores = function (ctx) {
         drawTextWithOutline(ctx, "32px Impact", this.game.goats[i].score, 45 + 200 * i, 590, 'white', this.game.goats[i].color);
         // Draw crown
         if (this.game.goats[i].king) ctx.drawImage(ASSET_MANAGER.getAsset("./img/crown.png"), 45 + 200 * i, 520, 50, 50);
+    }
+};
+
+PlayGame.prototype.drawTimer = function(ctx) {
+    if (Math.floor(this.roundTimer / 1) == 0) {
+        drawTextWithOutline(ctx, "200px Impact", "TIME!", 180, 300, 'red', 'white');
+    }
+    else if (this.roundTimer / 1 < 10) {
+        drawTextWithOutline(ctx, "200px Impact", Math.floor(this.roundTimer / 1), 350, 300, 'red', 'white');
+    } else {
+        drawTextWithOutline(ctx, "50px Impact", Math.floor(this.roundTimer / 1), 380, 60, 'black', 'white');
     }
 };
 

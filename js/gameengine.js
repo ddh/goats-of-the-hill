@@ -97,14 +97,14 @@ GameEngine.prototype.startInput = function () {
         if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) e.preventDefault(); // Spacebar, ←,↑,→,↓
 
         // Debug: Toggling King
-        if (e.which === 75) {
-            that.kKey ^= true;
-            console.log("king turned " + (that.kKey ? "on" : "off"));
-        }
+        //if (e.which === 75) {
+        //    that.kKey ^= true;
+        //    console.log("king turned " + (that.kKey ? "on" : "off"));
+        //}
 
         // Debug: Enabling drawing of bounding boxes
-        if (e.which === 70) {
-            that.enableDebug ^= true; // 'F' key to toggle debug
+        if (e.which === 192) {
+            that.enableDebug ^= true; // '~' key to toggle debug
             console.log("debugging turned " + (that.enableDebug ? "on" : "off"));
         }
 

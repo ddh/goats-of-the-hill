@@ -4,8 +4,9 @@
 function Scoreboard(game, background) {
     this.game = game;
     this.background = background;
+    this.type = "Scoreboard"; // used to overload superclass constructor
 
-    Scene.call(this, this.game, this.background);
+    Scene.call(this, this.game, this.background, this.type);
 }
 
 Scoreboard.prototype = new Scene();

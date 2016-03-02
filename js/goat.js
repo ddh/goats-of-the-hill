@@ -32,11 +32,18 @@ function Goat(game, playerNumber, controls, sprite, color) {
     this.ctx = game.ctx;
     this.sprite = sprite;
     this.color = color;
-    if (color === "rgb(255, 215, 0)") {
+    if (color === GOLD_COLOR) {
         this.playerColor = "yellow";
     } else {
         this.playerColor = color;
     }
+
+    // Scoring
+    this.scoring = false;       // Whether the goat is currently scoring points
+    this.newPoints = 0;         // Points currently being accrued by a goat when on the hill
+    this.pointsLifetime = 1;
+    this.score = 0;             // TODO: KEEP THIS IN THE CONSTRUCTOR ELSE SCORE IS EITHER UNDEFINED OR NaN
+    this.king = false;
 
     // Control keys:
     this.jumpKey = false;
@@ -66,7 +73,6 @@ function Goat(game, playerNumber, controls, sprite, color) {
     this.runSpeed = 1.5;
     this.maxWalkSpeed = 3.0;
     this.maxRunSpeed = 6.0;
-
 
     // Jump physics
     this.velocity = {x: 0, y: 0};
@@ -160,12 +166,6 @@ function Goat(game, playerNumber, controls, sprite, color) {
     this.charging = false;
     this.attacking = false;
     this.stunned = false;
-    this.king = false;
-
-    // TODO: KEEP THIS IN THE CONSTRUCTOR ELSE SCORE IS EITHER UNDEFINED OR NaN
-    this.score = 0;
-
-    // this.boundingBox = new BoundingBox(this.x, this.y, this.width, this.height);
 
     Entity.call(this, game, 0, this.y, this.width, this.height);
 }
@@ -575,17 +575,24 @@ Goat.prototype.update = function () {
 
     // Increments goat's score count:
     if (this.entity && this.entity.isHill && !isMounted(this, this.game.goats)) {
-        var incrementScore = true;
+        this.scoring = true;
         for (var i = 0, len = this.game.goats.length; i < len; i++) {
             var goat = this.game.goats[i];
+            // Checks if this goat is standing on another
             if (goat != this && this.entity == goat.entity) {
-                incrementScore = false;
+                this.scoring = false;
+                this.newPoints = 0;
             }
         }
-        if (incrementScore) {
+        if (this.scoring) {
             this.score += 1;
+            this.newPoints++;
+            this.pointsLifetime = 1;
             //console.log("score = " + this.score);
         }
+    }
+    if (this.entity && !this.entity.isHill || this.jumping) {
+        this.scoring = false;
     }
     // helper function to prevent goat on goat on hill from gaining points
     function isMounted(thisGoat, goats) {
@@ -685,6 +692,9 @@ Goat.prototype.draw = function (ctx) {
     // Draw powerups held (visual effects):
     drawPowerupsVisuals(this);
 
+    // Draw points above head if currently being earned:
+    drawPointsAccruing(this);
+
     Entity.prototype.draw.call(this, ctx);
 };
 
@@ -747,14 +757,29 @@ var drawChargeMeter = function (goat) {
 };
 
 var drawPowerupsHeld = function (goat) {
-        for (var i = 0; i < goat.powerUps.length; i++) {
-            goat.ctx.drawImage(ASSET_MANAGER.getAsset("./img/icon-" + goat.powerUps[i] + ".png"), goat.boundingBox.x + i * 20, goat.boundingBox.y + goat.boundingBox.height + 25, 16, 16);
-        }
+    for (var i = 0; i < goat.powerUps.length; i++) {
+        goat.ctx.drawImage(ASSET_MANAGER.getAsset("./img/icon-" + goat.powerUps[i] + ".png"), goat.boundingBox.x + i * 20, goat.boundingBox.y + goat.boundingBox.height + 25, 16, 16);
+    }
 
 };
 
-var drawPowerupsVisuals = function(goat) {
+var drawPowerupsVisuals = function (goat) {
     // TODO: Draw visuals pertaining to powerups
+};
+
+var drawPointsAccruing = function (goat) {
+    if (goat.scoring) {
+        drawTextWithOutline(goat.ctx, "24px Impact", "+" + goat.newPoints, goat.x + goat.scale * 100, goat.y + goat.height / 2, goat.color, 'white');
+    } else {
+        if (goat.pointsLifetime > 0.1) {
+            goat.pointsLifetime -= goat.game.clockTick;
+            goat.ctx.globalAlpha = goat.pointsLifetime;
+            drawTextWithOutline(goat.ctx, "24px Impact", "+" + goat.newPoints, goat.x + goat.scale * 80, goat.y + goat.height / 2 - Math.cos(goat.pointsLifetime) * 50, goat.color, 'white');
+            goat.ctx.globalAlpha = 1;
+        } else {
+            goat.newPoints = 0;
+        }
+    }
 };
 
 Goat.prototype.toString = function () {

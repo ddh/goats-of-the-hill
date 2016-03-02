@@ -193,14 +193,7 @@ PlayGame.prototype.draw = function (ctx) {
         }
     } else {
         this.drawScores(ctx);
-        if (Math.floor(this.roundTimer / 1) == 0) {
-            drawTextWithOutline(ctx, "200px Impact", "TIME!", 180, 300, 'red', 'white');
-        }
-        else if (this.roundTimer / 1 < 10) {
-            drawTextWithOutline(ctx, "200px Impact", Math.floor(this.roundTimer / 1), 350, 300, 'red', 'white');
-        } else {
-            drawTextWithOutline(ctx, "50px Impact", Math.floor(this.roundTimer / 1), 380, 60, 'black', 'white');
-        }
+        this.drawTimer(ctx);
         drawTextWithOutline(ctx, "32px Impact", "Round #" + (ROUNDS_PLAYED + 1), 650, 40, 'purple', 'white');
         drawTextWithOutline(ctx, "32px Impact", "Oh My Goat!", 20, 40, 'purple', 'white');
     }
@@ -221,6 +214,17 @@ PlayGame.prototype.drawScores = function (ctx) {
         drawTextWithOutline(ctx, "32px Impact", this.game.goats[i].score, 45 + 200 * i, 590, 'white', this.game.goats[i].color);
         // Draw crown
         if (this.game.goats[i].king) ctx.drawImage(ASSET_MANAGER.getAsset("./img/crown.png"), 45 + 200 * i, 520, 50, 50);
+    }
+};
+
+PlayGame.prototype.drawTimer = function(ctx) {
+    if (Math.floor(this.roundTimer / 1) == 0) {
+        drawTextWithOutline(ctx, "200px Impact", "TIME!", 180, 300, 'red', 'white');
+    }
+    else if (this.roundTimer / 1 < 10) {
+        drawTextWithOutline(ctx, "200px Impact", Math.floor(this.roundTimer / 1), 350, 300, 'red', 'white');
+    } else {
+        drawTextWithOutline(ctx, "50px Impact", Math.floor(this.roundTimer / 1), 380, 60, 'black', 'white');
     }
 };
 

@@ -190,7 +190,7 @@ GameEngine.prototype.reset = function () {
     this.sceneManager.reset();
 };
 
-GameEngine.prototype.toString = function gameEngineToString() {
+GameEngine.prototype.toString = function () {
     return 'Game Engine';
 };
 

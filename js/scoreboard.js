@@ -5,6 +5,12 @@ function Scoreboard(game, background) {
     this.game = game;
     this.background = background;
     this.type = "Scoreboard"; // used to overload superclass constructor
+    this.anyKeyPressed = false;
+    var anyKeyListener = function () {
+        console.log("Hello key pressed");
+    };
+    this.game.ctx.canvas.addEventListener("keyup", anyKeyListener, false);
+
 
     this.entities = [];
 
@@ -81,7 +87,7 @@ Scoreboard.prototype.endScene = function () {
 
 // checks if user has clicked to play next round
 Scoreboard.prototype.isSceneDone = function () {
-    return this.game.click;
+    return this.anyKeyPressed;
 };
 
 /***********************************************

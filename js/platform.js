@@ -62,9 +62,12 @@ Platform.prototype.update = function () {
                     this.velocity.x *= -1;
                 }
             }
-
             break;
         case 'elliptical':
+            var xCenter = this.game.surfaceWidth / 2 - this.width / 2;
+            var yCenter = this.game.surfaceHeight / 2;
+            this.x = Math.floor(xCenter + (220 * Math.cos(this.game.timer.gameTime)));
+            this.y = Math.floor(yCenter + (220 * Math.sin(this.game.timer.gameTime)));
             break;
         case 'diagonal':
             this.x += this.velocity.x;

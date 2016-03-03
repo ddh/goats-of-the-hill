@@ -133,10 +133,11 @@ var createFirstRound = function (gameEngine) {
     // Create platforms
     var platforms = [];
     platforms.push(new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'hay')); // ground platform is always the first platform added to a scene
-    platforms.push(new Platform(gameEngine, 'l', 100, 400, 'stationary', 'hay'));
-    platforms.push(new Platform(gameEngine, 'l', 450, 400, 'stationary', 'hay'));
-    platforms.push(new Platform(gameEngine, 'm', 320, 280, 'stationary', 'hay'));
-    platforms.push(new Platform(gameEngine, 's', 320, 160, 'horizontal', 'hay'));
+    platforms.push(new Platform(gameEngine, 'm', 320, 400, 'stationary', 'hay'));
+    platforms.push(new Platform(gameEngine, 'l', 100, 280, 'stationary', 'hay'));
+    platforms.push(new Platform(gameEngine, 'l', 450, 280, 'stationary', 'hay'));
+    platforms.push(new Platform(gameEngine, 'm', 320, 160, 'stationary', 'hay'));
+    platforms.push(new Platform(gameEngine, 's', 320, 160, 'elliptical', 'hay'));
 
     return new Round(gameEngine, background, platforms, true, HILL_SPEED);
 };

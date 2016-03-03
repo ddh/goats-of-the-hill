@@ -217,8 +217,9 @@ Round.prototype.update = function () {
     this.randomHillGenerator();
     this.generateRandomCollectible();
 
-    // If player 3 or 4's controller is not connected, AI Goat takes over
+    // Disable Player 2 AI if controller connected. Enable Player 3 & 4 if controller disconnected.
     if (this.goats.length == 4) {
+        if (navigator.getGamepads()[1]) this.goats[1].aiEnabled = false; // Disable player 2 AI if controller connected
         if (typeof navigator.getGamepads()[2] === 'undefined') this.goats[2].aiEnabled = true;
         if (typeof navigator.getGamepads()[3] === 'undefined') this.goats[3].aiEnabled = true;
     }

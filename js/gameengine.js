@@ -116,7 +116,7 @@ GameEngine.prototype.startInput = function () {
     this.ctx.canvas.addEventListener("keyup", function (e) {
         // This function is called when any key is pressed
         that.anyKeyPressed = true;
-        console.log("Any key was pressed");
+        //console.log("Any key was pressed");
     })
 
     /* === MOUSE SETTINGS === */

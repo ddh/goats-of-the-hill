@@ -11,7 +11,7 @@ ASSET_MANAGER.queueDownload("./img/farm.png");
 ASSET_MANAGER.queueDownload("./img/scoreBoard.png");
 ASSET_MANAGER.queueDownload("./img/mountain.png");
 ASSET_MANAGER.queueDownload("./img/space.png");
-ASSET_MANAGER.queueDownload("./img/mt-everest.png");
+ASSET_MANAGER.queueDownload("./img/endgame-scene.png");
 
 // Platform Sprites
 ASSET_MANAGER.queueDownload("./img/hay.png");
@@ -105,7 +105,7 @@ var makeSceneManager = function (gameEngine) {
     var sb2 = new Scoreboard(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
     var r3 = createThirdRound(gameEngine); // third round
     var sb3 = new Scoreboard(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
-    var eg = new EndGame(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/mt-everest.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
+    var eg = new EndGame(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/endgame-scene.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
 
     // 2. Link up all Scenes in correct sequence before returning SceneManager with a reference to the title Scene
     // ---

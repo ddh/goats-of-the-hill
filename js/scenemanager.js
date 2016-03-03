@@ -182,7 +182,7 @@ SceneManager.prototype.draw = function(ctx) {
     this.currentScene.draw(ctx);
 };
 
-SceneManager.prototype.reset = function () {;
+SceneManager.prototype.reset = function () {
     this.currentScene.reset();
 };
 

@@ -1,4 +1,4 @@
-function Platform(game, size, x, y, movement, platType, isHill) {
+function Platform(game, size, x, y, movement, platType) {
     var obj = helper(size, platType);
 
     this.game = game;
@@ -10,22 +10,24 @@ function Platform(game, size, x, y, movement, platType, isHill) {
     this.startY = y;
     this.velocity = {x: 3, y: 3};
     this.movement = movement;
-    this.isHill = isHill;
+    this.isHill = false;
     this.hillAnimation = new Animation(ASSET_MANAGER.getAsset("./img/hill-arrow.png"), 0, 0, 120, 120, .1, 10, true, false);
     Entity.call(this, game, x, y, obj.width, obj.height);
 }
 
 // Function below capable for different plat images and sizes for different stages 
 function helper(size, platType) {
-    if (size === 's' && platType === 'hay') {
-        return {img: ASSET_MANAGER.getAsset("./img/hay.png"), width: 85, height: 50};
-    } else if (size === 'm' && platType === 'hay') {
-        //console.log("returned helper");
-        return {img: ASSET_MANAGER.getAsset("./img/hay2.png"), width: 155, height: 50};
-    } else if (size === 'l' && platType === 'hay') {
-        return {img: ASSET_MANAGER.getAsset("./img/hay3.png"), width: 240, height: 50};
-    } else if (size === 'ground') {
-        return {img: ASSET_MANAGER.getAsset("./img/transparent_pixel.png"), width: 800, height: 70};
+    switch (size) {
+        case 's':
+            return {img: ASSET_MANAGER.getAsset("./img/platform-small-" + platType + ".png"), width: 85, height: 50};
+        case'm':
+            return {img: ASSET_MANAGER.getAsset("./img/platform-medium-" + platType + ".png"), width: 155, height: 50};
+        case'l':
+            return {img: ASSET_MANAGER.getAsset("./img/platform-large-" + platType + ".png"), width: 240, height: 50};
+        case'ground':
+            return {img: ASSET_MANAGER.getAsset("./img/transparent_pixel.png"), width: 800, height: 70};
+        default:
+            break;
     }
 }
 

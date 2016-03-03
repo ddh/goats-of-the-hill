@@ -165,7 +165,7 @@ Round.prototype.toString = function () {
     return 'Round ' + (ROUNDS_PLAYED + 1);
 };
 
-Round.prototype.drawTimer = function(ctx) {
+Round.prototype.drawTimer = function (ctx) {
     var secondsLeft = Math.floor(this.roundTimer / 1);
     if (secondsLeft < 0) secondsLeft = 0;
     if (Math.floor(this.roundTimer / 1) == 0) {
@@ -197,7 +197,8 @@ Round.prototype.isSceneDone = function () {
     return (this.roundTimer / 1 < 0);
 };
 
-Round.prototype.reset = function () {};
+Round.prototype.reset = function () {
+};
 
 Round.prototype.draw = function (ctx) {
     for (var i = 0, len = this.entities.length; i < len; i++) {

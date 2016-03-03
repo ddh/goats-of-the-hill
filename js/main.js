@@ -10,15 +10,19 @@ ASSET_MANAGER.queueDownload("./img/farm-gradient.png");
 ASSET_MANAGER.queueDownload("./img/farm.png");
 ASSET_MANAGER.queueDownload("./img/scoreBoard.png");
 ASSET_MANAGER.queueDownload("./img/mountain.png");
-ASSET_MANAGER.queueDownload("./img/space.png");
+ASSET_MANAGER.queueDownload("./img/bg-space.png");
+ASSET_MANAGER.queueDownload("./img/bg-winter.png");
 
 // Platform Sprites
-ASSET_MANAGER.queueDownload("./img/hay.png");
-ASSET_MANAGER.queueDownload("./img/hay2.png");
-ASSET_MANAGER.queueDownload("./img/hay3.png");
-ASSET_MANAGER.queueDownload("./img/spaceTile.png");
-ASSET_MANAGER.queueDownload("./img/spaceTile2.png");
-ASSET_MANAGER.queueDownload("./img/spaceTile3.png");
+ASSET_MANAGER.queueDownload("./img/platform-small-hay.png");
+ASSET_MANAGER.queueDownload("./img/platform-medium-hay.png");
+ASSET_MANAGER.queueDownload("./img/platform-large-hay.png");
+ASSET_MANAGER.queueDownload("./img/platform-small-winter.png");
+ASSET_MANAGER.queueDownload("./img/platform-medium-winter.png");
+ASSET_MANAGER.queueDownload("./img/platform-large-winter.png");
+ASSET_MANAGER.queueDownload("./img/platform-small-space.png");
+ASSET_MANAGER.queueDownload("./img/platform-medium-space.png");
+ASSET_MANAGER.queueDownload("./img/platform-large-space.png");
 ASSET_MANAGER.queueDownload("./img/millenniumFalcon.png");
 
 // Goat Sprites
@@ -128,11 +132,11 @@ var createFirstRound = function (gameEngine) {
 
     // Create platforms
     var platforms = [];
-    platforms.push(new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'hay', false)); // ground platform is always the first platform added to a scene
-    platforms.push(makePlatform(gameEngine, 'l', 100, 400, 'stationary', 'hay', false));
-    platforms.push(makePlatform(gameEngine, 'l', 450, 400, 'stationary', 'hay', false));
-    platforms.push(makePlatform(gameEngine, 'm', 320, 280, 'stationary', 'hay', false));
-    platforms.push(makePlatform(gameEngine, 's', 320, 160, 'horizontal', 'hay', false));
+    platforms.push(new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'hay')); // ground platform is always the first platform added to a scene
+    platforms.push(new Platform(gameEngine, 'l', 100, 400, 'stationary', 'hay'));
+    platforms.push(new Platform(gameEngine, 'l', 450, 400, 'stationary', 'hay'));
+    platforms.push(new Platform(gameEngine, 'm', 320, 280, 'stationary', 'hay'));
+    platforms.push(new Platform(gameEngine, 's', 320, 160, 'horizontal', 'hay'));
 
     return new Round(gameEngine, background, platforms, true, HILL_SPEED);
 };
@@ -140,16 +144,16 @@ var createFirstRound = function (gameEngine) {
 var createSecondRound = function (gameEngine) {
 
     // Create scene's background
-    var background = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/farm.png"), 800, 600);
+    var background = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/bg-winter.png"), 800, 600);
 
     // Create platforms
     var platforms = [];
-    platforms.push(new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'hay', false)); // ground platform is always the first platform added to a scene
-    platforms.push(makePlatform(gameEngine, 'm', 80, 450, 'vertical', 'hay', false));
-    platforms.push(makePlatform(gameEngine, 's', 230, 400, 'vertical', 'hay', false));
-    platforms.push(makePlatform(gameEngine, 'm', 310, 350, 'vertical', 'hay', false));
-    platforms.push(makePlatform(gameEngine, 's', 470, 300, 'vertical', 'hay', false));
-    platforms.push(makePlatform(gameEngine, 'm', 540, 250, 'vertical', 'hay', false));
+    platforms.push(new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'winter')); // ground platform is always the first platform added to a scene
+    platforms.push(new Platform(gameEngine, 'm', 80, 450, 'vertical', 'winter'));
+    platforms.push(new Platform(gameEngine, 's', 230, 400, 'vertical', 'winter'));
+    platforms.push(new Platform(gameEngine, 'm', 310, 350, 'vertical', 'winter'));
+    platforms.push(new Platform(gameEngine, 's', 470, 300, 'vertical', 'winter'));
+    platforms.push(new Platform(gameEngine, 'm', 540, 250, 'vertical', 'winter'));
 
     return new Round(gameEngine, background, platforms, true, HILL_SPEED);
 };
@@ -157,24 +161,17 @@ var createSecondRound = function (gameEngine) {
 var createThirdRound = function (gameEngine) {
 
     // Create scene's background
-    var background = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/farm.png"), 800, 600);
+    var background = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/bg-space.png"), 800, 600);
 
     // Create platforms
     var platforms = [];
-    platforms.push(new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'hay', false)); // ground platform is always the first platform added to a scene
-    platforms.push(makePlatform(gameEngine, 'm', 50, 50, 'bouncing', 'hay', false));
-    platforms.push(makePlatform(gameEngine, 'm', 150, 150, 'bouncing', 'hay', false));
-    platforms.push(makePlatform(gameEngine, 'm', 250, 250, 'bouncing', 'hay', false));
-    platforms.push(makePlatform(gameEngine, 'm', 350, 350, 'bouncing', 'hay', false));
-    platforms.push(makePlatform(gameEngine, 'm', 450, 450, 'bouncing', 'hay', false));
+    platforms.push(new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'space')); // ground platform is always the first platform added to a scene
+    platforms.push(new Platform(gameEngine, 'm', 50, 50, 'bouncing', 'space'));
+    platforms.push(new Platform(gameEngine, 'm', 150, 150, 'bouncing', 'space'));
+    platforms.push(new Platform(gameEngine, 'm', 250, 250, 'bouncing', 'space'));
+    platforms.push(new Platform(gameEngine, 'm', 350, 350, 'bouncing', 'space'));
+    platforms.push(new Platform(gameEngine, 'm', 450, 450, 'bouncing', 'space'));
 
     return new Round(gameEngine, background, platforms, true, HILL_SPEED);
 };
 
-
-var makePlatform = function (gameEngine, size, x, y, movement, platType, isHill) {
-    var pf = null;
-    pf = new Platform(gameEngine, size, x, y, movement, platType, isHill);
-    pf.oneWayCollision = true; // indicates top down collision but not bottom up
-    return pf;
-};

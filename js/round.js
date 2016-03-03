@@ -6,7 +6,7 @@ var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds)
 var GOLD_COLOR = "rgb(255, 215, 0)";
 var MAX_IDLE_TIME = 10;    // *Currently turned off* - How many seconds of inactivity before goat AI kicks in on an idle player.
 var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
-var POWERUP_INTERVAL = 5;  // Every x sec a powerup spawns
+var POWERUP_INTERVAL = 1;  // Every x sec a powerup spawns
 //var COLLECTIBLES = ['invincibility']; //TODO: Using this as a means to test a powerup individually. Just comment out the above.
 
 function Round(game, background, platforms, randomizeHill, randomHillSpeed) {
@@ -55,16 +55,17 @@ Round.prototype.initAllEntities = function () {
 
 Round.prototype.initGoats = function () {
     /* === Goats === */
-    var playerOneControls = {jump: 87, left: 65, right: 68, attack: 83, run: 16}; // W,A,D,S,shift
+    var playerOneControls = {jump: 87, left: 65, right: 68, attack: 70, run: 16}; // W A D F shift
     var goat1 = new Goat(this.game, 0, playerOneControls, "blue-goat", "blue");
     goat1.initControls();
     goat1.x = 30;
     this.goats.push(goat1);
 
-    var playerTwoControls = {jump: 38, left: 37, right: 39, attack: 40, run: 18}; // ↑,←,→,↓,alt
+    var playerTwoControls = {jump: 38, left: 37, right: 39, attack: 191, run: 190}; // ↑ ← → / .
     var goat2 = new Goat(this.game, 1, playerTwoControls, "green-goat", "green");
     goat2.initControls();
     goat2.x = 230;
+    goat2.aiEnabled = true;
     this.goats.push(goat2);
 
     var playerThreeControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0};

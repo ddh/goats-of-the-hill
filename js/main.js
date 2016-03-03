@@ -166,12 +166,28 @@ var createThirdRound = function (gameEngine) {
     // Create platforms
     var platforms = [];
     platforms.push(new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'space')); // ground platform is always the first platform added to a scene
-    platforms.push(new Platform(gameEngine, 'm', 50, 50, 'bouncing', 'space'));
-    platforms.push(new Platform(gameEngine, 'm', 150, 150, 'bouncing', 'space'));
-    platforms.push(new Platform(gameEngine, 'm', 250, 250, 'bouncing', 'space'));
-    platforms.push(new Platform(gameEngine, 'm', 350, 350, 'bouncing', 'space'));
-    platforms.push(new Platform(gameEngine, 'm', 450, 450, 'bouncing', 'space'));
+    platforms.push(new Platform(gameEngine, 's', 0, 0, 'elliptical', 'space', 45)); // Last # is the angle to start at
+    platforms.push(new Platform(gameEngine, 's', 0, 0, 'elliptical', 'space', 90));
+    platforms.push(new Platform(gameEngine, 's', 0, 0, 'elliptical', 'space', 135));
+    platforms.push(new Platform(gameEngine, 's', 0, 0, 'elliptical', 'space', 180));
+    platforms.push(new Platform(gameEngine, 's', 0, 0, 'elliptical', 'space', 225));
+    platforms.push(new Platform(gameEngine, 's', 0, 0, 'elliptical', 'space', 270));
 
     return new Round(gameEngine, background, platforms, true, HILL_SPEED);
+};
+
+var createFourthRound = function (gameEngine) {
+
+    // Create scene's background
+    var background = new Background(gameEngine, ASSET_MANAGER.getAsset(".img/bg-forest.png"), 800, 600);
+
+    // Create platforms
+    var platforms = [];
+    platforms.push(new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'forest')); // ground platform is always the first platform added to a scene
+    platforms.push(new Platform(gameEngine, 'm', 50, 50, 'bouncing', 'forest'));
+    platforms.push(new Platform(gameEngine, 'm', 150, 150, 'bouncing', 'forest'));
+    platforms.push(new Platform(gameEngine, 'm', 250, 250, 'bouncing', 'forest'));
+    platforms.push(new Platform(gameEngine, 'm', 350, 350, 'bouncing', 'forest'));
+    platforms.push(new Platform(gameEngine, 'm', 450, 450, 'bouncing', 'forest'));
 };
 

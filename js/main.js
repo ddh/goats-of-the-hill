@@ -104,6 +104,7 @@ var makeSceneManager = function (gameEngine) {
     var sb2 = new Scoreboard(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
     var r3 = createThirdRound(gameEngine); // third round
     var sb3 = new Scoreboard(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
+
     // TODO: need to add in EndGame Scene (will need to change links section below too)
 
     // 2. Link up all Scenes in correct sequence before returning SceneManager with a reference to the title Scene
@@ -120,100 +121,55 @@ var makeSceneManager = function (gameEngine) {
 };
 
 var createFirstRound = function (gameEngine) {
-    var platforms = [];
 
-    // handle scene's background
+    // Create scene's background
     var background = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/farm.png"), 800, 600);
 
-    // handle ground platform
-    var groundPlatform = new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'hay', false);
-    groundPlatform.oneWayCollision = false;
-    platforms.push(groundPlatform); // ground platform is always the first platform added to a scene
-
-    // handle all other platforms (use existing platforms below to build other scenes' platforms later)
-
-    /*** Rows in Bottom-up fashion ***/
-    /* row 1 */
-    platforms.push(makePlatform(gameEngine, 'l', -2, 480, 'vertical', 'hay', false));
-    /* row 2 */
-    platforms.push(makePlatform(gameEngine, 'm', 300, 375, 'diagonal', 'hay', false));
-    /* row 3 */
-    platforms.push(makePlatform(gameEngine, 'm', -2, 300, 'diagonal', 'hay', false));
-    platforms.push(makePlatform(gameEngine, 'l', 562, 300, 'vertical', 'hay', false));
-    /* row 4 */
-    platforms.push(makePlatform(gameEngine, 'm', 325, 130, 'diagonal', 'hay', false));
-    /* row 5 */
-    //platforms.push(makePlatform(gameEngine, 's', 100, 400, 'horizontal', 'hay', false));
-    //platforms.push(makePlatform(gameEngine, 's', 400, 200, 'horizontal', 'hay', false));
-    /* row 6 */
-    //platforms.push(makePlatform(gameEngine, 's', 200, 200, 'bouncing', 'hay', false));
+    // Create platforms
+    var platforms = [];
+    platforms.push(new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'hay', false)); // ground platform is always the first platform added to a scene
+    platforms.push(makePlatform(gameEngine, 'l', 100, 400, 'stationary', 'hay', false));
+    platforms.push(makePlatform(gameEngine, 'l', 450, 400, 'stationary', 'hay', false));
+    platforms.push(makePlatform(gameEngine, 'm', 320, 280, 'stationary', 'hay', false));
+    platforms.push(makePlatform(gameEngine, 's', 320, 160, 'horizontal', 'hay', false));
 
     return new Round(gameEngine, background, platforms, true, HILL_SPEED);
 };
 
 var createSecondRound = function (gameEngine) {
-    var platforms = [];
 
-    // handle scene's background
+    // Create scene's background
     var background = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/farm.png"), 800, 600);
 
-    // handle ground platform
-    var groundPlatform = new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'hay', false);
-    groundPlatform.oneWayCollision = false;
-    platforms.push(groundPlatform); // ground platform is always the first platform added to a scene
-
-    // handle all other platforms (use existing platforms below to build other scenes' platforms later)
-
-    /*** Rows in Bottom-up fashion ***/
-    /* row 1 */
-    platforms.push(makePlatform(gameEngine, 'l', -2, 480, 'vertical', 'hay', false));
-    /* row 2 */
-    platforms.push(makePlatform(gameEngine, 'm', 300, 375, 'diagonal', 'hay', false));
-    /* row 3 */
-    platforms.push(makePlatform(gameEngine, 'm', -2, 300, 'diagonal', 'hay', false));
-    platforms.push(makePlatform(gameEngine, 'l', 562, 300, 'vertical', 'hay', false));
-    /* row 4 */
-    platforms.push(makePlatform(gameEngine, 'm', 325, 130, 'diagonal', 'hay', false));
-    /* row 5 */
-    platforms.push(makePlatform(gameEngine, 's', 100, 400, 'horizontal', 'hay', false));
-    platforms.push(makePlatform(gameEngine, 's', 400, 200, 'horizontal', 'hay', false));
-    /* row 6 */
-    //platforms.push(makePlatform(gameEngine, 's', 200, 200, 'bouncing', 'hay', false));
+    // Create platforms
+    var platforms = [];
+    platforms.push(new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'hay', false)); // ground platform is always the first platform added to a scene
+    platforms.push(makePlatform(gameEngine, 'm', 80, 450, 'vertical', 'hay', false));
+    platforms.push(makePlatform(gameEngine, 's', 230, 400, 'vertical', 'hay', false));
+    platforms.push(makePlatform(gameEngine, 'm', 310, 350, 'vertical', 'hay', false));
+    platforms.push(makePlatform(gameEngine, 's', 470, 300, 'vertical', 'hay', false));
+    platforms.push(makePlatform(gameEngine, 'm', 540, 250, 'vertical', 'hay', false));
 
     return new Round(gameEngine, background, platforms, true, HILL_SPEED);
 };
 
 var createThirdRound = function (gameEngine) {
-    var platforms = [];
 
-    // handle scene's background
+    // Create scene's background
     var background = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/farm.png"), 800, 600);
 
-    // handle ground platform
-    var groundPlatform = new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'hay', false);
-    groundPlatform.oneWayCollision = false;
-    platforms.push(groundPlatform); // ground platform is always the first platform added to a scene
-
-    // handle all other platforms (use existing platforms below to build other scenes' platforms later)
-
-    /*** Rows in Bottom-up fashion ***/
-    /* row 1 */
-    platforms.push(makePlatform(gameEngine, 'l', -2, 480, 'vertical', 'hay', false));
-    /* row 2 */
-    platforms.push(makePlatform(gameEngine, 'm', 300, 375, 'diagonal', 'hay', false));
-    /* row 3 */
-    platforms.push(makePlatform(gameEngine, 'm', -2, 300, 'diagonal', 'hay', false));
-    platforms.push(makePlatform(gameEngine, 'l', 562, 300, 'vertical', 'hay', false));
-    /* row 4 */
-    platforms.push(makePlatform(gameEngine, 'm', 325, 130, 'diagonal', 'hay', false));
-    /* row 5 */
-    platforms.push(makePlatform(gameEngine, 's', 100, 400, 'horizontal', 'hay', false));
-    platforms.push(makePlatform(gameEngine, 's', 400, 200, 'horizontal', 'hay', false));
-    /* row 6 */
-    platforms.push(makePlatform(gameEngine, 's', 200, 200, 'bouncing', 'hay', false));
+    // Create platforms
+    var platforms = [];
+    platforms.push(new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'hay', false)); // ground platform is always the first platform added to a scene
+    platforms.push(makePlatform(gameEngine, 'm', 50, 50, 'bouncing', 'hay', false));
+    platforms.push(makePlatform(gameEngine, 'm', 150, 150, 'bouncing', 'hay', false));
+    platforms.push(makePlatform(gameEngine, 'm', 250, 250, 'bouncing', 'hay', false));
+    platforms.push(makePlatform(gameEngine, 'm', 350, 350, 'bouncing', 'hay', false));
+    platforms.push(makePlatform(gameEngine, 'm', 450, 450, 'bouncing', 'hay', false));
 
     return new Round(gameEngine, background, platforms, true, HILL_SPEED);
 };
+
 
 var makePlatform = function (gameEngine, size, x, y, movement, platType, isHill) {
     var pf = null;

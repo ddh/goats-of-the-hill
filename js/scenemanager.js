@@ -89,11 +89,15 @@ SceneManager.prototype.constructor = SceneManager;
 SceneManager.prototype.update = function() {
     // check if Scene is done, then start transition to next Scene
     if (this.currentScene.isSceneDone()) {
+        if (this.currentScene.type === "Title") {
+
+        }
         if (this.currentScene.type === "Round") {
             this.storeScoresFromLastRound();
             ROUNDS_PLAYED++;
         }
         this.currentScene.endScene();
+        // TODO: reassignment of current scene!!!
         this.currentScene = this.currentScene.next;
         if (this.currentScene.type === "Scoreboard") { // TODO: handle logic for EndGame later...
             this.passAlongLastRoundsScores();
@@ -129,6 +133,7 @@ SceneManager.prototype.update = function() {
     }
 };
 
+// this.currentScene is Round
 SceneManager.prototype.storeScoresFromLastRound = function () {
     // keeps track of goat with highest score from last round
     this.highestScoreGoat = this.currentScene.highestScoreGoat;
@@ -144,6 +149,7 @@ SceneManager.prototype.storeScoresFromLastRound = function () {
     });
 };
 
+// this.currentScene is Scoreboard
 SceneManager.prototype.passAlongLastRoundsScores = function () {
     this.currentScene.highestScoreGoat = this.highestScoreGoat;
     this.currentScene.goats = this.goats;
@@ -178,7 +184,7 @@ SceneManager.prototype.draw = function(ctx) {
     this.currentScene.draw(ctx);
 };
 
-SceneManager.prototype.reset = function () {;
+SceneManager.prototype.reset = function () {
     this.currentScene.reset();
 };
 

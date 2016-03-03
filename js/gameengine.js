@@ -43,6 +43,7 @@ function GameEngine() {
     this.gamepads = [];
     this.pauseKey = false;
     this.sceneManager = null;
+    this.entities = [];
 }
 
 GameEngine.prototype.init = function (ctx) {
@@ -155,14 +156,20 @@ GameEngine.prototype.draw = function () {
     this.ctx.save();
 
     // 3. Draw all entities from current scene onto canvas
-    this.sceneManager.draw(this.ctx);
+    //this.sceneManager.draw(this.ctx);
+    for (var i = 0, len = this.entities.length; i < len; i++) {
+        this.entities[i].draw(this.ctx);
+    }
 
     // 4. Restore old state
     this.ctx.restore();
 };
 
 GameEngine.prototype.update = function () {
-    this.sceneManager.update();
+    //this.sceneManager.update();
+    for (var i = 0, len = this.entities.length; i < len; i++) {
+        this.entities[i].update();
+    }
 };
 
 GameEngine.prototype.loop = function () {

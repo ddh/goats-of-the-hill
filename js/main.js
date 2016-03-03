@@ -81,7 +81,9 @@ ASSET_MANAGER.downloadAll(function () {
     }).play();
 
     /* === NEW Game Logistics === */
-    gameEngine.sceneManager = makeSceneManager(gameEngine);
+    var sm = makeSceneManager(gameEngine);
+    gameEngine.sceneManager = sm;
+    gameEngine.entities.push(sm);
 
     /* === START GAME === */
     gameEngine.start(); // starts infinite game loop

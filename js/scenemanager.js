@@ -129,6 +129,9 @@ SceneManager.prototype.update = function() {
         }
         this.currentScene.startScene();
     } else { // else, if Scene not done, continue updating current Scene
+        if (this.currentScene.running === false) {
+            this.currentScene.startScene();
+        }
         this.currentScene.update();
     }
 };
@@ -169,7 +172,8 @@ SceneManager.prototype.reinitRoundsAndLinks = function () {
 
     // 2. Link up all Scenes in correct sequence before returning SceneManager with a reference to the title Scene
     // ---
-    this.currentScene.next = r1; // this.currentScene is Title
+    this.currentScene.roundScene = r1;   // TODO: link will change once Tutorial Scene added
+    this.currentScene.tutorialScene = this.currentScene; // COMPLETE WHEN TUTORIAL SCENE IS DONE
     r1.next = sb1;
     sb1.next = r2;
     r2.next = sb2;

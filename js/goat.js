@@ -722,8 +722,10 @@ Goat.prototype.draw = function (ctx) {
 };
 
 // Draw charge meter to canvas
-function drawRoundedRect(ctx, x, y, width, height, radius) {
-
+function drawRoundedRect(ctx, x, y, width, height, radius, fillColor, outlineColor) {
+    ctx.fillStyle = fillColor;
+    ctx.strokeStyle = outlineColor;
+    
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
@@ -772,11 +774,8 @@ Goat.prototype.resetActionStates = function (goat) {
 };
 
 var drawChargeMeter = function (goat) {
-    goat.ctx.strokeStyle = "rgb(255, 0, 0)";
-    goat.ctx.fillStyle = "rgba(255, 255, 0, .5)";
-    drawRoundedRect(goat.ctx, goat.boundingBox.x, goat.boundingBox.y + goat.boundingBox.height + 10, goat.boundingBox.width, 10, 2);
-    goat.ctx.fillStyle = "rgba(0, 255, 0, 1)";
-    drawRoundedRect(goat.ctx, goat.boundingBox.x, goat.boundingBox.y + goat.boundingBox.height + 10, goat.boundingBox.width * ((goat.maximumAttack) ? 1 : (goat.chargePower / goat.chargePowerMax)), 10, 2);
+    drawRoundedRect(goat.ctx, goat.boundingBox.x, goat.boundingBox.y + goat.boundingBox.height + 10, goat.boundingBox.width, 10, 2, "rgba(255, 255, 0, .5)", "rgb(255, 0, 0)");
+    drawRoundedRect(goat.ctx, goat.boundingBox.x, goat.boundingBox.y + goat.boundingBox.height + 10, goat.boundingBox.width * ((goat.maximumAttack) ? 1 : (goat.chargePower / goat.chargePowerMax)), 10, 2, "rgba(0, 255, 0, 1)", "rgb(255, 0, 0)");
 };
 
 var drawPowerupsHeld = function (goat) {

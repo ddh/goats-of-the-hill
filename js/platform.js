@@ -9,6 +9,9 @@ function Platform(game, size, x, y, movement, platType) {
     this.startX = x;
     this.startY = y;
     this.velocity = {x: 3, y: 3};
+    this.angle = 0;
+    this.ellipticalSpeed = (2 * Math.PI) / 10;
+    this.radius = 250;
     this.movement = movement;
     this.isHill = false;
     this.hillAnimation = new Animation(ASSET_MANAGER.getAsset("./img/hill-arrow.png"), 0, 0, 120, 120, .1, 10, true, false);
@@ -63,11 +66,12 @@ Platform.prototype.update = function () {
                 }
             }
             break;
-        case 'elliptical':
-            var xCenter = this.game.surfaceWidth / 2 - this.width / 2;
-            var yCenter = this.game.surfaceHeight / 2;
-            this.x = Math.floor(xCenter + (220 * Math.cos(this.game.timer.gameTime)));
-            this.y = Math.floor(yCenter + (220 * Math.sin(this.game.timer.gameTime)));
+        case 'elliptical': // TODO: Not quite working; this doesn't transfer correct velocities to the goat
+            var xOffset = this.game.surfaceWidth / 2 - this.width / 2;
+            var yOffset = this.game.surfaceHeight / 2;
+            this.angle += this.ellipticalSpeed * this.game.clockTick;
+            this.x = xOffset + Math.cos(this.angle) * this.radius;
+            this.y = yOffset + Math.sin(this.angle) * this.radius;
             break;
         case 'diagonal':
             this.x += this.velocity.x;

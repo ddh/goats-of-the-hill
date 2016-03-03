@@ -44,6 +44,7 @@ function GameEngine() {
     this.pauseKey = false;
     this.sceneManager = null;
     this.entities = [];
+    this.anyKeyPressed = false;
 }
 
 GameEngine.prototype.init = function (ctx) {
@@ -111,6 +112,12 @@ GameEngine.prototype.startInput = function () {
         if (e.which === 51) toggleAI(that, 2); // 3 Number Row key
         if (e.which === 52) toggleAI(that, 3); // 4 Number Row key
     }, false);
+
+    this.ctx.canvas.addEventListener("keyup", function (e) {
+        // This function is called when any key is pressed
+        that.anyKeyPressed = true;
+        //console.log("Any key was pressed");
+    })
 
     /* === MOUSE SETTINGS === */
 

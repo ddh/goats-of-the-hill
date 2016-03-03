@@ -165,7 +165,7 @@ Round.prototype.toString = function () {
     return 'Round ' + (ROUNDS_PLAYED + 1);
 };
 
-Round.prototype.drawTimer = function(ctx) {
+Round.prototype.drawTimer = function (ctx) {
     var secondsLeft = Math.floor(this.roundTimer / 1);
     if (secondsLeft < 0) secondsLeft = 0;
     if (Math.floor(this.roundTimer / 1) == 0) {
@@ -197,7 +197,8 @@ Round.prototype.isSceneDone = function () {
     return (this.roundTimer / 1 < 0);
 };
 
-Round.prototype.reset = function () {};
+Round.prototype.reset = function () {
+};
 
 Round.prototype.draw = function (ctx) {
     for (var i = 0, len = this.entities.length; i < len; i++) {
@@ -216,8 +217,9 @@ Round.prototype.update = function () {
     this.randomHillGenerator();
     this.generateRandomCollectible();
 
-    // If player 3 or 4's controller is not connected, AI Goat takes over
+    // Disable Player 2 AI if controller connected. Enable Player 3 & 4 if controller disconnected.
     if (this.goats.length == 4) {
+        if (navigator.getGamepads()[1]) this.goats[1].aiEnabled = false; // Disable player 2 AI if controller connected
         if (typeof navigator.getGamepads()[2] === 'undefined') this.goats[2].aiEnabled = true;
         if (typeof navigator.getGamepads()[3] === 'undefined') this.goats[3].aiEnabled = true;
     }

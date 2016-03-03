@@ -5,13 +5,6 @@ function Scoreboard(game, background) {
     this.game = game;
     this.background = background;
     this.type = "Scoreboard"; // used to overload superclass constructor
-    this.anyKeyPressed = false;
-    var anyKeyListener = function () {
-        console.log("Hello key pressed");
-    };
-    this.game.ctx.canvas.addEventListener("keyup", anyKeyListener, false);
-
-
     this.entities = [];
 
     this.highestScoreGoat = null; // to be changed "on the fly" in Round SceneManager's update() method
@@ -42,11 +35,15 @@ Scoreboard.prototype.draw = function (ctx) {
         this.entities[i].draw(ctx);
     }
 
-    if (ROUNDS_PLAYED <= 2) {
-        drawPlayButton(ctx);
-    } else {
-        drawTextWithOutline(ctx, "40px Impact", "See Game Stats!", 270, 500, "purple", "white");
+    // Draw text labels; does a blinking text effect
+    if (Math.floor(this.game.timer.gameTime % 2) == 0) {
+        if (ROUNDS_PLAYED <= 2) { // TODO: This is a hard-coded value; find a way to calculate total #rounds
+            drawPlayButton(ctx);
+        } else {
+            drawTextWithOutline(ctx, "40px Impact", "See Game Stats!", 270, 500, "purple", "white");
+        }
     }
+
 
     var winningGoatString = this.highestScoreGoat.playerColor.toUpperCase() + " wins scoring : " + this.highestScoreGoat.score;
     drawTextWithOutline(ctx, "45px Impact", winningGoatString, 270, 105, this.highestScoreGoat.color, 'white');         // winner #1
@@ -87,7 +84,7 @@ Scoreboard.prototype.endScene = function () {
 
 // checks if user has clicked to play next round
 Scoreboard.prototype.isSceneDone = function () {
-    return this.anyKeyPressed;
+    return this.game.anyKeyPressed;
 };
 
 /***********************************************

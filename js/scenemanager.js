@@ -100,17 +100,17 @@ SceneManager.prototype.update = function() {
         }
         if (this.currentScene.type === "Title") {
             // TODO: toggle these prints to see end game stats in console
-            for (var i = 0; i < 4; i++) {
-                var total = 0;
-                var str = "player " + (i+1) + "'s scores are: ";
-                for (var j = 0; j < this.goatScoresList[i].length; j++) {
-                    var currScore = this.goatScoresList[i][j];
-                    total += currScore;
-                    str += currScore + ", ";
-                }
-                str += "with a total of " + total;
-                console.log(str);
-            }
+            //for (var i = 0; i < 4; i++) {
+            //    var total = 0;
+            //    var str = "player " + (i+1) + "'s scores are: ";
+            //    for (var j = 0; j < this.goatScoresList[i].length; j++) {
+            //        var currScore = this.goatScoresList[i][j];
+            //        total += currScore;
+            //        str += currScore + ", ";
+            //    }
+            //    str += "with a total of " + total;
+            //    console.log(str);
+            //}
 
             ROUNDS_PLAYED = 0;
             this.goatScoresList = { // serves as temp storage for goat scores between rounds (data passed from scene to scene)
@@ -160,16 +160,18 @@ SceneManager.prototype.reinitRoundsAndLinks = function () {
     var sb2 = new Scoreboard(this.game, new Background(this.game, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
     var r3 = createThirdRound(this.game); // third round
     var sb3 = new Scoreboard(this.game, new Background(this.game, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
+    var eg = new EndGame(this.game, new Background(this.game, ASSET_MANAGER.getAsset("./img/mt-everest.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
 
     // 2. Link up all Scenes in correct sequence before returning SceneManager with a reference to the title Scene
     // ---
-    this.currentScene.next = r1;
+    this.currentScene.next = r1; // this.currentScene is Title
     r1.next = sb1;
     sb1.next = r2;
     r2.next = sb2;
     sb2.next = r3;
     r3.next = sb3;
-    sb3.next = this.currentScene;
+    sb3.next = eg;
+    eg.next = this.currentScene; // this.currentScene is Title
 };
 
 SceneManager.prototype.draw = function(ctx) {

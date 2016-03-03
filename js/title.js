@@ -31,25 +31,7 @@ Title.prototype.draw = function (ctx) {
     drawPlayButton(ctx);
 };
 
-Title.prototype.update = function () {
-    if (typeof this.entities !== 'undefined') {
-        var entitiesCount = this.entities.length;
-
-        // Cycle through the list of entities in Scene.
-        for (var i = 0; i < entitiesCount; i++) {
-            var entity = this.entities[i];
-
-            // Only update those not flagged for removal, for optimization
-            if (typeof entity !== 'undefined' && !entity.removeFromWorld) entity.update();
-        }
-
-        // Removal of flagged entities
-        for (var j = this.entities.length - 1; j >= 0; --j) {
-            if (this.entities[j].removeFromWorld) this.entities.splice(j, 1);
-        }
-
-    }
-};
+Title.prototype.update = function () {};
 
 // performs variable initialization
 Title.prototype.startScene = function () {

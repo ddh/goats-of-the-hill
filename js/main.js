@@ -11,6 +11,7 @@ ASSET_MANAGER.queueDownload("./img/farm.png");
 ASSET_MANAGER.queueDownload("./img/scoreBoard.png");
 ASSET_MANAGER.queueDownload("./img/mountain.png");
 ASSET_MANAGER.queueDownload("./img/space.png");
+ASSET_MANAGER.queueDownload("./img/mt-everest.png");
 
 // Platform Sprites
 ASSET_MANAGER.queueDownload("./img/hay.png");
@@ -102,7 +103,7 @@ var makeSceneManager = function (gameEngine) {
     var sb2 = new Scoreboard(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
     var r3 = createThirdRound(gameEngine); // third round
     var sb3 = new Scoreboard(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
-    // TODO: need to add in EndGame Scene (will need to change links section below too)
+    var eg = new EndGame(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/mt-everest.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
 
     // 2. Link up all Scenes in correct sequence before returning SceneManager with a reference to the title Scene
     // ---
@@ -112,7 +113,8 @@ var makeSceneManager = function (gameEngine) {
     r2.next = sb2;
     sb2.next = r3;
     r3.next = sb3;
-    sb3.next = titleScene;  // TODO: link will change once EndGame Scene added
+    sb3.next = eg;
+    eg.next = titleScene;
 
     return new SceneManager(gameEngine, titleScene);
 };

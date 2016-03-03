@@ -6,7 +6,7 @@ var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds)
 var GOLD_COLOR = "rgb(255, 215, 0)";
 var MAX_IDLE_TIME = 10;    // *Currently turned off* - How many seconds of inactivity before goat AI kicks in on an idle player.
 var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
-var POWERUP_INTERVAL = 10;  // Every x sec a powerup spawns
+var POWERUP_INTERVAL = 5;  // Every x sec a powerup spawns
 //var COLLECTIBLES = ['invincibility']; //TODO: Using this as a means to test a powerup individually. Just comment out the above.
 
 function Round(game, background, platforms, randomizeHill, randomHillSpeed) {
@@ -164,6 +164,19 @@ Round.prototype.toString = function () {
     return 'Round ' + (ROUNDS_PLAYED + 1);
 };
 
+Round.prototype.drawTimer = function(ctx) {
+    var secondsLeft = Math.floor(this.roundTimer / 1);
+    if (secondsLeft < 0) secondsLeft = 0;
+    if (Math.floor(this.roundTimer / 1) == 0) {
+        drawTextWithOutline(ctx, "200px Impact", "TIME!", 180, 300, 'red', 'white');
+    }
+    else if (this.roundTimer / 1 < 10) {
+        drawTextWithOutline(ctx, "200px Impact", secondsLeft, 350, 300, 'red', 'white');
+    } else {
+        drawTextWithOutline(ctx, "50px Impact", secondsLeft, 380, 60, 'black', 'white');
+    }
+};
+
 /***********************************************
  *  START OF SCENE 'INTERFACE' IMPLEMENTATION  *
  ***********************************************/
@@ -191,11 +204,7 @@ Round.prototype.draw = function (ctx) {
     }
 
     this.drawScores(ctx);
-
-    var secondsLeft = Math.floor(this.roundTimer / 1);
-    if (secondsLeft < 0) secondsLeft = 0;
-    drawTextWithOutline(ctx, "32px Impact", secondsLeft, 400, 40, 'black', 'white');
-
+    this.drawTimer(ctx);
     drawTextWithOutline(ctx, "32px Impact", "Round #" + (ROUNDS_PLAYED + 1), 650, 40, 'purple', 'white');
     drawTextWithOutline(ctx, "32px Impact", "Oh My Goat!", 20, 40, 'purple', 'white');
 };

@@ -6,17 +6,16 @@
 
     <link rel="stylesheet" type="text/css" href="style.css"/>
 
-    <!--
-        *NOTE: The order of the JS script tags below MUST meet the dependency rule (ie. if a.js is dependent on b.js,
-        then the 1st script tag's src attribute must be b.js and then a.js second.
-     -->
-
     <script type="text/javascript" src="./js/gameengine.js"></script>
     <!--http://goldfirestudios.com/blog/104/howler.js-Modern-Web-Audio-Javascript-Library-->
     <script type="text/javascript" src="./js/howler.js"></script>
     <script type="text/javascript" src="./js/entity.js"></script>
-    <script type="text/javascript" src="./js/sceneselector.js"></script>
-    <script type="text/javascript" src="./js/playgame.js"></script>
+    <script type="text/javascript" src="./js/scenemanager.js"></script>
+    <script type="text/javascript" src="./js/round.js"></script>
+    <script type="text/javascript" src="./js/endgame.js"></script>
+    <script type="text/javascript" src="./js/tutorial.js"></script>
+    <script type="text/javascript" src="./js/title.js"></script>
+    <script type="text/javascript" src="./js/scoreboard.js"></script>
     <script type="text/javascript" src="./js/platform.js"></script>
     <script type="text/javascript" src="./js/animation.js"></script>
     <script type="text/javascript" src="./js/goat.js"></script>
@@ -26,21 +25,8 @@
     <script type="text/javascript" src="./js/main.js"></script>
 </head>
 <body>
-<div id="roundTimer" class="textLabels"></div>
-<!--SUPER IMPORTANT: Set the game canvas' tabindex="1", otherwise it won't respond to keyboard! ~Duy-->
 <div id="gameWorldContainer">
     <canvas id="gameWorld" width="800" height="600" tabindex="1"></canvas>
 </div>
-<!--
-TODO: replace this div with a menu that loads before first round starts
-<div style="position: absolute; padding-left: 500px">
-    <ul>Controls:
-        <li>D for Debug</li>
-        <li>K for King</li>
-        <li>Arrow keys for movement</li>
-        <li>Space bar to jump</li>
-    </ul>
-</div>
--->
 </body>
 </html>

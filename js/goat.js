@@ -58,11 +58,9 @@ function Goat(game, playerNumber, controls, sprite, color) {
     this.y = 200;   // game.platforms[0].y // Ground platforms' y
     this.width = 96 * this.scale;
     this.height = 95 * this.scale;
-    if (this.game.playGame.isInTransitionScene) {
-        this.entity = null; // there is no ground platform
-    } else {
-        this.entity = this.game.platforms[0];
-    }
+
+    this.entity = this.game.sceneManager.currentScene.platforms[0];
+
     this.standingOn = null;
 
     // Movement physics:
@@ -175,22 +173,52 @@ Goat.prototype.constructor = Goat;
 
 Goat.prototype.reset = function () {
 
-
     this.resetActionStates();
 
     this.score = 0;
     this.king = false;
 
     this.x = 0;
-    if (this.game.playGame.isInTransitionScene) {
-        this.y = 0; // there is no ground platform
-        this.entity = null;
-    } else {
-        this.y = this.game.platforms[0].y - this.height;
-        this.entity = this.game.platforms[0]; // This should be the ground platform
-    }
+
+    this.y = this.game.sceneManager.currentScene.platforms[0].y - this.height;
+    this.entity = this.game.sceneManager.currentScene.platforms[0]; // This should be the ground platform
 
     // this.boundingbox = new BoundingBox(this.x, this.y, this.standAnimation.frameWidth, this.standAnimation.frameHeight);
+};
+
+Goat.prototype.initControls = function () {
+    var that = this; // closure
+    this.game.ctx.canvas.addEventListener("keydown", function (e) {
+        if (e.which === that.controls.jump) that.jumpKey = true;
+        if (e.which === that.controls.right) that.rightKey = true;
+        if (e.which === that.controls.left) that.leftKey = true;
+        if (e.which === that.controls.attack) that.attackKey = true;
+        if (e.which === that.controls.run) that.runKey = true;
+    }, false);
+    this.game.ctx.canvas.addEventListener("keyup", function (e) {
+        if (e.which === that.controls.jump) that.jumpKey = false;
+        if (e.which === that.controls.right) that.rightKey = false;
+        if (e.which === that.controls.left) that.leftKey = false;
+        if (e.which === that.controls.attack) that.attackKey = false;
+        if (e.which === that.controls.run) that.runKey = false;
+    });
+
+    // Determines if a goat is now controlled by human; disabling AI
+    this.game.ctx.canvas.addEventListener("keyup", function (e) {
+        if (e.which === that.controls.jump ||
+            e.which === that.controls.right ||
+            e.which === that.controls.left ||
+            e.which === that.controls.attack ||
+            e.which === that.controls.run) {
+            if (that.aiEnabled) {
+                console.log("AI disabled for " + that.toString());
+                that.game.sceneManager.currentScene.idleTime[that.playerNumber] = 0;
+                console.log(that.game.sceneManager.currentScene.idleTime[that.playerNumber]);
+                that.resetAllKeys();
+                that.aiEnabled = false;
+            }
+        }
+    });
 };
 
 // Based off of Chris Marriott's Unicorn's update method: https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
@@ -206,8 +234,8 @@ Goat.prototype.update = function () {
 
         // Find the hill
         function findHill(that) {
-            for (var i = 0, len = that.game.platforms.length; i < len; i++) {
-                if (that.game.platforms[i].isHill) return that.game.platforms[i];
+            for (var i = 0, len = that.game.sceneManager.currentScene.platforms.length; i < len; i++) {
+                if (that.game.sceneManager.currentScene.platforms[i].isHill) return that.game.sceneManager.currentScene.platforms[i];
             }
         }
 
@@ -249,8 +277,8 @@ Goat.prototype.update = function () {
 
         // Or Goat will attack the king if it detects a collision with king
         if (this.chargePower >= getRandomIntInclusive(3, this.chargePowerMax)) {
-            for (var i = 0; i < this.game.goats.length; i++) {
-                var otherGoat = this.game.goats[i];
+            for (var i = 0; i < this.game.sceneManager.currentScene.goats.length; i++) {
+                var otherGoat = this.game.sceneManager.currentScene.goats[i];
                 if (this.boundingBox.collide(otherGoat.boundingBox) && this != otherGoat) {
                     this.attackKey = false;
                 }
@@ -261,7 +289,6 @@ Goat.prototype.update = function () {
         if (this.chargeDecay && this.chargePower == 2) this.attackKey = false;
 
     }
-
 
     /****************************************
      *              Position                *
@@ -413,8 +440,8 @@ Goat.prototype.update = function () {
 
     // Jumping onto an entity
     if (this.falling) {
-        for (var i = 0, length = this.game.collidables.length; i < length; i++) {
-            var entity = this.game.collidables[i];
+        for (var i = 0, length = this.game.sceneManager.currentScene.collidables.length; i < length; i++) {
+            var entity = this.game.sceneManager.currentScene.collidables[i];
             if (entity != this && this.falling && (leftCornerBB.collide(entity.boundingBox) ||
                 rightCornerBB.collide(entity.boundingBox)) && (this.boundingBox.bottom - this.velocity.y * 1.5 <= entity.boundingBox.y)) {
                 console.log(this + " collided with " + entity);
@@ -438,7 +465,6 @@ Goat.prototype.update = function () {
             }
         }
     }
-
 
     /****************************************
      *              Attacking               *
@@ -501,8 +527,8 @@ Goat.prototype.update = function () {
 
         // If attack collides with another goat:
         var victims = 0;
-        for (var i = 0, len = this.game.goats.length; i < len; i++) {
-            var goat = this.game.goats[i];
+        for (var i = 0, len = this.game.sceneManager.currentScene.goats.length; i < len; i++) {
+            var goat = this.game.sceneManager.currentScene.goats[i];
             if (victims < this.maxVictims) {
                 if (this.right) {
                     // Goats who are already injured cannot be attacked
@@ -527,7 +553,6 @@ Goat.prototype.update = function () {
 
         }
     }
-
 
     /****************************************
      *              On Hit                  *
@@ -560,7 +585,6 @@ Goat.prototype.update = function () {
         }
     }
 
-
     /****************************************
      *              Powerups                *
      ****************************************/
@@ -574,10 +598,10 @@ Goat.prototype.update = function () {
      ****************************************/
 
     // Increments goat's score count:
-    if (this.entity && this.entity.isHill && !isMounted(this, this.game.goats)) {
+    if (this.entity && this.entity.isHill && !isMounted(this, this.game.sceneManager.currentScene.goats)) {
         this.scoring = true;
-        for (var i = 0, len = this.game.goats.length; i < len; i++) {
-            var goat = this.game.goats[i];
+        for (var i = 0, len = this.game.sceneManager.currentScene.goats.length; i < len; i++) {
+            var goat = this.game.sceneManager.currentScene.goats[i];
             // Checks if this goat is standing on another
             if (goat != this && this.entity == goat.entity) {
                 this.scoring = false;
@@ -604,8 +628,7 @@ Goat.prototype.update = function () {
     }
 
     Entity.prototype.update.call(this);
-}
-;
+};
 
 Goat.prototype.draw = function (ctx) {
 
@@ -715,7 +738,7 @@ function drawRoundedRect(ctx, x, y, width, height, radius) {
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
-};
+}
 
 
 Goat.prototype.finishAttack = function () {

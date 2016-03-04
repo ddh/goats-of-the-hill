@@ -16,6 +16,11 @@ function EndGame(game, background) {
         "blue": [0, 0, 0],
         "green": [0, 0, 0]
     };
+    this.statDrawingCoords = { // only for 3 goats now
+        1: [0, 0],
+        2: [0, 0],
+        3: [0, 0]
+    };
 
     Scene.call(this, this.game, this.background, this.type);
 }
@@ -44,9 +49,15 @@ EndGame.prototype.draw = function (ctx) {
         }
     }
 
-    // draw text
+    // draw "header/footer" text on canvas
     drawTextWithOutline(ctx, "48pt Impact", "And the Winner is...", 150, 100, 'purple', 'white');
     drawTextWithOutline(ctx, "24pt Impact", "Play Oh My Goat Again?", 250, 550, 'purple', 'white');
+
+    // draw end game stats next to corresponding goat
+    for (var i = 1; i < 4; i++) {
+        var goatCtr = {x: this.statDrawingCoords[i].x + 30, y: this.statDrawingCoords[i].y + 40};
+        drawTextWithOutline(ctx, "16pt Impact", "x", goatCtr.x, goatCtr.y, 'purple', 'white');
+    }
 };
 
 EndGame.prototype.update = function () {
@@ -54,6 +65,17 @@ EndGame.prototype.update = function () {
         var ent = this.entities[i];
         if (ent instanceof Goat) {
             ent.updateWithPlatform(this.platforms);
+            switch (ent.ranking) {
+                case 1:
+                    this.statDrawingCoords[1].y = ent.y;
+                    break;
+                case 2:
+                    this.statDrawingCoords[2].y = ent.y;
+                    break;
+                case 3:
+                    this.statDrawingCoords[3].y = ent.y;
+                    break;
+            }
         } else { // for Background and Platforms
             ent.update();
         }
@@ -99,16 +121,19 @@ EndGame.prototype.startScene = function () {
         switch (currGoat.ranking) {
             case 1: // 1st place
                 currGoat.x = 320 + 50;
+                this.statDrawingCoords[1].x = 320 + 50;
                 break;
             case 2: // 2nd place
                 currGoat.x = 520 + 50;
+                this.statDrawingCoords[2].x = 520 + 50;
                 break;
             case 3: // 3rd place
                 currGoat.x = 120 + 50;
+                this.statDrawingCoords[3].x = 120 + 50;
                 break;
         }
     }
-    this.goats.splice(3, 1); // delete goat with lowest score (with ranking of 4...)
+    this.goats.splice(3, 1); // delete goat with lowest score (with ranking of 4...) - TODO: remove this later
 };
 
 // performs cleanup operations

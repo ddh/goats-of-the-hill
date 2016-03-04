@@ -23,6 +23,9 @@ function Tutorial(gameEngine) {
     
     this.charge = 0; // for charge meter
     
+    // Crown animation
+    this.crownAnimation = new Animation(ASSET_MANAGER.getAsset("./img/simple-crown-animated.png"), 0, 0, 40, 40, 0.1, 10, true, false);
+    
     // Powerup animations
     this.speedUpAnimation = new Animation(ASSET_MANAGER.getAsset("./img/collectible-speedUp.png"), 0, 0, 40, 40, 0.1, 1, true, false);
     this.invincibilityAnimation = new Animation(ASSET_MANAGER.getAsset("./img/collectible-invincibility.png"), 0, 0, 40, 40, 0.1, 1, true, false);
@@ -99,16 +102,18 @@ Tutorial.prototype.draw = function (ctx) {
    
     // Objective
     drawTextWithOutline(ctx, "26px Impact", "Objective:", 20, 40, 'indigo', 'white');
-    drawTextWithOutline(ctx, "22px Impact", "Gain points by being the sole goat on the hill!", 170, 40, 'black', 'white');
+    drawTextWithOutline(ctx, "22px Impact", "Fight for the          !", 170, 40, 'black', 'white');
+    this.crownAnimation.drawFrame(this.game.clockTick, ctx, 255 + 0.65 * 44, 35 - 0.65 * 30, 0.65);
+    drawTextWithOutline(ctx, "22px Impact", "Gain points by being the sole goat on the hill!", 170, 70, 'black', 'white');
     this.hill.draw(ctx);
     
     // Controls
     drawTextWithOutline(ctx, "26px Impact", "Controls:", 20, 100, 'indigo', 'white');
-    drawTextWithOutline(ctx, "22px Impact", "Press Esc to pause the game", 170, 100, 'black', 'white');
-    drawTextWithOutline(ctx, "22px Impact", "Hold jump key to jump higher", 170, 130, 'black', 'white');
-    drawTextWithOutline(ctx, "22px Impact", "Hold attack key to charge up an attack", 170, 160, 'black', 'white');
-    drawRoundedRect(ctx, 525, 147, 70, 10, 2, "rgba(255, 255, 0, .5)", "rgb(255, 0, 0)");       // Charge meter
-    drawRoundedRect(ctx, 525, 147, this.charge, 10, 2, "rgb(0, 255, 0)", "rgb(255, 0, 0)");     // Charge meter
+    // drawTextWithOutline(ctx, "22px Impact", "Press Esc to pause the game", 170, 100, 'black', 'white');
+    drawTextWithOutline(ctx, "22px Impact", "Hold jump key to jump higher", 170, 100, 'black', 'white');
+    drawTextWithOutline(ctx, "22px Impact", "Hold attack key to charge up, release to attack", 170, 130, 'black', 'white');
+    drawRoundedRect(ctx, 370, 140, 70, 10, 2, "rgba(255, 255, 0, .5)", "rgb(255, 0, 0)");       // Charge meter
+    drawRoundedRect(ctx, 370, 140, this.charge, 10, 2, "rgb(0, 255, 0)", "rgb(255, 0, 0)");     // Charge meter
     
     // Blue goat animations and controls
     drawTextWithOutline(ctx, "22px Impact", "Player 1", 170, 190, 'blue', 'white');    
@@ -124,7 +129,7 @@ Tutorial.prototype.draw = function (ctx) {
     // Green goat animations and controls
     drawTextWithOutline(ctx, "22px Impact", "Player 2", 500, 190, 'green', 'white');
     this.runRightAnimationGreen.drawFrame(this.game.clockTick, ctx, 500, 200, 0.65);
-    drawTextWithOutline(ctx, "22px Impact", "◀,   ▶", 510, 300, "green", "white");
+    drawTextWithOutline(ctx, "22px Impact", "◀   ▶", 510, 300, "green", "white");
     drawTextWithOutline(ctx, "22px Impact", ".   to run", 510, 340, "green", "white");
     this.jumpRightAnimationGreen.drawFrame(this.game.clockTick, ctx, 580, 200, 0.65);
     drawTextWithOutline(ctx, "22px Impact", "▲", 610, 300, "green", "white");
@@ -140,7 +145,7 @@ Tutorial.prototype.draw = function (ctx) {
     this.speedUpAnimation.drawFrame(this.game.clockTick, ctx, 170, 370 + Math.sin(this.timeExpire * 5) * 5, 1);
     drawTextWithOutline(ctx, "22px Impact", "Double your speed", 230, 395, "black", "white");    
     this.invincibilityAnimation.drawFrame(this.game.clockTick, ctx, 170, 450 + Math.sin(this.timeExpire * 5) * 5, 1);
-    drawTextWithOutline(ctx, "22px Impact", "Invincible to attacks", 230, 475, "black", "white");
+    drawTextWithOutline(ctx, "22px Impact", "Immune to attacks", 230, 475, "black", "white");
     this.attackUpAnimation.drawFrame(this.game.clockTick, ctx, 170, 530 + Math.sin(this.timeExpire * 5) * 5, 1);
     drawTextWithOutline(ctx, "22px Impact", "Attack multiple goats", 230, 555, "black", "white");
     

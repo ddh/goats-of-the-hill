@@ -16,11 +16,11 @@ function EndGame(game, background) {
         "blue": [0, 0, 0],
         "green": [0, 0, 0]
     };
-    this.statDrawingCoords = { // only for 3 goats now
-        1: [0, 0],
-        2: [0, 0],
-        3: [0, 0]
-    };
+    this.statDrawingCoords = [ // only for 3 goats now
+        {x: 0, y: 0}, // for goat ranked 1st
+        {x: 0, y: 0}, // for goat ranked 2nd
+        {x: 0, y: 0}  // for goat ranked 3rd
+    ];
 
     Scene.call(this, this.game, this.background, this.type);
 }
@@ -54,9 +54,31 @@ EndGame.prototype.draw = function (ctx) {
     drawTextWithOutline(ctx, "24pt Impact", "Play Oh My Goat Again?", 250, 550, 'purple', 'white');
 
     // draw end game stats next to corresponding goat
-    for (var i = 1; i < 4; i++) {
-        var goatCtr = {x: this.statDrawingCoords[i].x + 30, y: this.statDrawingCoords[i].y + 40};
-        drawTextWithOutline(ctx, "16pt Impact", "x", goatCtr.x, goatCtr.y, 'purple', 'white');
+    for (var j = 1; j < 4; j++) {
+        var currGoat = this.goats[j - 1];
+        var currGoatStats = {};
+        switch (currGoat.playerColor) {
+            case "red":
+                currGoatStats["red"] = this.goatStats["red"];
+                break;
+            case "blue":
+                currGoatStats["blue"] = this.goatStats["blue"];
+                break;
+            case "green":
+                currGoatStats["green"] = this.goatStats["green"];
+                break;
+            case "yellow":
+                currGoatStats["yellow"] = this.goatStats["yellow"];
+                break;
+        }
+        var goatCtr = {x: this.statDrawingCoords[j - 1].x + 30, y: this.statDrawingCoords[j - 1].y + 40};
+        var totalScore = "Total: " + currGoatStats[currGoat.playerColor][0];
+        var roundsWon = "Wins: (" + currGoatStats[currGoat.playerColor][1] + "/3)";
+        var bestRound = "Best: " + currGoatStats[currGoat.playerColor][2];
+        //drawTextWithOutline(ctx, "16pt Impact", "x", goatCtr.x, goatCtr.y, 'purple', 'white'); // centering work
+        drawTextWithOutline(ctx, "18pt Impact", roundsWon, goatCtr.x - 135, goatCtr.y, currGoat.color, 'white');
+        drawTextWithOutline(ctx, "18pt Impact", totalScore, goatCtr.x + 25, goatCtr.y + 25, currGoat.color, 'white');
+        drawTextWithOutline(ctx, "18pt Impact", bestRound, goatCtr.x + 25, goatCtr.y - 25, currGoat.color, 'white');
     }
 };
 
@@ -67,13 +89,13 @@ EndGame.prototype.update = function () {
             ent.updateWithPlatform(this.platforms);
             switch (ent.ranking) {
                 case 1:
-                    this.statDrawingCoords[1].y = ent.y;
+                    this.statDrawingCoords[0].y = ent.y;
                     break;
                 case 2:
-                    this.statDrawingCoords[2].y = ent.y;
+                    this.statDrawingCoords[1].y = ent.y;
                     break;
                 case 3:
-                    this.statDrawingCoords[3].y = ent.y;
+                    this.statDrawingCoords[2].y = ent.y;
                     break;
             }
         } else { // for Background and Platforms
@@ -121,15 +143,15 @@ EndGame.prototype.startScene = function () {
         switch (currGoat.ranking) {
             case 1: // 1st place
                 currGoat.x = 320 + 50;
-                this.statDrawingCoords[1].x = 320 + 50;
+                this.statDrawingCoords[0].x = 320 + 50;
                 break;
             case 2: // 2nd place
                 currGoat.x = 520 + 50;
-                this.statDrawingCoords[2].x = 520 + 50;
+                this.statDrawingCoords[1].x = 520 + 50;
                 break;
             case 3: // 3rd place
                 currGoat.x = 120 + 50;
-                this.statDrawingCoords[3].x = 120 + 50;
+                this.statDrawingCoords[2].x = 120 + 50;
                 break;
         }
     }

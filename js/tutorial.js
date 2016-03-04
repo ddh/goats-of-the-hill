@@ -111,7 +111,7 @@ Tutorial.prototype.draw = function (ctx) {
     drawRoundedRect(ctx, 525, 147, this.charge, 10, 2, "rgb(0, 255, 0)", "rgb(255, 0, 0)");     // Charge meter
     
     // Blue goat animations and controls
-    drawTextWithOutline(ctx, "22px Impact", "Player 1 (Blue goat)", 170, 190, 'blue', 'white');    
+    drawTextWithOutline(ctx, "22px Impact", "Player 1", 170, 190, 'blue', 'white');    
     this.runRightAnimationBlue.drawFrame(this.game.clockTick, ctx, 170, 200, 0.65);
     drawTextWithOutline(ctx, "22px Impact", "A   D", 180, 300, "blue", "white");
     drawTextWithOutline(ctx, "22px Impact", "Shift to run", 180, 340, "blue", "white");
@@ -122,7 +122,7 @@ Tutorial.prototype.draw = function (ctx) {
     drawTextWithOutline(ctx, "22px Impact", "F", 390, 300, "blue", "white");
     
     // Green goat animations and controls
-    drawTextWithOutline(ctx, "22px Impact", "Player 2 (Green goat)", 500, 190, 'green', 'white');
+    drawTextWithOutline(ctx, "22px Impact", "Player 2", 500, 190, 'green', 'white');
     this.runRightAnimationGreen.drawFrame(this.game.clockTick, ctx, 500, 200, 0.65);
     drawTextWithOutline(ctx, "22px Impact", "◀,   ▶", 510, 300, "green", "white");
     drawTextWithOutline(ctx, "22px Impact", ".   to run", 510, 340, "green", "white");

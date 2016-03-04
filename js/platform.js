@@ -16,6 +16,7 @@ function Platform(game, size, x, y, movement, platType, angle) {
     this.radius = 250;
     this.movement = movement;
     this.isHill = false;
+    this.ranking = null; // used in end game for determining height of vertical platforms for 1st, 2nd, and 3rd goats
     this.hillAnimation = new Animation(ASSET_MANAGER.getAsset("./img/hill-arrow.png"), 0, 0, 120, 120, .1, 10, true, false);
     Entity.call(this, game, x, y, obj.width, obj.height);
 }
@@ -105,7 +106,13 @@ Platform.prototype.update = function () {
                 this.velocity.x *= -1;
             }
             break;
-
+        case 'endgame':
+            this.velocity.x = 0;
+            this.y += this.velocity.y;
+            if (this.y <= 200 || this.y + this.height >= 500) {
+                this.velocity.y *= -1;
+            }
+            break;
         default: // Stationary
             this.velocity.x = 0;
             this.velocity.y = 0;
@@ -125,6 +132,9 @@ Platform.prototype.draw = function (ctx) {
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     } else {
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+        if (this.ranking) { // for end game scene
+            // TODO: fill in...
+        }
     }
     Entity.prototype.draw.call(this, ctx);
 };

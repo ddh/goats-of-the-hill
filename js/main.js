@@ -113,14 +113,18 @@ var makeSceneManager = function (gameEngine) {
 
     // 2. Link up all Scenes in correct sequence before returning SceneManager with a reference to the title Scene
     // ---
-    titleScene.roundScene = r1;   // TODO: link will change once Tutorial Scene added
-    titleScene.tutorialScene = titleScene; // COMPLETE WHEN TUTORIAL SCENE IS DONE    
-    r1.next = sb1;
-    sb1.next = r2;
-    r2.next = sb2;
-    sb2.next = r3;
-    r3.next = sb3;
-    sb3.next = eg;
+    //titleScene.roundScene = r1;   // TODO: link will change once Tutorial Scene added
+    //titleScene.tutorialScene = titleScene; // COMPLETE WHEN TUTORIAL SCENE IS DONE
+    //r1.next = sb1;
+    //sb1.next = r2;
+    //r2.next = sb2;
+    //sb2.next = r3;
+    //r3.next = sb3;
+    //sb3.next = eg;
+    //eg.next = titleScene;
+
+    // TODO: remove this before merging to master!
+    titleScene.roundScene = eg;
     eg.next = titleScene;
 
     return new SceneManager(gameEngine, titleScene);

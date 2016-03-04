@@ -93,7 +93,7 @@ GameEngine.prototype.startInput = function () {
         // Pauses the game engine's loop()
         if (e.which === 27) {
             that.pauseKey ^= true;
-            console.log("Game Engine loop" + (that.pauseKey ? "paused" : "unpaused"));
+            console.log("Game Engine loop " + (that.pauseKey ? "paused" : "unpaused"));
         }
     }, false);
 
@@ -196,6 +196,10 @@ GameEngine.prototype.loop = function () {
         this.rightclick = null;
         this.wheel = null;
         this.space = null;
+    }
+
+    if (this.pauseKey) {
+        drawTextWithOutline(this.ctx, "80pt Impact", "-PAUSED-", this.surfaceWidth / 4, this.surfaceHeight / 2, 'purple', 'white');
     }
 
 };

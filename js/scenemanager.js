@@ -85,6 +85,12 @@ function SceneManager(game, currentScene) {
         2: [],          // player 3
         3: []           // player 4
     };
+    this.goatStats = { // each list stores (for each goat): total score, rounds won (out of 3), high score (for that goat)
+        "red": [0, 0, 0],
+        "yellow": [0, 0, 0],
+        "blue": [0, 0, 0],
+        "green": [0, 0, 0]
+    };
     this.highestScoreGoat = null;
     this.goats = []; // serves as temp storage for goat from last round (to be sorted)
 }
@@ -99,36 +105,31 @@ SceneManager.prototype.update = function () {
         if (this.currentScene.type === "Title") {
 
         }
-        if (this.currentScene.type === "Round") {
+        if (this.currentScene.type === "Round"
+                || (this.currentScene.type === "Scoreboard" && ROUNDS_PLAYED === 2)) { // handles end game scene logistics
             this.storeScoresFromLastRound();
             ROUNDS_PLAYED++;
         }
         this.currentScene.endScene();
         // TODO: reassignment of current scene!!!
         this.currentScene = this.currentScene.next;
-        if (this.currentScene.type === "Scoreboard") { // TODO: handle logic for EndGame later...
+        if (this.currentScene.type === "Scoreboard"
+                || this.currentScene.type === "EndGame") { // handles end game scene logistics
             this.passAlongLastRoundsScores();
         }
         if (this.currentScene.type === "Title") {
-            // TODO: toggle these prints to see end game stats in console
-            for (var i = 0; i < 4; i++) {
-                var total = 0;
-                var str = "player " + (i + 1) + "'s scores are: ";
-                for (var j = 0; j < this.goatScoresList[i].length; j++) {
-                    var currScore = this.goatScoresList[i][j];
-                    total += currScore;
-                    str += currScore + ", ";
-                }
-                str += "with a total of " + total;
-                console.log(str);
-            }
-
             ROUNDS_PLAYED = 0;
             this.goatScoresList = { // serves as temp storage for goat scores between rounds (data passed from scene to scene)
                 0: [],          // player 1
                 1: [],          // player 2
                 2: [],          // player 3
                 3: []           // player 4
+            };
+            this.goatStats = { // each list stores (for each goat): total score, rounds won (out of 3), high score (for that goat)
+                "red": [0, 0, 0],
+                "yellow": [0, 0, 0],
+                "blue": [0, 0, 0],
+                "green": [0, 0, 0]
             };
             this.highestScoreGoat = null;
             this.goats = []; // serves as temp storage for goat from last round (to be sorted)
@@ -143,27 +144,52 @@ SceneManager.prototype.update = function () {
     }
 };
 
-// this.currentScene is Round
+// this.currentScene is Round (including Round #3)
 SceneManager.prototype.storeScoresFromLastRound = function () {
     // keeps track of goat with highest score from last round
     this.highestScoreGoat = this.currentScene.highestScoreGoat;
 
-    // handles aggregating scores from prev rounds
+    // handles aggregating scores from prev rounds & updates End Game Scene's goat stats
     for (var i = 0, len = this.currentScene.goats.length; i < len; i++) {
-        this.goatScoresList[i].push(this.currentScene.goats[i].score);
+        var currGoat = this.currentScene.goats[i];
+        this.goatScoresList[i].push(currGoat.score);
+        switch (currGoat.color) {
+            case "red":
+                this.goatStats.red[0] += currGoat.score;
+                if (currGoat.score === this.highestScoreGoat) this.goatStats.red[1]++;
+                if (currGoat.score > this.goatStats.red[2]) this.goatStats.red[2] = currGoat.score;
+                break;
+            case "yellow":
+                this.goatStats.yellow[0] += currGoat.score;
+                if (currGoat.score === this.highestScoreGoat) this.goatStats.yellow[1]++;
+                if (currGoat.score > this.goatStats.yellow[2]) this.goatStats.yellow[2] = currGoat.score;
+                break;
+            case "blue":
+                this.goatStats.blue[0] += currGoat.score;
+                if (currGoat.score === this.highestScoreGoat) this.goatStats.blue[1]++;
+                if (currGoat.score > this.goatStats.blue[2]) this.goatStats.blue[2] = currGoat.score;
+                break;
+            case "green":
+                this.goatStats.green[0] += currGoat.score;
+                if (currGoat.score === this.highestScoreGoat) this.goatStats.green[1]++;
+                if (currGoat.score > this.goatStats.green[2]) this.goatStats.green[2] = currGoat.score;
+                break;
+        }
     }
-    // handles indvl goat scores
+
+    // handles indvl goat scores (for scoreboard scene)
     this.goats = this.currentScene.goats;
     this.goats.sort(function (a, b) {
         return b.score - a.score;
     });
 };
 
-// this.currentScene is Scoreboard
+// this.currentScene is Scoreboard or EndGame
 SceneManager.prototype.passAlongLastRoundsScores = function () {
     this.currentScene.highestScoreGoat = this.highestScoreGoat;
     this.currentScene.goats = this.goats;
     this.currentScene.goatScoresList = this.goatScoresList;
+    this.currentScene.goatStats = this.goatStats;
 };
 
 // TODO: once main's linkedlist control flow is finalized, this will need to change too!

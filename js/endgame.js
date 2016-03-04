@@ -8,6 +8,13 @@ function EndGame(game, background) {
 
     this.entities = [];
 
+    this.goatStats = { // each list stores (for each goat): total score, rounds won (out of 3), high score (for that goat)
+        "red": [0, 0, 0],
+        "yellow": [0, 0, 0],
+        "blue": [0, 0, 0],
+        "green": [0, 0, 0]
+    };
+
     Scene.call(this, this.game, this.background, this.type);
 }
 
@@ -42,6 +49,9 @@ EndGame.prototype.update = function () {
 
 // performs variable initialization
 EndGame.prototype.startScene = function () {
+    // TODO: for debugging...
+    console.log(this.goatStats);
+
     // background
     this.entities.push(this.background);
 
@@ -60,6 +70,12 @@ EndGame.prototype.startScene = function () {
 // performs cleanup operations
 EndGame.prototype.endScene = function () {
     this.entities = [];
+    this.goatStats = { // each list stores (for each goat): total score, rounds won (out of 3), high score (for that goat)
+        "red": [0, 0, 0],
+        "yellow": [0, 0, 0],
+        "blue": [0, 0, 0],
+        "green": [0, 0, 0]
+    };
 };
 
 // checks if user has clicked to play game again

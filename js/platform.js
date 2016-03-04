@@ -1,4 +1,4 @@
-function Platform(game, size, x, y, movement, platType) {
+function Platform(game, size, x, y, movement, platType, angle) {
     var obj = helper(size, platType);
 
     this.game = game;
@@ -8,9 +8,11 @@ function Platform(game, size, x, y, movement, platType) {
     this.height = obj.height;
     this.startX = x;
     this.startY = y;
+    this.lastX = x;
+    this.lastY = y;
     this.velocity = {x: 3, y: 3};
-    this.angle = 0;
-    this.ellipticalSpeed = (2 * Math.PI) / 10;
+    this.angle = angle;
+    this.ellipticalSpeed = 0.5;
     this.radius = 250;
     this.movement = movement;
     this.isHill = false;
@@ -18,7 +20,7 @@ function Platform(game, size, x, y, movement, platType) {
     Entity.call(this, game, x, y, obj.width, obj.height);
 }
 
-// Function below capable for different plat images and sizes for different stages 
+// Function below capable for different plat images and sizes for different stages
 function helper(size, platType) {
     switch (size) {
         case 's':
@@ -66,12 +68,23 @@ Platform.prototype.update = function () {
                 }
             }
             break;
-        case 'elliptical': // TODO: Not quite working; this doesn't transfer correct velocities to the goat
+        case 'elliptical':
             var xOffset = this.game.surfaceWidth / 2 - this.width / 2;
             var yOffset = this.game.surfaceHeight / 2;
+
+            // Store the previous position of platform (top-left)
+            this.lastX = this.x;
+            this.lastY = this.y;
+
+            // Calculate new position:
             this.angle += this.ellipticalSpeed * this.game.clockTick;
             this.x = xOffset + Math.cos(this.angle) * this.radius;
             this.y = yOffset + Math.sin(this.angle) * this.radius;
+
+            // Calculate vector velocities for x and y
+            this.velocity.x = this.x - this.lastX;
+            this.velocity.y = this.y - this.lastY;
+
             break;
         case 'diagonal':
             this.x += this.velocity.x;

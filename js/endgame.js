@@ -50,10 +50,10 @@ EndGame.prototype.startScene = function () {
     pf1.ranking = 3; // for 3rd place
     this.entities.push(pf1);
     var pf2 = new Platform(this.game, 'm', 320, 400, 'endgame', 'hay');
-    pf1.ranking = 1; // for 1st place
+    pf2.ranking = 1; // for 1st place
     this.entities.push(pf2);
     var pf3 = new Platform(this.game, 'm', 520, 400, 'endgame', 'hay');
-    pf1.ranking = 2; // for 2nd place
+    pf3.ranking = 2; // for 2nd place
     this.entities.push(pf3);
 };
 

@@ -133,7 +133,20 @@ Platform.prototype.draw = function (ctx) {
     } else {
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
         if (this.ranking) { // for end game scene
-            // TODO: fill in...
+            switch (this.ranking) { // different sized places for when ranking goats in end game scene
+                case 1:
+                    drawTextWithOutline(ctx, "48px Impact", this.ranking.toString(), (this.x + (this.width / 2) - 5),
+                        (this.y + this.height) - 7, "purple", "white");
+                    break;
+                case 2:
+                    drawTextWithOutline(ctx, "40px Impact", this.ranking.toString(), (this.x + (this.width / 2) - 5),
+                        (this.y + this.height) - 10, "purple", "white");
+                    break;
+                case 3:
+                    drawTextWithOutline(ctx, "32px Impact", this.ranking.toString(), (this.x + (this.width / 2) - 5),
+                        (this.y + this.height) - 12, "purple", "white");
+                    break;
+            }
         }
     }
     Entity.prototype.draw.call(this, ctx);

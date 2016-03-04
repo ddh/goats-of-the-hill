@@ -12,6 +12,7 @@ ASSET_MANAGER.queueDownload("./img/scoreBoard.png");
 ASSET_MANAGER.queueDownload("./img/mountain.png");
 ASSET_MANAGER.queueDownload("./img/bg-space.png");
 ASSET_MANAGER.queueDownload("./img/bg-winter.png");
+ASSET_MANAGER.queueDownload("./img/mountainforest.png");
 
 // Platform Sprites
 ASSET_MANAGER.queueDownload("./img/platform-small-hay.png");
@@ -60,11 +61,24 @@ ASSET_MANAGER.queueDownload("./img/icon-doubleJump.png");
 ASSET_MANAGER.queueDownload("./img/icon-highJump.png");
 ASSET_MANAGER.queueDownload("./img/icon-maxCharge.png");
 
+// Controls
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_A.png");
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_D.png");
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_F.png");
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_W.png");
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_Arrow_Up.png");
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_Arrow_Left.png");
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_Arrow_Right.png");
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_Dot.png");
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_Slash.png");
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_Shift.png");
+
 // Other
 ASSET_MANAGER.queueDownload("./img/hill-arrow.png");
 ASSET_MANAGER.queueDownload("./img/transparent_pixel.png");
 ASSET_MANAGER.queueDownload("./img/simple-crown-animated.png");
 ASSET_MANAGER.queueDownload("./img/crown.png");
+ASSET_MANAGER.queueDownload("./img/back.png");
 
 
 ASSET_MANAGER.downloadAll(function () {
@@ -100,8 +114,9 @@ var HILL_SPEED = 8;
 var makeSceneManager = function (gameEngine) {
     // 1. Create all Scenes necessary for game
     // ---
-    var titleScene = new Title(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/titleScreen.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
+    var titleScene = new Title(gameEngine);
     // TODO: need to add Tutorial Scene (will need to change links section below too)
+    var tutorialScene = new Tutorial(gameEngine);
     var r1 = createFirstRound(gameEngine); // first round
     var sb1 = new Scoreboard(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
     var r2 = createSecondRound(gameEngine); // second round
@@ -114,7 +129,8 @@ var makeSceneManager = function (gameEngine) {
     // 2. Link up all Scenes in correct sequence before returning SceneManager with a reference to the title Scene
     // ---
     titleScene.roundScene = r1;   // TODO: link will change once Tutorial Scene added
-    titleScene.tutorialScene = titleScene; // COMPLETE WHEN TUTORIAL SCENE IS DONE    
+    titleScene.tutorialScene = tutorialScene; 
+    tutorialScene.next = titleScene; 
     r1.next = sb1;
     sb1.next = r2;
     r2.next = sb2;

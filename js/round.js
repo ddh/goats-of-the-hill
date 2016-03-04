@@ -169,10 +169,10 @@ Round.prototype.drawTimer = function (ctx) {
     var secondsLeft = Math.floor(this.roundTimer / 1);
     if (secondsLeft < 0) secondsLeft = 0;
     if (Math.floor(this.roundTimer / 1) == 0) {
-        drawTextWithOutline(ctx, "200px Impact", "TIME!", 180, 300, 'red', 'white');
+        drawTextWithOutline(ctx, "200px Impact", "TIME!", 180, 300, 'rgba(255, 0, 0, 0.7)', 'white');
     }
     else if (this.roundTimer / 1 < 10) {
-        drawTextWithOutline(ctx, "200px Impact", secondsLeft, 350, 300, 'red', 'white');
+        drawTextWithOutline(ctx, "200px Impact", secondsLeft, 350, 300, 'rgba(255, 0, 0, 0.7)', 'white');
     } else {
         drawTextWithOutline(ctx, "50px Impact", secondsLeft, 380, 60, 'black', 'white');
     }

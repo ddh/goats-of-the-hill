@@ -23,10 +23,10 @@ Scene.prototype.toString = function () {
     return "Scene";
 };
 
-var drawTextWithOutline = function (ctx, font, text, x, y, fillColor, outlineColor) {
+var drawTextWithOutline = function (ctx, font, text, x, y, fillColor, outlineColor, outlineWidth) {
     ctx.font = font;
     ctx.strokeStyle = outlineColor;
-    ctx.lineWidth = 5;
+    ctx.lineWidth = outlineWidth ? outlineWidth : 5;
     ctx.lineJoin = 'miter';
     ctx.miterLimit = 5;
     ctx.strokeText(text, x, y);
@@ -213,6 +213,7 @@ SceneManager.prototype.passAlongLastRoundsScores = function () {
 SceneManager.prototype.reinitRoundsAndLinks = function () {
     // 1. Create all Scenes necessary for game
     // ---
+    var tutorialScene = new Tutorial(this.game);
     var r1 = createFirstRound(this.game); // first round
     var sb1 = new Scoreboard(this.game, new Background(this.game, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
     var r2 = createSecondRound(this.game); // second round
@@ -224,7 +225,8 @@ SceneManager.prototype.reinitRoundsAndLinks = function () {
     // 2. Link up all Scenes in correct sequence before returning SceneManager with a reference to the title Scene
     // ---
     this.currentScene.roundScene = r1;   // TODO: link will change once Tutorial Scene added
-    this.currentScene.tutorialScene = this.currentScene; // COMPLETE WHEN TUTORIAL SCENE IS DONE
+    this.currentScene.tutorialScene = tutorialScene;
+    tutorialScene.next = this.currentScene;
     r1.next = sb1;
     sb1.next = r2;
     r2.next = sb2;

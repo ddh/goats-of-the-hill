@@ -161,24 +161,27 @@ Platform.prototype.draw = function (ctx) {
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     } else {
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-        if (this.ranking) { // for end game scene
-            switch (this.ranking) { // different sized places for when ranking goats in end game scene
-                case 1:
-                    drawTextWithOutline(ctx, "48px Impact", this.ranking.toString(), (this.x + (this.width / 2) - 5),
-                        (this.y + this.height) - 7, "purple", "white");
-                    break;
-                case 2:
-                    drawTextWithOutline(ctx, "40px Impact", this.ranking.toString(), (this.x + (this.width / 2) - 5),
-                        (this.y + this.height) - 10, "purple", "white");
-                    break;
-                case 3:
-                    drawTextWithOutline(ctx, "32px Impact", this.ranking.toString(), (this.x + (this.width / 2) - 5),
-                        (this.y + this.height) - 12, "purple", "white");
-                    break;
-            }
-        }
     }
     Entity.prototype.draw.call(this, ctx);
+};
+
+Platform.prototype.drawWithRanking = function (ctx, goats) {
+    if (this.ranking) { // for end game scene
+        switch (this.ranking) { // different sized places for when ranking goats in end game scene
+            case 1:
+                drawTextWithOutline(ctx, "48px Impact", this.ranking.toString(), (this.x + (this.width / 2) - 5),
+                    (this.y + this.height) - 7, goats[0].color, "white");
+                break;
+            case 2:
+                drawTextWithOutline(ctx, "40px Impact", this.ranking.toString(), (this.x + (this.width / 2) - 5),
+                    (this.y + this.height) - 10, goats[1].color, "white");
+                break;
+            case 3:
+                drawTextWithOutline(ctx, "32px Impact", this.ranking.toString(), (this.x + (this.width / 2) - 5),
+                    (this.y + this.height) - 12, goats[2].color, "white");
+                break;
+        }
+    }
 };
 
 Platform.prototype.toString = function () {

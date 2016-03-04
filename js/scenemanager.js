@@ -93,6 +93,7 @@ function SceneManager(game, currentScene) {
     };
     this.highestScoreGoat = null;
     this.goats = []; // serves as temp storage for goat from last round (to be sorted)
+    this.tempGoatStorage = []; // buffer btwn round #3 and end game
 }
 
 SceneManager.prototype = new Entity();
@@ -108,8 +109,10 @@ SceneManager.prototype.update = function () {
         if (this.currentScene.type === "Round") {
             this.storeScoresFromLastRound();
             ROUNDS_PLAYED++;
+            if (ROUNDS_PLAYED === 3) this.tempGoatStorage = this.currentScene.goats;
         }
         if (this.currentScene.type === "Scoreboard" && ROUNDS_PLAYED === 3) { // handles end game scene logistics
+            //this.currentScene.next.goats = goats;
             this.currentScene.next.goatStats = this.currentScene.goatStats;
         }
         this.currentScene.endScene();
@@ -137,6 +140,7 @@ SceneManager.prototype.update = function () {
             this.goats = []; // serves as temp storage for goat from last round (to be sorted)
             this.reinitRoundsAndLinks();
         }
+        if (this.currentScene.type === "EndGame") this.currentScene.goats = this.tempGoatStorage;
         this.currentScene.startScene();
     } else { // else, if Scene not done, continue updating current Scene
         if (this.currentScene.running === false) {

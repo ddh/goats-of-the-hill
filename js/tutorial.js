@@ -101,8 +101,8 @@ Tutorial.prototype.draw = function (ctx) {
     ctx.drawImage(ASSET_MANAGER.getAsset("./img/back.png"), 20, 490, 90, 90);
    
     // Objective
-    drawTextWithOutline(ctx, "26px Impact", "Objective:", 20, 40, 'indigo', 'white');
-    drawTextWithOutline(ctx, "22px Impact", "Fight for the          !", 170, 40, 'black', 'white');
+    drawTextWithOutline(ctx, "26px Impact", "Objective:", 20, 40, 'indigo', 'white', 3);
+    drawTextWithOutline(ctx, "22px Impact", "Fight for the          !", 170, 40, 'black', 'white', 3);
     this.crownAnimation.drawFrame(this.game.clockTick, ctx, 255 + 0.65 * 44, 35 - 0.65 * 30, 0.65);
     drawTextWithOutline(ctx, "22px Impact", "Gain points by being the sole goat on the hill!", 170, 70, 'black', 'white');
     this.hill.draw(ctx);

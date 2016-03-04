@@ -108,9 +108,38 @@ Platform.prototype.update = function () {
             break;
         case 'endgame':
             this.velocity.x = 0;
-            this.y += this.velocity.y;
-            if (this.y <= 200 || this.y + this.height >= 500) {
-                this.velocity.y *= -1;
+            // LOGIC BLOCK FOR END GAME PLATFORM MOVEMENT
+            if (!this.stopRising) { // platform should continue rising
+                this.y += this.velocity.y;
+                // controls variable height raising of platforms for end game scene
+                if (this.ranking === 1) { // for 1st place
+                    if (this.y + this.height >= 500) {
+                        this.velocity.y *= -1;
+                    } else if (this.y <= 170) {
+                        this.stopRising = true;
+                    }
+                } else if (this.ranking === 2) { // for 2nd place
+                    if (this.y + this.height >= 500) {
+                        this.velocity.y *= -1;
+                    } else if (this.y <= 280) {
+                        this.stopRising = true;
+                    }
+                } else if (this.ranking === 3) { // for 3rd place
+                    if (this.y + this.height >= 500) {
+                        this.velocity.y *= -1;
+                    } else if (this.y <= 390) {
+                        this.stopRising = true;
+                    }
+                }
+            } else { // y-value should now be held in place
+                this.velocity.y = 0;
+                if (this.ranking === 1) { // for 1st place
+                    this.y = 170;
+                } else if (this.ranking === 2) { // for 2nd place
+                    this.y = 280;
+                } else if (this.ranking === 3) { // for 3rd place
+                    this.y = 390;
+                }
             }
             break;
         default: // Stationary

@@ -105,10 +105,12 @@ SceneManager.prototype.update = function () {
         if (this.currentScene.type === "Title") {
 
         }
-        if (this.currentScene.type === "Round"
-                || (this.currentScene.type === "Scoreboard" && ROUNDS_PLAYED === 2)) { // handles end game scene logistics
+        if (this.currentScene.type === "Round") {
             this.storeScoresFromLastRound();
             ROUNDS_PLAYED++;
+        }
+        if (this.currentScene.type === "Scoreboard" && ROUNDS_PLAYED === 3) { // handles end game scene logistics
+            this.currentScene.next.goatStats = this.currentScene.goatStats;
         }
         this.currentScene.endScene();
         // TODO: reassignment of current scene!!!
@@ -149,29 +151,40 @@ SceneManager.prototype.storeScoresFromLastRound = function () {
     // keeps track of goat with highest score from last round
     this.highestScoreGoat = this.currentScene.highestScoreGoat;
 
+    //console.log("number of goats in this round is " + this.currentScene.goats.length);
+
     // handles aggregating scores from prev rounds & updates End Game Scene's goat stats
     for (var i = 0, len = this.currentScene.goats.length; i < len; i++) {
         var currGoat = this.currentScene.goats[i];
         this.goatScoresList[i].push(currGoat.score);
-        switch (currGoat.color) {
+        //if (currGoat.color === "rgb(255, 215, 0)") {
+        //    console.log("yellow" + ": " + currGoat.score.toString());
+        //} else {
+        //    console.log(currGoat.color + ": " + currGoat.score.toString());
+        //}
+        switch (currGoat.playerColor) {
             case "red":
                 this.goatStats.red[0] += currGoat.score;
-                if (currGoat.score === this.highestScoreGoat) this.goatStats.red[1]++;
+                if (currGoat.score === this.highestScoreGoat.score
+                        && currGoat.playerColor === this.highestScoreGoat.playerColor) this.goatStats.red[1]++;
                 if (currGoat.score > this.goatStats.red[2]) this.goatStats.red[2] = currGoat.score;
                 break;
             case "yellow":
                 this.goatStats.yellow[0] += currGoat.score;
-                if (currGoat.score === this.highestScoreGoat) this.goatStats.yellow[1]++;
+                if (currGoat.score === this.highestScoreGoat.score
+                        && currGoat.playerColor === this.highestScoreGoat.playerColor) this.goatStats.yellow[1]++;
                 if (currGoat.score > this.goatStats.yellow[2]) this.goatStats.yellow[2] = currGoat.score;
                 break;
             case "blue":
                 this.goatStats.blue[0] += currGoat.score;
-                if (currGoat.score === this.highestScoreGoat) this.goatStats.blue[1]++;
+                if (currGoat.score === this.highestScoreGoat.score
+                        && currGoat.playerColor === this.highestScoreGoat.playerColor) this.goatStats.blue[1]++;
                 if (currGoat.score > this.goatStats.blue[2]) this.goatStats.blue[2] = currGoat.score;
                 break;
             case "green":
                 this.goatStats.green[0] += currGoat.score;
-                if (currGoat.score === this.highestScoreGoat) this.goatStats.green[1]++;
+                if (currGoat.score === this.highestScoreGoat.score
+                        && currGoat.playerColor === this.highestScoreGoat.playerColor) this.goatStats.green[1]++;
                 if (currGoat.score > this.goatStats.green[2]) this.goatStats.green[2] = currGoat.score;
                 break;
         }

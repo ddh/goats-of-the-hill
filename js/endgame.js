@@ -53,10 +53,10 @@ EndGame.prototype.draw = function (ctx) {
 EndGame.prototype.update = function () {
     for (var i = 0, len = this.entities.length; i < len; i++) {
         var ent = this.entities[i];
-        if (!ent instanceof Goat) {
-            ent.update();
-        } else {
+        if (ent instanceof Goat) {
             ent.updateWithPlatform(this.platforms);
+        } else { // for Background and Platforms
+            ent.update();
         }
     }
 };
@@ -87,6 +87,8 @@ EndGame.prototype.startScene = function () {
     pf1.stopRising = false;
     this.entities.push(pf3);
     this.platforms.push(pf3);
+
+    this.entities.push.apply(this.entities, this.goats);
 
     /* --- GOATS --- */
     // pre-condition: goats list already sorted

@@ -219,7 +219,7 @@ SceneManager.prototype.reinitRoundsAndLinks = function () {
     var sb2 = new Scoreboard(this.game, new Background(this.game, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
     var r3 = createThirdRound(this.game); // third round
     var sb3 = new Scoreboard(this.game, new Background(this.game, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
-    var eg = new EndGame(this.game, new Background(this.game, ASSET_MANAGER.getAsset("./img/mt-everest.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
+    var eg = new EndGame(this.game, new Background(this.game, ASSET_MANAGER.getAsset("./img/endgame-scene.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
 
     // 2. Link up all Scenes in correct sequence before returning SceneManager with a reference to the title Scene
     // ---

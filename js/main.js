@@ -61,6 +61,18 @@ ASSET_MANAGER.queueDownload("./img/icon-doubleJump.png");
 ASSET_MANAGER.queueDownload("./img/icon-highJump.png");
 ASSET_MANAGER.queueDownload("./img/icon-maxCharge.png");
 
+// Controls
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_A.png");
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_D.png");
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_F.png");
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_W.png");
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_Arrow_Up.png");
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_Arrow_Left.png");
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_Arrow_Right.png");
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_Dot.png");
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_Slash.png");
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_Shift.png");
+
 // Other
 ASSET_MANAGER.queueDownload("./img/hill-arrow.png");
 ASSET_MANAGER.queueDownload("./img/transparent_pixel.png");

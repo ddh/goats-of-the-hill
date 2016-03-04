@@ -118,24 +118,34 @@ Tutorial.prototype.draw = function (ctx) {
     // Blue goat animations and controls
     drawTextWithOutline(ctx, "22px Impact", "Player 1", 170, 190, 'blue', 'white');    
     this.runRightAnimationBlue.drawFrame(this.game.clockTick, ctx, 170, 200, 0.65);
-    drawTextWithOutline(ctx, "22px Impact", "A   D", 180, 300, "blue", "white");
-    drawTextWithOutline(ctx, "22px Impact", "Shift to run", 180, 340, "blue", "white");
+    ctx.drawImage(ASSET_MANAGER.getAsset("./img/Keyboard_White_A.png"), 165, 273, 40, 40);
+    ctx.drawImage(ASSET_MANAGER.getAsset("./img/Keyboard_White_D.png"), 200, 273, 40, 40);
+    // drawTextWithOutline(ctx, "22px Impact", "A   D", 180, 300, "blue", "white");
+    ctx.drawImage(ASSET_MANAGER.getAsset("./img/Keyboard_White_Shift.png"), 167, 313, 40, 40);
+    drawTextWithOutline(ctx, "22px Impact", "to run", 220, 342, "blue", "white");
     this.jumpRightAnimationBlue.drawFrame(this.game.clockTick, ctx, 250, 200, 0.65);
-    drawTextWithOutline(ctx, "22px Impact", "W", 280, 300, "blue", "white");
+    ctx.drawImage(ASSET_MANAGER.getAsset("./img/Keyboard_White_W.png"), 267, 273, 40, 40);
+    // drawTextWithOutline(ctx, "22px Impact", "W", 280, 300, "blue", "white");
     this.attackRightAnimationBlue.drawFrame(this.game.clockTick, ctx, 360, 200, 0.65);
     this.attackAuraRightAnimationBlue.drawFrame(this.game.clockTick, ctx, 360 - 50, 200 - 15, 0.65 * 5);
-    drawTextWithOutline(ctx, "22px Impact", "F", 390, 300, "blue", "white");
+    ctx.drawImage(ASSET_MANAGER.getAsset("./img/Keyboard_White_F.png"), 377, 273, 40, 40);
+    // drawTextWithOutline(ctx, "22px Impact", "F", 390, 300, "blue", "white");
     
     // Green goat animations and controls
     drawTextWithOutline(ctx, "22px Impact", "Player 2", 500, 190, 'green', 'white');
     this.runRightAnimationGreen.drawFrame(this.game.clockTick, ctx, 500, 200, 0.65);
-    drawTextWithOutline(ctx, "22px Impact", "◀   ▶", 510, 300, "green", "white");
-    drawTextWithOutline(ctx, "22px Impact", ".   to run", 510, 340, "green", "white");
+    ctx.drawImage(ASSET_MANAGER.getAsset("./img/Keyboard_White_Arrow_Left.png"), 495, 273, 40, 40);
+    ctx.drawImage(ASSET_MANAGER.getAsset("./img/Keyboard_White_Arrow_Right.png"), 530, 273, 40, 40);
+    // drawTextWithOutline(ctx, "22px Impact", "◀   ▶", 510, 300, "green", "white");
+    ctx.drawImage(ASSET_MANAGER.getAsset("./img/Keyboard_White_Dot.png"), 497, 313, 40, 40);
+    drawTextWithOutline(ctx, "22px Impact", "to run", 550, 342, "green", "white");
     this.jumpRightAnimationGreen.drawFrame(this.game.clockTick, ctx, 580, 200, 0.65);
-    drawTextWithOutline(ctx, "22px Impact", "▲", 610, 300, "green", "white");
+    ctx.drawImage(ASSET_MANAGER.getAsset("./img/Keyboard_White_Arrow_Up.png"), 597, 273, 40, 40);
+    // drawTextWithOutline(ctx, "22px Impact", "▲", 610, 300, "green", "white");
     this.attackRightAnimationGreen.drawFrame(this.game.clockTick, ctx, 690, 200, 0.65);
     this.attackAuraRightAnimationGreen.drawFrame(this.game.clockTick, ctx, 690 - 50, 200 - 15, 0.65 * 5);
-    drawTextWithOutline(ctx, "22px Impact", "/", 720, 300, "green", "white");
+    ctx.drawImage(ASSET_MANAGER.getAsset("./img/Keyboard_White_Slash.png"), 707, 273, 40, 40);
+    // drawTextWithOutline(ctx, "22px Impact", "/", 720, 300, "green", "white");
     
     
     // Powerups

@@ -31,7 +31,6 @@ EndGame.prototype.reset = function () {
 
 };
 
-// TODO: get goats' colors from scene manager or round 3's scoreboard for writing stats
 EndGame.prototype.draw = function (ctx) {
     // draws background and platforms
     for (var i = 0, len = this.entities.length; i < len; i++) {
@@ -110,7 +109,6 @@ EndGame.prototype.startScene = function () {
         }
     }
     this.goats.splice(3, 1); // delete goat with lowest score (with ranking of 4...)
-    console.log(this.goats);
 };
 
 // performs cleanup operations

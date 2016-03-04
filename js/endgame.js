@@ -99,13 +99,13 @@ EndGame.prototype.startScene = function () {
         currGoat.y = 400 - currGoat.height; // starting height
         switch (currGoat.ranking) {
             case 1: // 1st place
-                currGoat.x = 120;
+                currGoat.x = 320 + 50;
                 break;
             case 2: // 2nd place
-                currGoat.x = 120;
+                currGoat.x = 520 + 50;
                 break;
             case 3: // 3rd place
-                currGoat.x = 120;
+                currGoat.x = 120 + 50;
                 break;
         }
     }

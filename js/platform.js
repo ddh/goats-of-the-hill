@@ -166,6 +166,7 @@ Platform.prototype.draw = function (ctx) {
 };
 
 Platform.prototype.drawWithRanking = function (ctx, goats) {
+    ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     if (this.ranking) { // for end game scene
         switch (this.ranking) { // different sized places for when ranking goats in end game scene
             case 1:

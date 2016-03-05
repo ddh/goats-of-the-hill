@@ -66,6 +66,7 @@ ASSET_MANAGER.queueDownload("./img/powerup-doubleJump.png");
 ASSET_MANAGER.queueDownload("./img/powerup-invincibility.png");
 ASSET_MANAGER.queueDownload("./img/powerup-highJumpLeft.png");
 ASSET_MANAGER.queueDownload("./img/powerup-highJumpRight.png");
+ASSET_MANAGER.queueDownload("./img/powerup-speedUp.png");
 
 // Controls
 ASSET_MANAGER.queueDownload("./img/Keyboard_White_A.png");

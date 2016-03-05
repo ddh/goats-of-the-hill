@@ -160,6 +160,7 @@ function Goat(game, playerNumber, controls, sprite, color) {
     this.doubleJumpPowerupAnimation = new Animation(ASSET_MANAGER.getAsset("./img/powerup-doubleJump.png"), 8, 0, 96, 100, .1, 6, true, false);
     this.highJumpRightPowerupAnimation = new Animation(ASSET_MANAGER.getAsset("./img/powerup-highJumpRight.png"), 12, 0, 55, 100, .2, 8, true, true);
     this.highJumpLeftPowerupAnimation = new Animation(ASSET_MANAGER.getAsset("./img/powerup-highJumpLeft.png"), 5, 0, 55, 100, .2, 8, true, false);
+    this.speedUpPowerupAnimation = new Animation(ASSET_MANAGER.getAsset("./img/powerup-speedUp.png"), -14, 0, 170, 180, .1, 3, true, false);
 
     // Action states:
     this.right = true; // Facing right (true) or left (false)
@@ -803,10 +804,17 @@ var drawPowerupsVisuals = function (goat) {
             goat.ctx.drawImage(ASSET_MANAGER.getAsset("./img/powerup-invincibility.png"), goat.x - goat.width / 4, goat.y - goat.y / 30, goat.width * 1.5, goat.width * 1.5);
         }
         if (goat.powerUps[i] === "highJump") {
-            if(goat.right) {
+            if (goat.right) {
                 goat.highJumpRightPowerupAnimation.drawFrame(goat.game.clockTick, goat.ctx, goat.x + 3 , goat.y + 8, goat.scale * 0.8);
             } else {
                 goat.highJumpLeftPowerupAnimation.drawFrame(goat.game.clockTick, goat.ctx, goat.x + 2 + goat.width / 2.5, goat.y + 8, goat.scale * 0.8);
+            }
+        }
+        if (goat.powerUps[i] === "speedUp") {
+            if (goat.right) {
+                goat.speedUpPowerupAnimation.drawFrame(goat.game.clockTick, goat.ctx, goat.x - 15 , goat.y + 8, goat.scale * 0.5);
+            } else {
+                goat.speedUpPowerupAnimation.drawFrame(goat.game.clockTick, goat.ctx, goat.x + 20 , goat.y + 8, goat.scale * 0.5);   
             }
         }
     }

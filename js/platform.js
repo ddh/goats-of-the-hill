@@ -16,6 +16,7 @@ function Platform(game, size, x, y, movement, platType, angle) {
     this.radius = 250;
     this.movement = movement;
     this.isHill = false;
+    this.ranking = null; // used in end game for determining height of vertical platforms for 1st, 2nd, and 3rd goats
     this.hillAnimation = new Animation(ASSET_MANAGER.getAsset("./img/hill-arrow.png"), 0, 0, 120, 120, .1, 10, true, false);
     Entity.call(this, game, x, y, obj.width, obj.height);
 }
@@ -105,7 +106,6 @@ Platform.prototype.update = function () {
                 this.velocity.x *= -1;
             }
             break;
-
         default: // Stationary
             this.velocity.x = 0;
             this.velocity.y = 0;
@@ -132,25 +132,3 @@ Platform.prototype.draw = function (ctx) {
 Platform.prototype.toString = function () {
     return 'Platform';
 };
-
-// Platform.prototype.draw = function (ctx) {
-//     // TODO: would be cool to draw platforms with gradients like in code below
-
-//     /*
-//     var grad;
-//     grad = ctx.createLinearGradient(0, this.y, 0, this.y + this.height);
-//     grad.addColorStop(0, 'red');
-//     grad.addColorStop(1 / 6, 'orange');
-//     grad.addColorStop(2 / 6, 'yellow');
-//     grad.addColorStop(3 / 6, 'green')
-//     grad.addColorStop(4 / 6, 'aqua');
-//     grad.addColorStop(5 / 6, 'blue');
-//     grad.addColorStop(1, 'purple');
-//     ctx.fillStyle = grad;
-
-
-//     ctx.fillRect(this.x, this.y, this.width, this.height);
-// }
-//     ctx.fillRect(this.x, this.y, this.width, this.height);
-//     */
-// };

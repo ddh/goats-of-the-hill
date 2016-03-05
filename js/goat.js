@@ -190,8 +190,6 @@ Goat.prototype.reset = function () {
 
     this.y = this.game.sceneManager.currentScene.platforms[0].y - this.height;
     this.entity = this.game.sceneManager.currentScene.platforms[0]; // This should be the ground platform
-
-    // this.boundingbox = new BoundingBox(this.x, this.y, this.standAnimation.frameWidth, this.standAnimation.frameHeight);
 };
 
 Goat.prototype.initControls = function () {

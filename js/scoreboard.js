@@ -53,25 +53,7 @@ Scoreboard.prototype.draw = function (ctx) {
     drawTextWithOutline(ctx, "40px Impact", this.goats[3].score, 220, 368, this.goats[3].color, 'white'); // winner #4
 };
 
-Scoreboard.prototype.update = function () {
-    if (typeof this.entities !== 'undefined') {
-        var entitiesCount = this.entities.length;
-
-        // Cycle through the list of entities in Scene.
-        for (var i = 0; i < entitiesCount; i++) {
-            var entity = this.entities[i];
-
-            // Only update those not flagged for removal, for optimization
-            if (typeof entity !== 'undefined' && !entity.removeFromWorld) entity.update();
-        }
-
-        // Removal of flagged entities
-        for (var j = this.entities.length - 1; j >= 0; --j) {
-            if (this.entities[j].removeFromWorld) this.entities.splice(j, 1);
-        }
-
-    }
-};
+Scoreboard.prototype.update = function () {};
 
 // performs variable initialization
 Scoreboard.prototype.startScene = function () {

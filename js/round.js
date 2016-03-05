@@ -30,7 +30,7 @@ function Round(game, background, platforms, randomizeHill, randomHillSpeed) {
     this.randomizeHill = randomizeHill;
     this.randomHillSpeed = randomHillSpeed;
     this.randomHillClockTickTracker = 0;
-    this.roundTimer = ROUND_TIME_LIMIT;
+    this.roundTimer = ROUND_TIME_LIMIT + 2; // +2 to allow for announcer sfx
     this.powerUpTimer = POWERUP_INTERVAL;
     this.highestScoreGoat = null;
     this.idleTime = [0, 0, 0, 0];   // How long each goat has been idle for. Used to determine when to enable AI.
@@ -128,7 +128,7 @@ Round.prototype.randomHillGenerator = function () {
     var len = this.platforms.length;
     if (len !== 0) { // there is a hill b/c there is at least 1 platform
         if (this.randomizeHill) { // It's a random hill style
-            if (!this.isInTransitionScene) this.randomHillClockTickTracker += this.game.clockTick;
+            this.randomHillClockTickTracker += this.game.clockTick;
             if (this.randomHillClockTickTracker >= this.randomHillSpeed) {
                 console.log("potential for hill change");
                 this.randomHillClockTickTracker = 0;
@@ -182,9 +182,9 @@ Round.prototype.drawTimer = function (ctx) {
         announcerSFX.play('countdown');
         announcerSFX.ended = true;
     }
-    if (Math.floor(this.roundTimer / 1) > ROUND_TIME_LIMIT - 2) {
+    if (Math.floor(this.roundTimer / 1) > ROUND_TIME_LIMIT) {
         drawTextWithOutline(ctx, "200px Impact", "READY?", 120, 300, 'rgba(255, 0, 0, 0.7)', 'white');
-    } else if (Math.floor(this.roundTimer / 1) > ROUND_TIME_LIMIT - 4) {
+    } else if (Math.floor(this.roundTimer / 1) > ROUND_TIME_LIMIT - 2) {
         drawTextWithOutline(ctx, "200px Impact", "GOAT!", 160, 300, 'rgba(255, 0, 0, 0.7)', 'white');
     }
     if (Math.floor(this.roundTimer / 1) == 0) {
@@ -192,8 +192,10 @@ Round.prototype.drawTimer = function (ctx) {
     }
     else if (this.roundTimer / 1 < 6) {
         drawTextWithOutline(ctx, "200px Impact", secondsLeft, 350, 300, 'rgba(255, 0, 0, 0.7)', 'white');
-    } else {
+    } else if (this.roundTimer / 1 < ROUND_TIME_LIMIT) {
         drawTextWithOutline(ctx, "50px Impact", secondsLeft, 380, 60, 'black', 'white');
+    } else {
+        drawTextWithOutline(ctx, "50px Impact", ROUND_TIME_LIMIT, 380, 60, 'black', 'white');
     }
 };
 

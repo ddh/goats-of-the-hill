@@ -3,6 +3,14 @@
  */
 var LIFETIME = 10;      // Constant for how long powerup's effects last for when picked up.
 var TIME_EXPIRE = 15;   // Constant for how long powerup stays on screen before disappearing.
+
+// Audio:
+var collectibleSFX = new Howl({
+    autoplay: false,
+    urls: ['./audio/pickup.wav'], // Sound 'sprite' containing all sfx
+
+});
+
 function Collectible(game, x, y, width, height, type) {
 
 
@@ -73,6 +81,7 @@ Collectible.prototype.update = function () {
                 this.goat.powerUps.push(this.type);
                 console.log(this.goat + " picked up " + this);
                 this.pickedUp = true;
+                collectibleSFX.play();
                 break; // Enforces only one goat per collectible
             }
         }

@@ -142,11 +142,9 @@ Round.prototype.randomHillGenerator = function () {
 };
 
 Round.prototype.drawScores = function (ctx) {
-    var font = "32px Impact";
-    drawTextWithOutline(ctx, font, this.goats[0].score, 75, 590, 'white', 'blue');
-    drawTextWithOutline(ctx, font, this.goats[1].score, 275, 590, 'white', 'green');
-    drawTextWithOutline(ctx, font, this.goats[2].score, 475, 590, 'white', 'red');
-    drawTextWithOutline(ctx, font, this.goats[3].score, 675, 590, 'white', GOLD_COLOR);
+    for (var i = 0; i < this.goats.length; i++) {
+        drawTextWithOutline(ctx, "32px Impact", this.goats[i].score, 75 + 200 * i, 590, 'white', this.goats[i].color);
+    }
 };
 
 Round.prototype.generateRandomCollectible = function () {

@@ -250,7 +250,7 @@ EndGame.prototype.endScene = function () {
 
 // checks if user has clicked to play game again
 EndGame.prototype.isSceneDone = function () {
-    return this.game.click;
+    return this.game.continueKeyPressed;
 };
 
 /***********************************************
@@ -269,7 +269,7 @@ var updateIndvlGoatDataObj = function (goatDataObj, pfData) {
 
 var updateIndvlPFDataObj = function (pfDataObj) {
     var bottomHeight = 500;
-    var rank1Height = 160, rank2Height = 220, rank3Height = 280, rank4Height = 320;
+    var rank1Height = 160, rank2Height = 220, rank3Height = 280, rank4Height = 340;
     // LOGIC BLOCK FOR END GAME PLATFORM MOVEMENT
     if (!pfDataObj.stopRising) { // platform should continue rising
         pfDataObj.y += pfDataObj.velocity.y;

@@ -39,7 +39,7 @@ var drawPlayButton = function (ctx) {
     if (ROUNDS_PLAYED === 0) {
         drawTextWithOutline(ctx, "24pt Impact", "Click to play!", btnX, btnY + 120, "purple", "white");
     } else {
-        drawTextWithOutline(ctx, "24pt Impact", "-Press any key to continue-", btnX, btnY + 160, 'purple', 'white');
+        drawTextWithOutline(ctx, "24pt Impact", "-Press ↵ENTER to continue-", btnX, btnY + 160, 'purple', 'white');
     }
 };
 
@@ -102,7 +102,7 @@ SceneManager.prototype.constructor = SceneManager;
 SceneManager.prototype.update = function () {
     // check if Scene is done, then start transition to next Scene
     if (this.currentScene.isSceneDone()) {
-        this.game.anyKeyPressed = false; // Enables 'press any key' function between rounds
+        this.game.continueKeyPressed = false; // Enables 'ENTER' function between rounds
         if (this.currentScene.type === "Title") {
 
         }

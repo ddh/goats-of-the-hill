@@ -2,7 +2,7 @@
 // https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 
 // Class Constants:
-var ROUND_TIME_LIMIT = 10; // 1 minute (in seconds)
+var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds)
 var GOLD_COLOR = "rgb(255, 215, 0)";
 var MAX_IDLE_TIME = 10;    // *Currently turned off* - How many seconds of inactivity before goat AI kicks in on an idle player.
 var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
@@ -13,7 +13,12 @@ var POWERUP_INTERVAL = 5;  // Every x sec a powerup spawns
 var announcerSFX = new Howl({
     autoplay: false,
     urls: ['./audio/ssb_announcer.wav'], // Sound 'sprite' containing all sfx
-    played: false
+    sprite: {
+        start: [0, 2675], // Offset, duration
+        countdown: [3000, 6179]
+    },
+    started: false,
+    ended: false
 });
 
 function Round(game, background, platforms, randomizeHill, randomHillSpeed) {
@@ -173,9 +178,14 @@ Round.prototype.toString = function () {
 Round.prototype.drawTimer = function (ctx) {
     var secondsLeft = Math.floor(this.roundTimer / 1);
     if (secondsLeft < 0) secondsLeft = 0;
-    if (Math.floor(this.roundTimer / 1) === 5 && !announcerSFX.played) {
-        announcerSFX.play();
-        announcerSFX.played = true;
+    if (Math.floor(this.roundTimer / 1) === 5 && !announcerSFX.ended) {
+        announcerSFX.play('countdown');
+        announcerSFX.ended = true;
+    }
+    if (Math.floor(this.roundTimer / 1) > ROUND_TIME_LIMIT - 2) {
+        drawTextWithOutline(ctx, "200px Impact", "READY?", 120, 300, 'rgba(255, 0, 0, 0.7)', 'white');
+    } else if (Math.floor(this.roundTimer / 1) > ROUND_TIME_LIMIT - 4) {
+        drawTextWithOutline(ctx, "200px Impact", "GOAT!", 160, 300, 'rgba(255, 0, 0, 0.7)', 'white');
     }
     if (Math.floor(this.roundTimer / 1) == 0) {
         drawTextWithOutline(ctx, "200px Impact", "TIME!", 180, 300, 'rgba(255, 0, 0, 0.7)', 'white');
@@ -198,7 +208,8 @@ Round.prototype.startScene = function () {
 
 // performs cleanup operations
 Round.prototype.endScene = function () {
-    announcerSFX.played = false;
+    announcerSFX.ended = false;
+    announcerSFX.started = false;
     this.deleteAllEntities();
 };
 
@@ -222,48 +233,56 @@ Round.prototype.draw = function (ctx) {
 };
 
 Round.prototype.update = function () {
-    this.roundTimer -= this.game.clockTick;
-    this.scoreChecker();
-    this.randomHillGenerator();
-    this.generateRandomCollectible();
 
-    // Disable Player 2 AI if controller connected. Enable Player 3 & 4 if controller disconnected.
-    if (this.goats.length == 4) {
-        if (navigator.getGamepads()[1]) this.goats[1].aiEnabled = false; // Disable player 2 AI if controller connected
-        if (typeof navigator.getGamepads()[2] === 'undefined') this.goats[2].aiEnabled = true;
-        if (typeof navigator.getGamepads()[3] === 'undefined') this.goats[3].aiEnabled = true;
-    }
+    if (!announcerSFX.started) {
+        announcerSFX.play('start');
+        announcerSFX.started = true;
+    } else {
+        this.roundTimer -= this.game.clockTick;
+        this.scoreChecker();
+        this.randomHillGenerator();
+        this.generateRandomCollectible();
 
-    // Poll for gamepads
-    for (var i = 0; i < this.goats.length; i++) {
-        var gamepad = navigator.getGamepads()[i];
-        if (gamepad) {
-            this.goats[i].jumpKey = buttonPressed(gamepad.buttons[0]);
-            this.goats[i].leftKey = gamepad.axes[0] < -0.5;
-            this.goats[i].rightKey = gamepad.axes[0] > 0.5;
-            this.goats[i].attackKey = buttonPressed(gamepad.buttons[7]);
-            this.goats[i].runKey = buttonPressed(gamepad.buttons[6]);
+        // Disable Player 2 AI if controller connected. Enable Player 3 & 4 if controller disconnected.
+        if (this.goats.length == 4) {
+            if (navigator.getGamepads()[1]) this.goats[1].aiEnabled = false; // Disable player 2 AI if controller connected
+            if (typeof navigator.getGamepads()[2] === 'undefined') this.goats[2].aiEnabled = true;
+            if (typeof navigator.getGamepads()[3] === 'undefined') this.goats[3].aiEnabled = true;
+        }
+
+        // Poll for gamepads
+        for (var i = 0; i < this.goats.length; i++) {
+            var gamepad = navigator.getGamepads()[i];
+            if (gamepad) {
+                this.goats[i].jumpKey = buttonPressed(gamepad.buttons[0]);
+                this.goats[i].leftKey = gamepad.axes[0] < -0.5;
+                this.goats[i].rightKey = gamepad.axes[0] > 0.5;
+                this.goats[i].attackKey = buttonPressed(gamepad.buttons[7]);
+                this.goats[i].runKey = buttonPressed(gamepad.buttons[6]);
+            }
+        }
+
+        // entity management code from GameEngine
+        if (typeof this.entities !== 'undefined') {
+            var entitiesCount = this.entities.length;
+
+            // Cycle through the list of entities in GameEngine.
+            for (var i = 0; i < entitiesCount; i++) {
+                var entity = this.entities[i];
+
+                // Only update those not flagged for removal, for optimization
+                if (typeof entity !== 'undefined' && !entity.removeFromWorld) entity.update();
+            }
+
+            // Removal of flagged entities
+            for (var j = this.entities.length - 1; j >= 0; --j) {
+                if (this.entities[j].removeFromWorld) this.entities.splice(j, 1);
+            }
+
         }
     }
 
-    // entity management code from GameEngine
-    if (typeof this.entities !== 'undefined') {
-        var entitiesCount = this.entities.length;
 
-        // Cycle through the list of entities in GameEngine.
-        for (var i = 0; i < entitiesCount; i++) {
-            var entity = this.entities[i];
-
-            // Only update those not flagged for removal, for optimization
-            if (typeof entity !== 'undefined' && !entity.removeFromWorld) entity.update();
-        }
-
-        // Removal of flagged entities
-        for (var j = this.entities.length - 1; j >= 0; --j) {
-            if (this.entities[j].removeFromWorld) this.entities.splice(j, 1);
-        }
-
-    }
 };
 
 /***********************************************

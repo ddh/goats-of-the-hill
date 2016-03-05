@@ -72,6 +72,7 @@ ASSET_MANAGER.queueDownload("./img/Keyboard_White_Arrow_Right.png");
 ASSET_MANAGER.queueDownload("./img/Keyboard_White_Dot.png");
 ASSET_MANAGER.queueDownload("./img/Keyboard_White_Slash.png");
 ASSET_MANAGER.queueDownload("./img/Keyboard_White_Shift.png");
+ASSET_MANAGER.queueDownload("./img/Keyboard_White_Enter.png");
 
 // Other
 ASSET_MANAGER.queueDownload("./img/hill-arrow.png");

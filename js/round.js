@@ -116,7 +116,7 @@ Round.prototype.randomHillGenerator = function () {
     var len = this.platforms.length;
     if (len !== 0) { // there is a hill b/c there is at least 1 platform
         if (this.randomizeHill) { // It's a random hill style
-            if (!this.isInTransitionScene) this.randomHillClockTickTracker += this.game.clockTick;
+            this.randomHillClockTickTracker += this.game.clockTick;
             if (this.randomHillClockTickTracker >= this.randomHillSpeed) {
                 console.log("potential for hill change");
                 this.randomHillClockTickTracker = 0;

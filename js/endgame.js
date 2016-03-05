@@ -13,44 +13,44 @@ function EndGame(game, background) {
     this.pfData = [  // filled with JS objs...
         {
             image: ASSET_MANAGER.getAsset("./img/platform-small-hay.png"),
-            stopRising: false, x: 30, y: 525, velocity: {x: 0, y: 3}, color: "blue", width: 85, height: 50,
+            stopRising: false, x: 30, y: 450, velocity: {x: 0, y: 3}, color: "blue", width: 85, height: 50,
             platColor: "blue"
         },
         {
             image: ASSET_MANAGER.getAsset("./img/platform-small-hay.png"),
-            stopRising: false, x: 230, y: 525, velocity: {x: 0, y: 3}, color: "green", width: 85, height: 50,
+            stopRising: false, x: 230, y: 450, velocity: {x: 0, y: 3}, color: "green", width: 85, height: 50,
             platColor: "green"
         },
         {
             image: ASSET_MANAGER.getAsset("./img/platform-small-hay.png"),
-            stopRising: false, x: 430, y: 525, velocity: {x: 0, y: 3}, color: "red", width: 85, height: 50,
+            stopRising: false, x: 430, y: 450, velocity: {x: 0, y: 3}, color: "red", width: 85, height: 50,
             platColor: "red"
         },
         {
             image: ASSET_MANAGER.getAsset("./img/platform-small-hay.png"),
-            stopRising: false, x: 630, y: 525, velocity: {x: 0, y: 3}, color: "yellow", width: 85, height: 50,
+            stopRising: false, x: 630, y: 450, velocity: {x: 0, y: 3}, color: "yellow", width: 85, height: 50,
             platColor: "rgb(255, 215, 0)"
         }
     ];
 
     this.goatData = [ // filled with JS objs... (goat state & stats data)
         {
-            playerColor: "blue", color: "blue", x: 30, y: 435, width: 94, height: 90, velocity: {x: 0, y: 0},
+            playerColor: "blue", color: "blue", x: 30, y: 370, width: 94, height: 90, velocity: {x: 0, y: 0},
             rightAnim: new Animation(ASSET_MANAGER.getAsset("./img/blue-goat-right.png"), 0, 0, 94, 90, 0.1, 4, true, false)
         },
         {
-            playerColor: "green", color: "green", x: 230, y: 435, width: 94, height: 90, velocity: {x: 0, y: 0},
+            playerColor: "green", color: "green", x: 230, y: 370, width: 94, height: 90, velocity: {x: 0, y: 0},
             rightAnim: new Animation(ASSET_MANAGER.getAsset("./img/green-goat-right.png"), 0, 0, 94, 90, 0.1, 4, true, false)
         },
         {
-            playerColor: "red", color: "red", x: 430, y: 435, width: 94, height: 90, velocity: {x: 0, y: 0},
+            playerColor: "red", color: "red", x: 430, y: 370, width: 94, height: 90, velocity: {x: 0, y: 0},
             rightAnim: new Animation(ASSET_MANAGER.getAsset("./img/red-goat-right.png"), 0, 0, 94, 90, 0.1, 4, true, false)
         },
         {
             playerColor: "yellow",
             color: "rgb(255, 215, 0)",
             x: 630,
-            y: 435,
+            y: 370,
             width: 94,
             height: 90,
             velocity: {x: 0, y: 0},
@@ -267,8 +267,8 @@ var updateIndvlGoatDataObj = function (goatDataObj, pfData) {
 };
 
 var updateIndvlPFDataObj = function (pfDataObj) {
-    var bottomHeight = 575;
-    var rank1Height = 150, rank2Height = 250, rank3Height = 350, rank4Height = 450;
+    var bottomHeight = 500;
+    var rank1Height = 160, rank2Height = 220, rank3Height = 280, rank4Height = 320;
     // LOGIC BLOCK FOR END GAME PLATFORM MOVEMENT
     if (!pfDataObj.stopRising) { // platform should continue rising
         pfDataObj.y += pfDataObj.velocity.y;

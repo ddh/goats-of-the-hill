@@ -2,7 +2,7 @@
 // https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 
 // Class Constants:
-var ROUND_TIME_LIMIT = 1; // 1 minute (in seconds)
+var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds)
 var GOLD_COLOR = "rgb(255, 215, 0)";
 var MAX_IDLE_TIME = 10;    // *Currently turned off* - How many seconds of inactivity before goat AI kicks in on an idle player.
 var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];

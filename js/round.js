@@ -8,7 +8,7 @@ var MAX_IDLE_TIME = 10;    // *Currently turned off* - How many seconds of inact
 //var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
 var POWERUP_INTERVAL = 5;  // Every x sec a powerup spawns
 
-var COLLECTIBLES = ['highJump']; //TODO: Using this as a means to test a powerup individually. Just comment out the above.
+var COLLECTIBLES = ['speedUp']; //TODO: Using this as a means to test a powerup individually. Just comment out the above.
 
 
 function Round(game, background, platforms, randomizeHill, randomHillSpeed) {

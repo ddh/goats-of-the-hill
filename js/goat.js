@@ -805,9 +805,9 @@ var drawPowerupsVisuals = function (goat) {
         }
         if (goat.powerUps[i] === "highJump") {
             if(goat.right) {
-                goat.highJumpRightPowerupAnimation.drawFrame(goat.game.clockTick, goat.ctx, goat.x , goat.y, goat.scale * 0.8);
+                goat.highJumpRightPowerupAnimation.drawFrame(goat.game.clockTick, goat.ctx, goat.x + 3 , goat.y + 8, goat.scale * 0.8);
             } else {
-                goat.highJumpLeftPowerupAnimation.drawFrame(goat.game.clockTick, goat.ctx, goat.x + goat.width / 2.5, goat.y, goat.scale);
+                goat.highJumpLeftPowerupAnimation.drawFrame(goat.game.clockTick, goat.ctx, goat.x + 2 + goat.width / 2.5, goat.y + 8, goat.scale * 0.8);
             }
         }
     }

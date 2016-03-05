@@ -76,21 +76,9 @@ Round.prototype.initGoats = function () {
     var playerTwoControls = {jump: 38, left: 37, right: 39, attack: 191, run: 190}; // ↑ ← → / .
     var goat2 = new Goat(this.game, 1, playerTwoControls, "green-goat", "green");
     goat2.initControls();
-    goat2.x = 230;
-    goat2.aiEnabled = true;
+    goat2.x = 630;
+    goat2.right = false;
     this.goats.push(goat2);
-
-    var playerThreeControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0};
-    var goat3 = new Goat(this.game, 2, playerThreeControls, "red-goat", "red");
-    goat3.initControls();
-    goat3.x = 430;
-    this.goats.push(goat3);
-
-    var playerFourControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0};
-    var goat4 = new Goat(this.game, 3, playerFourControls, "yellow-goat", GOLD_COLOR);
-    goat4.initControls();
-    goat4.x = 630;
-    this.goats.push(goat4);
 };
 
 Round.prototype.deleteAllEntities = function () {

@@ -90,6 +90,13 @@ ASSET_MANAGER.queueDownload("./img/simple-crown-animated.png");
 ASSET_MANAGER.queueDownload("./img/crown.png");
 ASSET_MANAGER.queueDownload("./img/back.png");
 
+/* === Game Audio ===*/
+// bgMusic sourced from http://www.bensound.com/
+var bgMusic = new Howl({
+    urls: ['./audio/bensound-jazzyfrenchy.mp3'],
+    loop: true,
+    volume: 0.5
+}).play();
 
 ASSET_MANAGER.downloadAll(function () {
 
@@ -99,13 +106,7 @@ ASSET_MANAGER.downloadAll(function () {
     var gameEngine = new GameEngine();
     gameEngine.init(ctx);
 
-    /* === Game Audio ===*/
-    // bgMusic sourced from http://www.bensound.com/
-    var bgMusic = new Howl({
-        urls: ['./audio/bensound-jazzyfrenchy.mp3'],
-        loop: true,
-        volume: 0.5
-    }).play();
+
 
     /* === NEW Game Logistics === */
     var sm = makeSceneManager(gameEngine);

@@ -153,7 +153,7 @@ function Goat(game, playerNumber, controls, sprite, color) {
 
     this.attackAuraLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/" + this.sprite + "-attackAuraLeft.png"), 3, 0, 44, 150, .1, 4, true, false);
     this.attackAuraRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/" + this.sprite + "-attackAuraRight.png"), 16, 0, 43, 150, .1, 4, true, true);
-    
+
     /* Power up animations */
     this.doubleJumpPowerupAnimation = new Animation(ASSET_MANAGER.getAsset("./img/powerup-doubleJump.png"), 8, 0, 96, 100, .1, 6, true, false);
 
@@ -591,11 +591,11 @@ Goat.prototype.update = function () {
     /****************************************
      *              Powerups                *
      ****************************************/
-     for (var i = 0, len = this.powerUps.length; i < len; i++) {    
-         if (this.powerUps[i].type === "doubleJump") {
-             console.log("DOUBLE JUMP POWERS");
-         }
-     }
+    for (var i = 0, len = this.powerUps.length; i < len; i++) {
+        if (this.powerUps[i].type === "doubleJump") {
+            console.log("DOUBLE JUMP POWERS");
+        }
+    }
 
     /****************************************
      *              Misc.                   *
@@ -700,13 +700,6 @@ Goat.prototype.draw = function (ctx) {
         else
             this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 12, this.y - 20, this.scale + .2);
     }
-    
-    for (var i = 0, len = this.powerUps.length; i < len; i++) {    
-         if (this.powerUps[i] === "doubleJump") {
-             console.log(this.powerUps[i]);
-             this.doubleJumpPowerupAnimation.drawFrame(this.game.clockTick, ctx, this.x - 12, this.y - 20, this.scale + .2);
-         }
-     }
 
     // Display player indicator
     drawTextWithOutline(this.game.ctx, "24px Impact", (this.aiEnabled) ? "AI" : "P" + (this.playerNumber + 1), this.x + this.scale * 36, (this.y - this.scale * 30) + Math.sin(this.game.timer.gameTime * 10), this.color, 'white');
@@ -740,7 +733,7 @@ Goat.prototype.draw = function (ctx) {
 function drawRoundedRect(ctx, x, y, width, height, radius, fillColor, outlineColor) {
     ctx.fillStyle = fillColor;
     ctx.strokeStyle = outlineColor;
-    
+
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
@@ -801,7 +794,11 @@ var drawPowerupsHeld = function (goat) {
 };
 
 var drawPowerupsVisuals = function (goat) {
-    // TODO: Draw visuals pertaining to powerups
+    for (var i = 0, len = goat.powerUps.length; i < len; i++) {
+        if (goat.powerUps[i] === "doubleJump") {
+            goat.doubleJumpPowerupAnimation.drawFrame(goat.game.clockTick, goat.ctx, goat.x+goat.width/7, goat.y+goat.height/2.5, goat.scale*0.7);
+        }
+    }
 };
 
 var drawPointsAccruing = function (goat) {

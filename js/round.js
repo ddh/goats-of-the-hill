@@ -2,7 +2,7 @@
 // https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 
 // Class Constants:
-var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds)
+var ROUND_TIME_LIMIT = 20; // 1 minute (in seconds)
 var GOLD_COLOR = "rgb(255, 215, 0)";
 var MAX_IDLE_TIME = 10;    // *Currently turned off* - How many seconds of inactivity before goat AI kicks in on an idle player.
 var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
@@ -30,7 +30,7 @@ function Round(game, background, platforms, randomizeHill, randomHillSpeed) {
     this.randomizeHill = randomizeHill;
     this.randomHillSpeed = randomHillSpeed;
     this.randomHillClockTickTracker = 0;
-    this.roundTimer = ROUND_TIME_LIMIT;
+    this.roundTimer = ROUND_TIME_LIMIT + 2; // +2 to allow for announcer sfx
     this.powerUpTimer = POWERUP_INTERVAL;
     this.highestScoreGoat = null;
     this.idleTime = [0, 0, 0, 0];   // How long each goat has been idle for. Used to determine when to enable AI.
@@ -182,9 +182,9 @@ Round.prototype.drawTimer = function (ctx) {
         announcerSFX.play('countdown');
         announcerSFX.ended = true;
     }
-    if (Math.floor(this.roundTimer / 1) > ROUND_TIME_LIMIT - 2) {
+    if (Math.floor(this.roundTimer / 1) > ROUND_TIME_LIMIT) {
         drawTextWithOutline(ctx, "200px Impact", "READY?", 120, 300, 'rgba(255, 0, 0, 0.7)', 'white');
-    } else if (Math.floor(this.roundTimer / 1) > ROUND_TIME_LIMIT - 4) {
+    } else if (Math.floor(this.roundTimer / 1) > ROUND_TIME_LIMIT - 2) {
         drawTextWithOutline(ctx, "200px Impact", "GOAT!", 160, 300, 'rgba(255, 0, 0, 0.7)', 'white');
     }
     if (Math.floor(this.roundTimer / 1) == 0) {
@@ -192,8 +192,10 @@ Round.prototype.drawTimer = function (ctx) {
     }
     else if (this.roundTimer / 1 < 10) {
         drawTextWithOutline(ctx, "200px Impact", secondsLeft, 350, 300, 'rgba(255, 0, 0, 0.7)', 'white');
-    } else {
+    } else if (this.roundTimer / 1 < ROUND_TIME_LIMIT) {
         drawTextWithOutline(ctx, "50px Impact", secondsLeft, 380, 60, 'black', 'white');
+    } else {
+        drawTextWithOutline(ctx, "50px Impact", ROUND_TIME_LIMIT, 380, 60, 'black', 'white');
     }
 };
 

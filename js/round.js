@@ -7,7 +7,7 @@ var GOLD_COLOR = "rgb(255, 215, 0)";
 var MAX_IDLE_TIME = 10;    // *Currently turned off* - How many seconds of inactivity before goat AI kicks in on an idle player.
 //var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
 var POWERUP_INTERVAL = 5;  // Every x sec a powerup spawns
-var COLLECTIBLES = ['doubleJump', 'attackUp']; //TODO: Using this as a means to test a powerup individually. Just comment out the above.
+var COLLECTIBLES = ['highJump', 'attackUp']; //TODO: Using this as a means to test a powerup individually. Just comment out the above.
 
 function Round(game, background, platforms, randomizeHill, randomHillSpeed) {
     this.game = game;
@@ -142,11 +142,9 @@ Round.prototype.randomHillGenerator = function () {
 };
 
 Round.prototype.drawScores = function (ctx) {
-    var font = "32px Impact";
-    drawTextWithOutline(ctx, font, this.goats[0].score, 75, 590, 'white', 'blue');
-    drawTextWithOutline(ctx, font, this.goats[1].score, 275, 590, 'white', 'green');
-    drawTextWithOutline(ctx, font, this.goats[2].score, 475, 590, 'white', 'red');
-    drawTextWithOutline(ctx, font, this.goats[3].score, 675, 590, 'white', GOLD_COLOR);
+    for (var i = 0; i < this.goats.length; i++) {
+        drawTextWithOutline(ctx, "32px Impact", this.goats[i].score, 75 + 200 * i, 590, 'white', this.goats[i].color);
+    }
 };
 
 Round.prototype.generateRandomCollectible = function () {
@@ -169,10 +167,10 @@ Round.prototype.drawTimer = function (ctx) {
     var secondsLeft = Math.floor(this.roundTimer / 1);
     if (secondsLeft < 0) secondsLeft = 0;
     if (Math.floor(this.roundTimer / 1) == 0) {
-        drawTextWithOutline(ctx, "200px Impact", "TIME!", 180, 300, 'red', 'white');
+        drawTextWithOutline(ctx, "200px Impact", "TIME!", 180, 300, 'rgba(255, 0, 0, 0.7)', 'white');
     }
     else if (this.roundTimer / 1 < 10) {
-        drawTextWithOutline(ctx, "200px Impact", secondsLeft, 350, 300, 'red', 'white');
+        drawTextWithOutline(ctx, "200px Impact", secondsLeft, 350, 300, 'rgba(255, 0, 0, 0.7)', 'white');
     } else {
         drawTextWithOutline(ctx, "50px Impact", secondsLeft, 380, 60, 'black', 'white');
     }

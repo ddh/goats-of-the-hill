@@ -7,12 +7,14 @@ function maxSpeedEnforcement(speed, maxSpeed) {
 }
 
 // Audio:
-var soundFX = new Howl({
+var goatSFX = new Howl({
     autoplay: false,
     urls: ['./audio/goat_sfx.wav'], // Sound 'sprite' containing all sfx
     sprite: {
-        jump: [0, 154],
-        land: [154, 143]
+        jump: [0, 160], // Offset, duration
+        land: [182, 131],
+        attack: [446, 374],
+        injured: [941, 488]
     }
 });
 
@@ -367,7 +369,7 @@ Goat.prototype.update = function () {
             this.jumping = true;
             this.ramping = true; // ramp up velocity instead of immediate impulse
             this.entity = null;
-            soundFX.play('jump');
+            goatSFX.play('jump');
             console.log(this + " Jumped");
             this.base = 535; // Keep track of the goat's last bottom-y value
         }
@@ -507,6 +509,7 @@ Goat.prototype.update = function () {
             this.chargeTime = 0;
             this.chargeDecay = false;
             this.attacking = true;
+            goatSFX.play('attack');
         }
     }
 
@@ -539,6 +542,7 @@ Goat.prototype.update = function () {
                         transferHit(this, goat);
                         this.finishAttack();
                         victims++;
+                        goatSFX.play('injured');
                         break; // Can only attack one goat at a time
                     }
                 } else {
@@ -546,6 +550,7 @@ Goat.prototype.update = function () {
                         transferHit(this, goat);
                         this.finishAttack();
                         victims++;
+                        goatSFX.play('injured');
                         break; // Can only attack one goat at a time
                     }
                 }

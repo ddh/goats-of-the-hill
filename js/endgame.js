@@ -1,6 +1,8 @@
 // Sub-class of Scene
 // EndGame: Background, (& text/images drawn on Canvas)
 
+var DELAYED_DISPLAY_THRESHOLD = 2;
+
 function EndGame(game, background) {
     this.game = game;
     this.background = background;
@@ -41,7 +43,11 @@ function EndGame(game, background) {
         "green": [0, 0, 0]
     };
 
+    this.crownAnimation = new Animation(ASSET_MANAGER.getAsset('./img/simple-crown-animated.png'), 0, 0, 40, 40, 0.1, 10, true, false);
+
     this.totals = []; // based on total scores for all goats
+
+    this.delayDisplayBucket = 0;
 
     Scene.call(this, this.game, this.background, this.type);
 }
@@ -71,9 +77,18 @@ EndGame.prototype.draw = function (ctx) {
     }
 
     // draws Goats & their corresponding stats
+    var winningGoat = this.goatData[0];
     for (var j = 0, len2 = this.goatData.length; j < len2; j++) {
         var currGoatData = this.goatData[j];
-        currGoatData.rightAnim.drawFrame(this.game.clockTick, ctx, currGoatData.x, currGoatData.y, 1);
+        if (this.delayDisplayBucket > DELAYED_DISPLAY_THRESHOLD && currGoatData.ranking === 4) {
+            currGoatData.rightAnimStunned.drawFrame(this.game.clockTick, ctx, currGoatData.x, currGoatData.y, 1);
+        } else {
+            currGoatData.rightAnim.drawFrame(this.game.clockTick, ctx, currGoatData.x, currGoatData.y, 1); // draw goat
+        }
+
+        if (winningGoat.total < currGoatData.total) winningGoat = currGoatData; // to find winning goat
+
+        // capture and draw stats under platforms
         var wins = "Wins: (" + currGoatData.wins + "/3)";
         var total = "Total: " + currGoatData.total;
         var best = "Best: " + currGoatData.best;
@@ -81,9 +96,22 @@ EndGame.prototype.draw = function (ctx) {
         drawTextWithOutline(ctx, "14pt Impact", total, currGoatData.x, currGoatData.y + 170, currGoatData.color, 'white');
         drawTextWithOutline(ctx, "14pt Impact", best, currGoatData.x, currGoatData.y + 190, currGoatData.color, 'white');
     }
+
+    // draw Scene header
+    drawTextWithOutline(ctx, "32pt Impact", "Results", 330, 50, "purple", "white");
+
+    /* --- DELAYED DATA DISPLAY --- */
+    if (this.delayDisplayBucket > DELAYED_DISPLAY_THRESHOLD) {
+        drawTextWithOutline(ctx, "26pt Impact", "CONGRATULATIONS TO " + winningGoat.playerColor.toUpperCase() + " GOAT!",
+            130, 550, "purple", "white");
+        // draw crown over winning goat
+        this.crownAnimation.drawFrame(this.game.clockTick, ctx, winningGoat.x + 45, winningGoat.y - 30, 1);
+    }
 };
 
 EndGame.prototype.update = function () {
+    this.delayDisplayBucket += this.game.clockTick;
+
     // 1. update background
     this.entities[0].update();
 
@@ -176,6 +204,10 @@ EndGame.prototype.startScene = function () {
                 currPFData.ranking = currGoatData.ranking;
             }
         }
+        if (currGoatData.ranking === 4) {
+            currGoatData.rightAnimStunned = new Animation(ASSET_MANAGER.getAsset("./img/" + currGoatData.playerColor + "-goat-right.png"),
+                2068, 0, 94, 90, 0.1, 4, true, false);
+        }
     }
 
     // 5. null out data just consumed
@@ -209,36 +241,38 @@ var updateIndvlGoatDataObj = function (goatDataObj, pfData) {
 };
 
 var updateIndvlPFDataObj = function (pfDataObj) {
+    var bottomHeight = 575;
+    var rank1Height = 150, rank2Height = 250, rank3Height = 350, rank4Height = 450;
     // LOGIC BLOCK FOR END GAME PLATFORM MOVEMENT
     if (!pfDataObj.stopRising) { // platform should continue rising
         pfDataObj.y += pfDataObj.velocity.y;
         // controls variable height raising of platforms for end game scene
         switch (pfDataObj.ranking) {
             case 1: // first place
-                if (pfDataObj.y + pfDataObj.height >= 576) {
+                if (pfDataObj.y + pfDataObj.height > bottomHeight) {
                     pfDataObj.velocity.y *= -1;
-                } else if (pfDataObj.y <= 100) {
+                } else if (pfDataObj.y <= rank1Height) {
                     pfDataObj.stopRising = true;
                 }
                 break;
             case 2: // second place
-                if (pfDataObj.y + pfDataObj.height >= 576) {
+                if (pfDataObj.y + pfDataObj.height > bottomHeight) {
                     pfDataObj.velocity.y *= -1;
-                } else if (pfDataObj.y <= 200) {
+                } else if (pfDataObj.y <= rank2Height) {
                     pfDataObj.stopRising = true;
                 }
                 break;
             case 3: // third place
-                if (pfDataObj.y + pfDataObj.height >= 576) {
+                if (pfDataObj.y + pfDataObj.height > bottomHeight) {
                     pfDataObj.velocity.y *= -1;
-                } else if (pfDataObj.y <= 300) {
+                } else if (pfDataObj.y <= rank3Height) {
                     pfDataObj.stopRising = true;
                 }
                 break;
             case 4: // fourth place
-                if (pfDataObj.y + pfDataObj.height >= 576) {
+                if (pfDataObj.y + pfDataObj.height > bottomHeight) {
                     pfDataObj.velocity.y *= -1;
-                } else if (pfDataObj.y <= 400) {
+                } else if (pfDataObj.y <= rank4Height) {
                     pfDataObj.stopRising = true;
                 }
                 break;
@@ -249,16 +283,16 @@ var updateIndvlPFDataObj = function (pfDataObj) {
         pfDataObj.velocity.y = 0;
         switch (pfDataObj.ranking) {
             case 1:
-                pfDataObj.y = 100;
+                pfDataObj.y = rank1Height;
                 break;
             case 2:
-                pfDataObj.y = 200;
+                pfDataObj.y = rank2Height;
                 break;
             case 3:
-                pfDataObj.y = 300;
+                pfDataObj.y = rank3Height;
                 break;
             case 4:
-                pfDataObj.y = 400;
+                pfDataObj.y = rank4Height;
                 break;
             default:
                 break;

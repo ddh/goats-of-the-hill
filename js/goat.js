@@ -165,8 +165,6 @@ function Goat(game, playerNumber, controls, sprite, color) {
     this.attacking = false;
     this.stunned = false;
 
-    this.ranking = 0; // used in EndGame Scene
-
     Entity.call(this, game, 0, this.y, this.width, this.height);
 }
 
@@ -184,8 +182,6 @@ Goat.prototype.reset = function () {
 
     this.y = this.game.sceneManager.currentScene.platforms[0].y - this.height;
     this.entity = this.game.sceneManager.currentScene.platforms[0]; // This should be the ground platform
-
-    // this.boundingbox = new BoundingBox(this.x, this.y, this.standAnimation.frameWidth, this.standAnimation.frameHeight);
 };
 
 Goat.prototype.initControls = function () {
@@ -773,36 +769,6 @@ Goat.prototype.resetActionStates = function (goat) {
     this.charging = false;
     this.attacking = false;
     this.stunned = false;
-};
-
-// used by EndGame Scene
-Goat.prototype.drawStillStandingAnimation = function (ctx) {
-    // switch based on this.ranking... blah blah blah (3rd & 1st face right, 2nd faces left)
-    switch (this.ranking) {
-        case 0: // invalid ranking (initial value...)
-            console.log("error in assigning goat a rank");
-            break;
-        case 1: // 1st place
-            this.standRightAnimation.drawFrame(0, ctx, this.x, this.y, this.scale);
-            break;
-        case 2: // 2nd place
-            this.standLeftAnimation.drawFrame(0, ctx, this.x, this.y, this.scale);
-            break;
-        case 3: // 3rd place
-            this.standRightAnimation.drawFrame(0, ctx, this.x, this.y, this.scale);
-            break;
-    }
-};
-
-// used by EndGame Scene
-Goat.prototype.updateWithPlatform = function (platforms) {
-    for (var i = 0, len = platforms.length; i < len; i++) {
-        var currPF = platforms[i];
-        if (this.ranking === currPF.ranking) {
-            this.y += currPF.velocity.y;
-            break;
-        }
-    }
 };
 
 var drawChargeMeter = function (goat) {

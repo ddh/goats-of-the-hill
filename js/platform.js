@@ -106,42 +106,6 @@ Platform.prototype.update = function () {
                 this.velocity.x *= -1;
             }
             break;
-        case 'endgame':
-            this.velocity.x = 0;
-            // LOGIC BLOCK FOR END GAME PLATFORM MOVEMENT
-            if (!this.stopRising) { // platform should continue rising
-                this.y += this.velocity.y;
-                // controls variable height raising of platforms for end game scene
-                if (this.ranking === 1) { // for 1st place
-                    if (this.y + this.height >= 500) {
-                        this.velocity.y *= -1;
-                    } else if (this.y <= 170) {
-                        this.stopRising = true;
-                    }
-                } else if (this.ranking === 2) { // for 2nd place
-                    if (this.y + this.height >= 500) {
-                        this.velocity.y *= -1;
-                    } else if (this.y <= 280) {
-                        this.stopRising = true;
-                    }
-                } else if (this.ranking === 3) { // for 3rd place
-                    if (this.y + this.height >= 500) {
-                        this.velocity.y *= -1;
-                    } else if (this.y <= 390) {
-                        this.stopRising = true;
-                    }
-                }
-            } else { // y-value should now be held in place
-                this.velocity.y = 0;
-                if (this.ranking === 1) { // for 1st place
-                    this.y = 170;
-                } else if (this.ranking === 2) { // for 2nd place
-                    this.y = 280;
-                } else if (this.ranking === 3) { // for 3rd place
-                    this.y = 390;
-                }
-            }
-            break;
         default: // Stationary
             this.velocity.x = 0;
             this.velocity.y = 0;
@@ -165,48 +129,6 @@ Platform.prototype.draw = function (ctx) {
     Entity.prototype.draw.call(this, ctx);
 };
 
-Platform.prototype.drawWithRanking = function (ctx, goats) {
-    ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-    if (this.ranking) { // for end game scene
-        switch (this.ranking) { // different sized places for when ranking goats in end game scene
-            case 1:
-                drawTextWithOutline(ctx, "48px Impact", this.ranking.toString(), (this.x + (this.width / 2) - 5),
-                    (this.y + this.height) - 7, goats[0].color, "white");
-                break;
-            case 2:
-                drawTextWithOutline(ctx, "40px Impact", this.ranking.toString(), (this.x + (this.width / 2) - 5),
-                    (this.y + this.height) - 10, goats[1].color, "white");
-                break;
-            case 3:
-                drawTextWithOutline(ctx, "32px Impact", this.ranking.toString(), (this.x + (this.width / 2) - 5),
-                    (this.y + this.height) - 12, goats[2].color, "white");
-                break;
-        }
-    }
-};
-
 Platform.prototype.toString = function () {
     return 'Platform';
 };
-
-// Platform.prototype.draw = function (ctx) {
-//     // TODO: would be cool to draw platforms with gradients like in code below
-
-//     /*
-//     var grad;
-//     grad = ctx.createLinearGradient(0, this.y, 0, this.y + this.height);
-//     grad.addColorStop(0, 'red');
-//     grad.addColorStop(1 / 6, 'orange');
-//     grad.addColorStop(2 / 6, 'yellow');
-//     grad.addColorStop(3 / 6, 'green')
-//     grad.addColorStop(4 / 6, 'aqua');
-//     grad.addColorStop(5 / 6, 'blue');
-//     grad.addColorStop(1, 'purple');
-//     ctx.fillStyle = grad;
-
-
-//     ctx.fillRect(this.x, this.y, this.width, this.height);
-// }
-//     ctx.fillRect(this.x, this.y, this.width, this.height);
-//     */
-// };

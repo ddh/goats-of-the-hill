@@ -2,12 +2,19 @@
 // https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 
 // Class Constants:
-var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds)
+var ROUND_TIME_LIMIT = 10; // 1 minute (in seconds)
 var GOLD_COLOR = "rgb(255, 215, 0)";
 var MAX_IDLE_TIME = 10;    // *Currently turned off* - How many seconds of inactivity before goat AI kicks in on an idle player.
 var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
 var POWERUP_INTERVAL = 5;  // Every x sec a powerup spawns
 //var COLLECTIBLES = ['invincibility']; //TODO: Using this as a means to test a powerup individually. Just comment out the above.
+
+// Audio:
+var announcerSFX = new Howl({
+    autoplay: false,
+    urls: ['./audio/ssb_announcer.wav'], // Sound 'sprite' containing all sfx
+    played: false
+});
 
 function Round(game, background, platforms, randomizeHill, randomHillSpeed) {
     this.game = game;
@@ -166,6 +173,10 @@ Round.prototype.toString = function () {
 Round.prototype.drawTimer = function (ctx) {
     var secondsLeft = Math.floor(this.roundTimer / 1);
     if (secondsLeft < 0) secondsLeft = 0;
+    if (Math.floor(this.roundTimer / 1) === 5 && !announcerSFX.played) {
+        announcerSFX.play();
+        announcerSFX.played = true;
+    }
     if (Math.floor(this.roundTimer / 1) == 0) {
         drawTextWithOutline(ctx, "200px Impact", "TIME!", 180, 300, 'rgba(255, 0, 0, 0.7)', 'white');
     }
@@ -187,6 +198,7 @@ Round.prototype.startScene = function () {
 
 // performs cleanup operations
 Round.prototype.endScene = function () {
+    announcerSFX.played = false;
     this.deleteAllEntities();
 };
 

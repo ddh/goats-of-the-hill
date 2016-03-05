@@ -40,7 +40,7 @@ Scoreboard.prototype.draw = function (ctx) {
         if (ROUNDS_PLAYED <= 2) { // TODO: This is a hard-coded value; find a way to calculate total #rounds
             drawPlayButton(ctx);
         } else {
-            drawTextWithOutline(ctx, "40px Impact", "Press ↵ENTER for Final Results!", 160, 500, "purple", "white");
+            drawTextWithOutline(ctx, "40px Impact", "-Press ↵ENTER for Final Results!-", 160, 500, "purple", "white");
         }
     }
 

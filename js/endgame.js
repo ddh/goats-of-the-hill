@@ -124,8 +124,12 @@ EndGame.prototype.draw = function (ctx) {
 
     /* --- DELAYED DATA DISPLAY --- */
     if (this.delayDisplayBucket > DELAYED_DISPLAY_THRESHOLD) {
-        drawTextWithOutline(ctx, "26pt Impact", "CONGRATULATIONS TO " + winningGoat.playerColor.toUpperCase() + " GOAT!",
-            130, 550, "purple", "white");
+        // draw text on bottom
+        drawTextWithOutline(ctx, "32pt Impact", winningGoat.playerColor.toUpperCase() + " GOAT WINS!",
+            270, 530, "purple", "white");
+        if (Math.floor(this.game.timer.gameTime % 2) == 0) {
+            drawTextWithOutline(ctx, "24pt Impact", "-Press ↵ENTER to Play Again-", 220, 580, "purple", "white");
+        }
         // draw crown over winning goat
         this.crownAnimation.drawFrame(this.game.clockTick, ctx, winningGoat.x + 45, winningGoat.y - 30, 1);
     }

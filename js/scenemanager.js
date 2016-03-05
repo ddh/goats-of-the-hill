@@ -39,7 +39,8 @@ var drawPlayButton = function (ctx) {
     if (ROUNDS_PLAYED === 0) {
         drawTextWithOutline(ctx, "24pt Impact", "Click to play!", btnX, btnY + 120, "purple", "white");
     } else {
-        drawTextWithOutline(ctx, "24pt Impact", "-Press ↵ENTER to continue-", btnX, btnY + 160, 'purple', 'white');
+        ctx.drawImage(ASSET_MANAGER.getAsset("./img/Keyboard_White_Enter.png"), btnX + 87, btnY + 120, 50, 50);
+        drawTextWithOutline(ctx, "24pt Impact", "-Press          to continue-", btnX, btnY + 160, 'purple', 'white');
     }
 };
 

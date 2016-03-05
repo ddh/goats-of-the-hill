@@ -40,7 +40,8 @@ Scoreboard.prototype.draw = function (ctx) {
         if (ROUNDS_PLAYED <= 2) { // TODO: This is a hard-coded value; find a way to calculate total #rounds
             drawPlayButton(ctx);
         } else {
-            drawTextWithOutline(ctx, "40px Impact", "-Press ↵ENTER for Final Results!-", 160, 500, "purple", "white");
+            ctx.drawImage(ASSET_MANAGER.getAsset("./img/Keyboard_White_Enter.png"), 260, 460, 50, 50);
+            drawTextWithOutline(ctx, "40px Impact", "Press          for Final Results!", 160, 500, "purple", "white");
         }
     }
 

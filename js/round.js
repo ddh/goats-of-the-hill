@@ -2,12 +2,12 @@
 // https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 
 // Class Constants:
-var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds)
+var ROUND_TIME_LIMIT = 1; // 1 minute (in seconds)
 var GOLD_COLOR = "rgb(255, 215, 0)";
 var MAX_IDLE_TIME = 10;    // *Currently turned off* - How many seconds of inactivity before goat AI kicks in on an idle player.
 var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
 var POWERUP_INTERVAL = 5;  // Every x sec a powerup spawns
-//var COLLECTIBLES = ['invincibility']; //TODO: Using this as a means to test a powerup individually. Just comment out the above.
+
 
 // Audio:
 var announcerSFX = new Howl({
@@ -190,7 +190,7 @@ Round.prototype.drawTimer = function (ctx) {
     if (Math.floor(this.roundTimer / 1) == 0) {
         drawTextWithOutline(ctx, "200px Impact", "TIME!", 180, 300, 'rgba(255, 0, 0, 0.7)', 'white');
     }
-    else if (this.roundTimer / 1 < 10) {
+    else if (this.roundTimer / 1 < 6) {
         drawTextWithOutline(ctx, "200px Impact", secondsLeft, 350, 300, 'rgba(255, 0, 0, 0.7)', 'white');
     } else if (this.roundTimer / 1 < ROUND_TIME_LIMIT) {
         drawTextWithOutline(ctx, "50px Impact", secondsLeft, 380, 60, 'black', 'white');

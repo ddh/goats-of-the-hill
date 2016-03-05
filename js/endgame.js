@@ -128,7 +128,8 @@ EndGame.prototype.draw = function (ctx) {
         drawTextWithOutline(ctx, "32pt Impact", winningGoat.playerColor.toUpperCase() + " GOAT WINS!",
             270, 530, "purple", "white");
         if (Math.floor(this.game.timer.gameTime % 2) == 0) {
-            drawTextWithOutline(ctx, "24pt Impact", "-Press ↵ENTER to Play Again-", 220, 580, "purple", "white");
+            ctx.drawImage(ASSET_MANAGER.getAsset("./img/Keyboard_White_Enter.png"), 318, 540, 50, 50);
+            drawTextWithOutline(ctx, "24pt Impact", "-Press              to Play Again-", 220, 580, "purple", "white");
         }
         // draw crown over winning goat
         this.crownAnimation.drawFrame(this.game.clockTick, ctx, winningGoat.x + 45, winningGoat.y - 30, 1);

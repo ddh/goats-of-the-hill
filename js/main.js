@@ -62,6 +62,7 @@ ASSET_MANAGER.queueDownload("./img/icon-maxCharge.png");
 
 // Powerup Spites
 ASSET_MANAGER.queueDownload("./img/powerup-doubleJump.png");
+ASSET_MANAGER.queueDownload("./img/powerup-invincibility.png");
 
 // Other
 ASSET_MANAGER.queueDownload("./img/hill-arrow.png");

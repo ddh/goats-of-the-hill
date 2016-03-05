@@ -796,9 +796,13 @@ var drawPowerupsHeld = function (goat) {
 var drawPowerupsVisuals = function (goat) {
     for (var i = 0, len = goat.powerUps.length; i < len; i++) {
         if (goat.powerUps[i] === "doubleJump") {
-            goat.doubleJumpPowerupAnimation.drawFrame(goat.game.clockTick, goat.ctx, goat.x+goat.width/7, goat.y+goat.height/2.5, goat.scale*0.7);
+            goat.doubleJumpPowerupAnimation.drawFrame(goat.game.clockTick, goat.ctx, goat.x + goat.width / 7, goat.y + goat.height / 2.5, goat.scale * 0.7);
+        }
+        if (goat.powerUps[i] === "invincibility") {
+            goat.ctx.drawImage(ASSET_MANAGER.getAsset("./img/powerup-invincibility.png"), goat.x - goat.width / 4, goat.y - goat.y / 30, goat.width * 1.5, goat.width * 1.5);
         }
     }
+
 };
 
 var drawPointsAccruing = function (goat) {

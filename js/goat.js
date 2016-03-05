@@ -583,7 +583,6 @@ Goat.prototype.update = function () {
         }
         this.chargePower = 1; // An injured goat cannot charge
         this.timeout += 20 / this.hit.pow; // TODO: Magic numbers...
-        this.runKey = false;
         this.jumpKey = false;
         this.leftKey = false;
         this.rightKey = false;

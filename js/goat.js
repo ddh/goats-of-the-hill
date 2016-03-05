@@ -153,6 +153,9 @@ function Goat(game, playerNumber, controls, sprite, color) {
 
     this.attackAuraLeftAnimation = new Animation(ASSET_MANAGER.getAsset("./img/" + this.sprite + "-attackAuraLeft.png"), 3, 0, 44, 150, .1, 4, true, false);
     this.attackAuraRightAnimation = new Animation(ASSET_MANAGER.getAsset("./img/" + this.sprite + "-attackAuraRight.png"), 16, 0, 43, 150, .1, 4, true, true);
+    
+    /* Power up animations */
+    this.doubleJumpPowerupAnimation = new Animation(ASSET_MANAGER.getAsset("./img/powerup-doubleJump.png"), 8, 0, 96, 100, .1, 6, true, false);
 
     // Action states:
     this.right = true; // Facing right (true) or left (false)
@@ -588,6 +591,11 @@ Goat.prototype.update = function () {
     /****************************************
      *              Powerups                *
      ****************************************/
+     for (var i = 0, len = this.powerUps.length; i < len; i++) {    
+         if (this.powerUps[i].type === "doubleJump") {
+             console.log("DOUBLE JUMP POWERS");
+         }
+     }
 
     /****************************************
      *              Misc.                   *
@@ -692,6 +700,13 @@ Goat.prototype.draw = function (ctx) {
         else
             this.chargingAnimation.drawFrame(this.game.clockTick, ctx, this.x - 12, this.y - 20, this.scale + .2);
     }
+    
+    for (var i = 0, len = this.powerUps.length; i < len; i++) {    
+         if (this.powerUps[i] === "doubleJump") {
+             console.log(this.powerUps[i]);
+             this.doubleJumpPowerupAnimation.drawFrame(this.game.clockTick, ctx, this.x - 12, this.y - 20, this.scale + .2);
+         }
+     }
 
     // Display player indicator
     drawTextWithOutline(this.game.ctx, "24px Impact", (this.aiEnabled) ? "AI" : "P" + (this.playerNumber + 1), this.x + this.scale * 36, (this.y - this.scale * 30) + Math.sin(this.game.timer.gameTime * 10), this.color, 'white');

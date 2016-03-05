@@ -10,16 +10,20 @@ function EndGame(game, background) {
 
     this.pfData = [  // filled with JS objs...
         {image: ASSET_MANAGER.getAsset("./img/platform-small-hay.png"),
-            stopRising: false, x: 30, y: 525, velocity: {x: 0, y: 3}, color: "blue", width: 85, height: 50},
+            stopRising: false, x: 30, y: 525, velocity: {x: 0, y: 3}, color: "blue", width: 85, height: 50,
+            platColor: "blue"},
         {image: ASSET_MANAGER.getAsset("./img/platform-small-hay.png"),
-            stopRising: false, x: 230, y: 525, velocity: {x: 0, y: 3}, color: "green", width: 85, height: 50},
+            stopRising: false, x: 230, y: 525, velocity: {x: 0, y: 3}, color: "green", width: 85, height: 50,
+            platColor: "green"},
         {image: ASSET_MANAGER.getAsset("./img/platform-small-hay.png"),
-            stopRising: false, x: 430, y: 525, velocity: {x: 0, y: 3}, color: "red", width: 85, height: 50},
+            stopRising: false, x: 430, y: 525, velocity: {x: 0, y: 3}, color: "red", width: 85, height: 50,
+            platColor: "red"},
         {image: ASSET_MANAGER.getAsset("./img/platform-small-hay.png"),
-            stopRising: false, x: 630, y: 525, velocity: {x: 0, y: 3}, color: "yellow", width: 85, height: 50}
+            stopRising: false, x: 630, y: 525, velocity: {x: 0, y: 3}, color: "yellow", width: 85, height: 50,
+            platColor: "rgb(255, 215, 0)"}
     ];
 
-    this.goatData = [
+    this.goatData = [ // filled with JS objs... (goat state & stats data)
         {playerColor: "blue", color: "blue", x: 30, y: 435, width: 94, height: 90, velocity: {x: 0, y: 0},
             rightAnim: new Animation(ASSET_MANAGER.getAsset("./img/blue-goat-right.png"), 0, 0, 94, 90, 0.1, 4, true, false)},
         {playerColor: "green", color: "green", x: 230, y: 435, width: 94, height: 90, velocity: {x: 0, y: 0},
@@ -62,6 +66,8 @@ EndGame.prototype.draw = function (ctx) {
     for (var i = 0, len = this.pfData.length; i < len; i++) {
         var currPFDataObj = this.pfData[i];
         ctx.drawImage(currPFDataObj.image, currPFDataObj.x, currPFDataObj.y, currPFDataObj.width, currPFDataObj.height);
+        drawTextWithOutline(ctx, "16pt Impact", currPFDataObj.ranking, currPFDataObj.x + 40, currPFDataObj.y + 30,
+            currPFDataObj.platColor, 'white');
     }
 
     // draws Goats & their corresponding stats
@@ -208,28 +214,28 @@ var updateIndvlPFDataObj = function (pfDataObj) {
             case 1: // first place
                 if (pfDataObj.y + pfDataObj.height >= 576) {
                     pfDataObj.velocity.y *= -1;
-                } else if (this.y <= 100) {
+                } else if (pfDataObj.y <= 100) {
                     pfDataObj.stopRising = true;
                 }
                 break;
             case 2: // second place
                 if (pfDataObj.y + pfDataObj.height >= 576) {
                     pfDataObj.velocity.y *= -1;
-                } else if (this.y <= 200) {
+                } else if (pfDataObj.y <= 200) {
                     pfDataObj.stopRising = true;
                 }
                 break;
             case 3: // third place
                 if (pfDataObj.y + pfDataObj.height >= 576) {
                     pfDataObj.velocity.y *= -1;
-                } else if (this.y <= 300) {
+                } else if (pfDataObj.y <= 300) {
                     pfDataObj.stopRising = true;
                 }
                 break;
             case 4: // fourth place
                 if (pfDataObj.y + pfDataObj.height >= 576) {
                     pfDataObj.velocity.y *= -1;
-                } else if (this.y <= 400) {
+                } else if (pfDataObj.y <= 400) {
                     pfDataObj.stopRising = true;
                 }
                 break;

@@ -84,7 +84,7 @@ Scoreboard.prototype.endScene = function () {
 
 // checks if user has clicked to play next round
 Scoreboard.prototype.isSceneDone = function () {
-    return this.game.anyKeyPressed;
+    return this.game.continueKeyPressed;
 };
 
 /***********************************************

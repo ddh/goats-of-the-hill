@@ -63,6 +63,9 @@ ASSET_MANAGER.queueDownload("./img/icon-maxCharge.png");
 
 // Powerup Spites
 ASSET_MANAGER.queueDownload("./img/powerup-doubleJump.png");
+ASSET_MANAGER.queueDownload("./img/powerup-invincibility.png");
+ASSET_MANAGER.queueDownload("./img/powerup-highJumpLeft.png");
+ASSET_MANAGER.queueDownload("./img/powerup-highJumpRight.png");
 
 // Controls
 ASSET_MANAGER.queueDownload("./img/Keyboard_White_A.png");

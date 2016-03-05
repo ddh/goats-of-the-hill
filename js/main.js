@@ -61,6 +61,13 @@ ASSET_MANAGER.queueDownload("./img/icon-doubleJump.png");
 ASSET_MANAGER.queueDownload("./img/icon-highJump.png");
 ASSET_MANAGER.queueDownload("./img/icon-maxCharge.png");
 
+// Powerup Spites
+ASSET_MANAGER.queueDownload("./img/powerup-doubleJump.png");
+ASSET_MANAGER.queueDownload("./img/powerup-invincibility.png");
+ASSET_MANAGER.queueDownload("./img/powerup-highJumpLeft.png");
+ASSET_MANAGER.queueDownload("./img/powerup-highJumpRight.png");
+ASSET_MANAGER.queueDownload("./img/powerup-speedUp.png");
+
 // Controls
 ASSET_MANAGER.queueDownload("./img/Keyboard_White_A.png");
 ASSET_MANAGER.queueDownload("./img/Keyboard_White_D.png");
@@ -73,6 +80,7 @@ ASSET_MANAGER.queueDownload("./img/Keyboard_White_Dot.png");
 ASSET_MANAGER.queueDownload("./img/Keyboard_White_Slash.png");
 ASSET_MANAGER.queueDownload("./img/Keyboard_White_Shift.png");
 ASSET_MANAGER.queueDownload("./img/Keyboard_White_Enter.png");
+
 
 // Other
 ASSET_MANAGER.queueDownload("./img/hill-arrow.png");

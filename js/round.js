@@ -5,10 +5,8 @@
 var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds)
 var GOLD_COLOR = "rgb(255, 215, 0)";
 var MAX_IDLE_TIME = 10;    // *Currently turned off* - How many seconds of inactivity before goat AI kicks in on an idle player.
-//var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
+var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
 var POWERUP_INTERVAL = 5;  // Every x sec a powerup spawns
-
-var COLLECTIBLES = ['speedUp']; //TODO: Using this as a means to test a powerup individually. Just comment out the above.
 
 
 // Audio:

@@ -108,6 +108,9 @@ EndGame.prototype.startScene = function () {
     /* --- PLATFORMS --- */
     // state initialization done in constructor
 
+    // TODO: remove, used for debugging stat calculations
+    console.log(this.goatStats);
+
     /* --- GOATS --- */
     // 1. pass goat stats data onto goatData list of objs
     for (var i = 0, len = this.goatData.length; i < len; i++) {

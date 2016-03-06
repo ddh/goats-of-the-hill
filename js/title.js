@@ -1,6 +1,8 @@
 // Sub-class of Scene
 // Title: Background (& text/images drawn on Canvas)
 
+var TIMER_TO_APPEAR = 1;
+
 function Title(gameEngine) {
     this.game = gameEngine;
     this.type = "Title";
@@ -19,6 +21,57 @@ function Title(gameEngine) {
 
     this.playGameHover = false;
     this.tutorialHover = false;
+
+    this.goats = [
+        {
+            playerColor: "blue",
+            color: "blue",
+            x: 10,
+            y: 500,
+            width: 94,
+            height: 90,
+            velocity: {x: 3, y: 0},
+            timeBeforeDrawn: 0,
+            drawMe: false,
+            rightAnim: new Animation(ASSET_MANAGER.getAsset("./img/blue-goat-right.png"), 376, 0, 94, 90, 0.075, 4, true, false)
+        },
+        {
+            playerColor: "green",
+            color: "green",
+            x: 10,
+            y: 500,
+            width: 94,
+            height: 90,
+            velocity: {x: 3, y: 0},
+            timeBeforeDrawn: 0,
+            drawMe: false,
+            rightAnim: new Animation(ASSET_MANAGER.getAsset("./img/green-goat-right.png"), 376, 0, 94, 90, 0.075, 4, true, false)
+        },
+        {
+            playerColor: "red",
+            color: "red",
+            x: 10,
+            y: 500,
+            width: 94,
+            height: 90,
+            velocity: {x: 3, y: 0},
+            timeBeforeDrawn: 0,
+            drawMe: false,
+            rightAnim: new Animation(ASSET_MANAGER.getAsset("./img/red-goat-right.png"), 376, 0, 94, 90, 0.075, 4, true, false)
+        },
+        {
+            playerColor: "yellow",
+            color: "rgb(255, 215, 0)",
+            x: 10,
+            y: 500,
+            width: 94,
+            height: 90,
+            velocity: {x: 3, y: 0},
+            timeBeforeDrawn: 0,
+            drawMe: false,
+            rightAnim: new Animation(ASSET_MANAGER.getAsset("./img/yellow-goat-right.png"), 376, 0, 94, 90, 0.075, 4, true, false)
+        }
+    ];
 }
 
 Title.prototype = new Scene();
@@ -61,7 +114,6 @@ Title.prototype.update = function () {
 
                 this.next = this.roundScene;
                 this.isDone = true;
-                ;
                 // console.log("Play Game clicked");
             }
 
@@ -72,6 +124,14 @@ Title.prototype.update = function () {
                 this.isDone = true;
                 // console.log("Tutorial clicked");
             }
+        }
+
+        // for animating goats walking along the bottom
+        for (var i = 0, len = this.goats.length; i < len; i++) {
+            var goat = this.goats[i];
+            goat.timeBeforeDrawn += this.game.clockTick;
+            if ((goat.timeBeforeDrawn >= (TIMER_TO_APPEAR * i)) && goat.x <= 700) goat.drawMe = true;
+            if (goat.drawMe) goat.x += goat.velocity.x;
         }
     }
 };
@@ -103,6 +163,12 @@ Title.prototype.draw = function (ctx) {
             25,
             "rgba(255, 255, 255, 0.4)",
             "rgba(255, 255, 255, 0)");
+    }
+
+    // for drawing animated goats at bottom
+    for (var i = 0, len = this.goats.length; i < len; i++) {
+        var goat = this.goats[i];
+        if (goat.drawMe) goat.rightAnim.drawFrame(this.game.clockTick, ctx, goat.x, goat.y, 1);
     }
 };
 

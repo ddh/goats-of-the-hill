@@ -215,26 +215,21 @@ SceneManager.prototype.reinitRoundsAndLinks = function () {
     // 1. Create all Scenes necessary for game
     // ---
     var tutorialScene = new Tutorial(this.game);
-    var r1 = createFirstRound(this.game); // first round
-    var sb1 = new Scoreboard(this.game, new Background(this.game, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
-    var r2 = createSecondRound(this.game); // second round
-    var sb2 = new Scoreboard(this.game, new Background(this.game, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
-    var r3 = createThirdRound(this.game); // third round
-    var sb3 = new Scoreboard(this.game, new Background(this.game, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
-    var eg = new EndGame(this.game, new Background(this.game, ASSET_MANAGER.getAsset("./img/endgame-scene.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
+    var demo = createDemoRound(this.game);
+    //var r1 = createFirstRound(this.game); // first round
+    //var sb1 = new Scoreboard(this.game, new Background(this.game, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
+    //var r2 = createSecondRound(this.game); // second round
+    //var sb2 = new Scoreboard(this.game, new Background(this.game, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
+    //var r3 = createThirdRound(this.game); // third round
+    //var sb3 = new Scoreboard(this.game, new Background(this.game, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
+    //var eg = new EndGame(this.game, new Background(this.game, ASSET_MANAGER.getAsset("./img/endgame-scene.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
 
     // 2. Link up all Scenes in correct sequence before returning SceneManager with a reference to the title Scene
     // ---
-    this.currentScene.roundScene = r1;   // TODO: link will change once Tutorial Scene added
+    this.currentScene.roundScene = demo;
     this.currentScene.tutorialScene = tutorialScene;
     tutorialScene.next = this.currentScene;
-    r1.next = sb1;
-    sb1.next = r2;
-    r2.next = sb2;
-    sb2.next = r3;
-    r3.next = sb3;
-    sb3.next = eg;
-    eg.next = this.currentScene; // this.currentScene is Title
+    demo.next = this.currentScene;
 };
 
 SceneManager.prototype.draw = function (ctx) {

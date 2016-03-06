@@ -126,28 +126,33 @@ var makeSceneManager = function (gameEngine) {
     // 1. Create all Scenes necessary for game
     // ---
     var titleScene = new Title(gameEngine);
-    // TODO: need to add Tutorial Scene (will need to change links section below too)
     var tutorialScene = new Tutorial(gameEngine);
-    var r1 = createFirstRound(gameEngine); // first round
-    var sb1 = new Scoreboard(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
-    var r2 = createSecondRound(gameEngine); // second round
-    var sb2 = new Scoreboard(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
-    var r3 = createThirdRound(gameEngine); // third round
-    var sb3 = new Scoreboard(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
-    var eg = new EndGame(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/endgame-scene.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
+    var demo = createDemoRound(gameEngine);
+    //var r1 = createFirstRound(gameEngine); // first round
+    //var sb1 = new Scoreboard(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
+    //var r2 = createSecondRound(gameEngine); // second round
+    //var sb2 = new Scoreboard(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
+    //var r3 = createThirdRound(gameEngine); // third round
+    //var sb3 = new Scoreboard(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
+    //var eg = new EndGame(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/endgame-scene.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
 
     // 2. Link up all Scenes in correct sequence before returning SceneManager with a reference to the title Scene
     // ---
-    titleScene.roundScene = r1;
-    titleScene.tutorialScene = tutorialScene; 
+    titleScene.roundScene = demo;
+    titleScene.tutorialScene = tutorialScene;
     tutorialScene.next = titleScene;
-    r1.next = sb1;
-    sb1.next = r2;
-    r2.next = sb2;
-    sb2.next = r3;
-    r3.next = sb3;
-    sb3.next = eg;
-    eg.next = titleScene;
+    demo.next = titleScene;
+
+    //titleScene.roundScene = r1;
+    //titleScene.tutorialScene = tutorialScene;
+    //tutorialScene.next = titleScene;
+    //r1.next = sb1;
+    //sb1.next = r2;
+    //r2.next = sb2;
+    //sb2.next = r3;
+    //r3.next = sb3;
+    //sb3.next = eg;
+    //eg.next = titleScene;
 
     return new SceneManager(gameEngine, titleScene);
 };
@@ -216,5 +221,18 @@ var createFourthRound = function (gameEngine) {
     platforms.push(new Platform(gameEngine, 'm', 250, 250, 'bouncing', 'forest'));
     platforms.push(new Platform(gameEngine, 'm', 350, 350, 'bouncing', 'forest'));
     platforms.push(new Platform(gameEngine, 'm', 450, 450, 'bouncing', 'forest'));
+};
+
+var createDemoRound = function (gameEngine) {
+    var background = new Background(gameEngine, ASSET_MANAGER.getAsset("./img/farm.png"), 800, 600);
+
+    var platforms = [];
+    platforms.push(new Platform(gameEngine, 'ground', 0, 530, 'stationary', 'hay')); // ground platform is always the first platform added to a scene
+    platforms.push(new Platform(gameEngine, 'l', 100, 400, 'stationary', 'hay'));
+    platforms.push(new Platform(gameEngine, 'l', 450, 400, 'stationary', 'hay'));
+    platforms.push(new Platform(gameEngine, 'm', 320, 280, 'stationary', 'hay'));
+    platforms.push(new Platform(gameEngine, 's', 360, 160, 'horizontal', 'hay'));
+
+    return new Demo(gameEngine, background, platforms);
 };
 

@@ -53,7 +53,9 @@ Scoreboard.prototype.draw = function (ctx) {
     drawTextWithOutline(ctx, "40px Impact", this.goats[3].score, 220, 368, this.goats[3].color, 'white'); // winner #4
 };
 
-Scoreboard.prototype.update = function () {};
+Scoreboard.prototype.update = function () {
+
+};
 
 // performs variable initialization
 Scoreboard.prototype.startScene = function () {

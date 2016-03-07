@@ -85,7 +85,7 @@ Tutorial.prototype.update = function () {
             if (this.game.click.x < this.backButtonHitbox.right && this.game.click.x > this.backButtonHitbox.left &&
                 this.game.click.y < this.backButtonHitbox.bottom && this.game.click.y > this.backButtonHitbox.top) {
                 
-                this.isDone = true;;
+                this.isDone = true;
             }
         }
     }

@@ -46,6 +46,7 @@ function GameEngine() {
     this.entities = [];
     this.continueKeyPressed = false;
     this.anyKeyPressed = false;
+    this.muteHitbox = {left: 750, right: 800, top: 550, bottom: 600}; // for mute buttons on all scenes
 }
 
 GameEngine.prototype.init = function (ctx) {
@@ -143,6 +144,13 @@ GameEngine.prototype.startInput = function () {
     this.ctx.canvas.addEventListener("click", function (e) {
         //console.log(getXandY(e));
         that.click = getXandY(e);
+        // handles muting and unmuting
+        if (that.click.x < that.muteHitbox.right && that.click.x > that.muteHitbox.left
+            && that.click.y < that.muteHitbox.bottom && that.click.y > that.muteHitbox.top) {
+
+            MUTED ^= true; // toggle muted bool
+            // console.log("Volume/mute button clicked.");
+        }
     }, false);
 
     this.ctx.canvas.addEventListener("wheel", function (e) {
@@ -175,6 +183,13 @@ GameEngine.prototype.draw = function () {
         this.entities[i].draw(this.ctx);
     }
 
+    // draws mute buttons on all scenes
+    if (MUTED) {
+        this.ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-muted-icon.png"), 0, 0, 1024, 1024, 750, 550, 50, 50);
+    } else {
+        this.ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-on-icon.png"), 0, 0, 2000, 2000, 750, 550, 50, 50);
+    }
+
     // 4. Restore old state
     this.ctx.restore();
 };
@@ -183,6 +198,12 @@ GameEngine.prototype.update = function () {
     //this.sceneManager.update();
     for (var i = 0, len = this.entities.length; i < len; i++) {
         this.entities[i].update();
+    }
+    // for handling muting
+    if (MUTED) {
+        mute();
+    } else {
+        unmute();
     }
 };
 
@@ -209,6 +230,20 @@ GameEngine.prototype.loop = function () {
         drawTextWithOutline(this.ctx, "80pt Impact", "-PAUSED-", this.surfaceWidth / 4, this.surfaceHeight / 2, 'purple', 'white');
     }
 
+};
+
+var mute = function () {
+    bgMusic.mute();
+    announcerSFX.mute();
+    goatSFX.mute();
+    collectibleSFX.mute();
+};
+
+var unmute = function () {
+    bgMusic.unmute();
+    announcerSFX.unmute();
+    goatSFX.unmute();
+    collectibleSFX.unmute();
 };
 
 GameEngine.prototype.reset = function () {

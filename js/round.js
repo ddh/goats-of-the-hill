@@ -180,6 +180,7 @@ Round.prototype.drawTimer = function (ctx) {
     if (secondsLeft < 0) secondsLeft = 0;
     if (Math.floor(this.roundTimer / 1) === 5 && !announcerSFX.ended) {
         announcerSFX.play('countdown');
+        if (MUTED) announcerSFX.mute();
         announcerSFX.ended = true;
     }
     if (Math.floor(this.roundTimer / 1) > ROUND_TIME_LIMIT) {
@@ -235,9 +236,9 @@ Round.prototype.draw = function (ctx) {
 };
 
 Round.prototype.update = function () {
-
     if (!announcerSFX.started) {
         announcerSFX.play('start');
+        if (MUTED) announcerSFX.mute();
         announcerSFX.started = true;
     } else {
         this.roundTimer -= this.game.clockTick;
@@ -283,8 +284,6 @@ Round.prototype.update = function () {
 
         }
     }
-
-
 };
 
 /***********************************************

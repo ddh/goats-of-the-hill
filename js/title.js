@@ -13,7 +13,7 @@ function Title(gameEngine) {
     this.running = false;
     this.isDone = false;
 
-    this.background = new Background(this.game, ASSET_MANAGER.getAsset("./img/titleScreen.png"), 800, 600)
+    this.background = new Background(this.game, ASSET_MANAGER.getAsset("./img/titleScreen.png"), 800, 600);
 
     this.playGameHitbox = {left: 407, right: 540, top: 307, bottom: 388};
     this.tutorialHitbox = {left: 407, right: 540, top: 407, bottom: 488};
@@ -22,6 +22,8 @@ function Title(gameEngine) {
     this.playGameHover = false;
     this.tutorialHover = false;
     this.creditsHover = false;
+
+    Scene.call(this, this.game, this.background, this.type);
 }
 
 Title.prototype = new Scene();
@@ -72,7 +74,6 @@ Title.prototype.update = function () {
 
                 this.next = this.roundScene;
                 this.isDone = true;
-                ;
                 // console.log("Play Game clicked");
             }
 

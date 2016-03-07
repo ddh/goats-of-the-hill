@@ -7,8 +7,7 @@ var TIME_EXPIRE = 15;   // Constant for how long powerup stays on screen before 
 // Audio:
 var collectibleSFX = new Howl({
     autoplay: false,
-    urls: ['./audio/pickup.wav'], // Sound 'sprite' containing all sfx
-
+    urls: ['./audio/pickup.wav'] // Sound 'sprite' containing all sfx
 });
 
 function Collectible(game, x, y, width, height, type) {
@@ -81,7 +80,7 @@ Collectible.prototype.update = function () {
                 this.goat.powerUps.push(this.type);
                 console.log(this.goat + " picked up " + this);
                 this.pickedUp = true;
-                collectibleSFX.play();
+                if (MUTED) collectibleSFX.play();
                 break; // Enforces only one goat per collectible
             }
         }

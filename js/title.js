@@ -17,9 +17,11 @@ function Title(gameEngine) {
 
     this.background = new Background(this.game, ASSET_MANAGER.getAsset("./img/titleScreen.png"), 800, 600)
 
+    /*
     this.playGameHitbox = {left: 407, right: 540, top: 307, bottom: 388};
     this.tutorialHitbox = {left: 407, right: 540, top: 407, bottom: 488};
     this.creditsHitbox = {left: 407, right: 540, top: 507, bottom: 588};
+    */
 
     this.playGameHover = false;
     this.tutorialHover = false;
@@ -28,8 +30,8 @@ function Title(gameEngine) {
         {
             playerColor: "blue",
             color: "blue",
-            x: 10,
-            y: 10,
+            x: -100,
+            y: 500,
             width: 94,
             height: 90,
             velocity: {x: 3, y: 0},
@@ -40,8 +42,8 @@ function Title(gameEngine) {
         {
             playerColor: "green",
             color: "green",
-            x: 10,
-            y: 10,
+            x: -100,
+            y: 500,
             width: 94,
             height: 90,
             velocity: {x: 3, y: 0},
@@ -52,8 +54,8 @@ function Title(gameEngine) {
         {
             playerColor: "red",
             color: "red",
-            x: 10,
-            y: 10,
+            x: -100,
+            y: 500,
             width: 94,
             height: 90,
             velocity: {x: 3, y: 0},
@@ -64,8 +66,8 @@ function Title(gameEngine) {
         {
             playerColor: "yellow",
             color: "rgb(255, 215, 0)",
-            x: 10,
-            y: 10,
+            x: -100,
+            y: 500,
             width: 94,
             height: 90,
             velocity: {x: 3, y: 0},
@@ -92,6 +94,7 @@ Title.prototype.update = function () {
     // Check for mouse/keyboard input
     // game.mouse for hover, game.click for click
     if (this.running) {
+        /*
         this.playGameHover = false;
         this.tutorialHover = false;
         this.creditsHover = false;
@@ -144,6 +147,7 @@ Title.prototype.update = function () {
                 // console.log("Credits clicked");
             }
         }
+        */
 
         // for animating goats walking along the bottom
         for (var i = 0, len = this.goats.length; i < len; i++) {
@@ -158,6 +162,7 @@ Title.prototype.update = function () {
 Title.prototype.draw = function (ctx) {
     this.background.draw(ctx);
 
+    /*
     // draw buttons
     ctx.drawImage(ASSET_MANAGER.getAsset("./img/platform-small-hay.png"), 400, 300, 147, 92);
     ctx.drawImage(ASSET_MANAGER.getAsset("./img/platform-small-hay.png"), 400, 400, 147, 92);
@@ -193,6 +198,7 @@ Title.prototype.draw = function (ctx) {
             "rgba(255, 255, 255, 0.4)",
             "rgba(255, 255, 255, 0)");
     }
+    */
 
     // for drawing animated goats at bottom
     for (var i = 0, len = this.goats.length; i < len; i++) {

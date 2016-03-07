@@ -15,6 +15,8 @@ ASSET_MANAGER.queueDownload("./img/bg-space.png");
 ASSET_MANAGER.queueDownload("./img/bg-winter.png");
 ASSET_MANAGER.queueDownload("./img/mountainforest.png");
 ASSET_MANAGER.queueDownload("./img/bg-credits.png");
+ASSET_MANAGER.queueDownload("./img/bg-logo.png");
+ASSET_MANAGER.queueDownload("./img/bg-controller.png");
 
 // Platform Sprites
 ASSET_MANAGER.queueDownload("./img/platform-small-hay.png");
@@ -99,7 +101,7 @@ var bgMusic = new Howl({
     urls: ['./audio/bensound-jazzyfrenchy.mp3'],
     loop: true,
     volume: 0.5
-}).play();
+});
 
 ASSET_MANAGER.downloadAll(function () {
 
@@ -110,11 +112,13 @@ ASSET_MANAGER.downloadAll(function () {
     gameEngine.init(ctx);
 
 
-
     /* === NEW Game Logistics === */
     var sm = makeSceneManager(gameEngine);
     gameEngine.sceneManager = sm;
     gameEngine.entities.push(sm);
+
+    /* === Red Three Studios Logo === */
+    ctx.drawImage(ASSET_MANAGER.getAsset("./img/bg-logo.png"), 0, 0, 800, 600);
 
     /* === START GAME === */
     gameEngine.start(); // starts infinite game loop
@@ -129,6 +133,8 @@ var MUTED = false;
 var makeSceneManager = function (gameEngine) {
     // 1. Create all Scenes necessary for game
     // ---
+    var logoSplash = new Splash(gameEngine, 5, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/bg-logo.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
+    var controllerSplash = new Splash(gameEngine, 5, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/bg-controller.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
     var titleScene = new Title(gameEngine);
     // TODO: need to add Tutorial Scene (will need to change links section below too)
     var tutorialScene = new Tutorial(gameEngine);
@@ -143,6 +149,8 @@ var makeSceneManager = function (gameEngine) {
 
     // 2. Link up all Scenes in correct sequence before returning SceneManager with a reference to the title Scene
     // ---
+    logoSplash.next = controllerSplash;
+    controllerSplash.next = titleScene;
     titleScene.roundScene = r1;
     titleScene.tutorialScene = tutorialScene;
     titleScene.creditsScene = creditsScene;
@@ -156,7 +164,7 @@ var makeSceneManager = function (gameEngine) {
     sb3.next = eg;
     eg.next = titleScene;
 
-    return new SceneManager(gameEngine, titleScene);
+    return new SceneManager(gameEngine, logoSplash);
 };
 
 var createFirstRound = function (gameEngine) {

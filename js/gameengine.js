@@ -45,6 +45,7 @@ function GameEngine() {
     this.sceneManager = null;
     this.entities = [];
     this.continueKeyPressed = false;
+    this.anyKeyPressed = false;
     this.muteHitbox = {left: 750, right: 800, top: 550, bottom: 600}; // for mute buttons on all scenes
 }
 
@@ -118,6 +119,12 @@ GameEngine.prototype.startInput = function () {
     this.ctx.canvas.addEventListener("keyup", function (e) {
         if (e.which === 13) that.continueKeyPressed = true;
         //console.log("ENTER key was pressed");
+    });
+
+    this.ctx.canvas.addEventListener("keyup", function (e) {
+        // This function is called when any key is pressed
+        that.anyKeyPressed = true;
+        //console.log("Any key was pressed");
     });
 
     /* === MOUSE SETTINGS === */

@@ -22,7 +22,6 @@ function Credits(gameEngine) {
     this.greenGoatAnimation = new Animation(ASSET_MANAGER.getAsset('./img/green-goat-right.png'), 0, 0, 94, 90, 0.1, 4, true, false);
     this.redGoatAnimation = new Animation(ASSET_MANAGER.getAsset('./img/red-goat-right.png'), 0, 0, 94, 90, 0.1, 4, true, false);
     this.yellowGoatAnimation = new Animation(ASSET_MANAGER.getAsset('./img/yellow-goat-right.png'), 0, 0, 94, 90, 0.1, 4, true, false);
-
 }
 
 Credits.prototype = new Scene();
@@ -56,11 +55,9 @@ Credits.prototype.update = function () {
                     this.game.click.y < this.backButtonHitbox.bottom && this.game.click.y > this.backButtonHitbox.top) {
 
                     this.isDone = true;
-                    ;
                 }
             }
         }
-
     }
 };
 
@@ -101,8 +98,6 @@ Credits.prototype.draw = function (ctx) {
 
     // Credits
     drawTextWithOutline(ctx, '48px Impact', 'Red Three Team', 240, 120, 'red', 'white', 5);
-
-
 };
 
 // performs variable initialization

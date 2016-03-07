@@ -370,7 +370,7 @@ Goat.prototype.update = function () {
             this.jumping = true;
             this.ramping = true; // ramp up velocity instead of immediate impulse
             this.entity = null;
-            goatSFX.play('jump');
+            if (!MUTED) goatSFX.play('jump');
             console.log(this + " Jumped");
             this.base = 535; // Keep track of the goat's last bottom-y value
         }
@@ -510,7 +510,7 @@ Goat.prototype.update = function () {
             this.chargeTime = 0;
             this.chargeDecay = false;
             this.attacking = true;
-            goatSFX.play('attack');
+            if (!MUTED) goatSFX.play('attack');
         }
     }
 
@@ -543,7 +543,7 @@ Goat.prototype.update = function () {
                         transferHit(this, goat);
                         this.finishAttack();
                         victims++;
-                        goatSFX.play('injured');
+                        if (!MUTED) goatSFX.play('injured');
                         break; // Can only attack one goat at a time
                     }
                 } else {
@@ -551,7 +551,7 @@ Goat.prototype.update = function () {
                         transferHit(this, goat);
                         this.finishAttack();
                         victims++;
-                        goatSFX.play('injured');
+                        if (!MUTED) goatSFX.play('injured');
                         break; // Can only attack one goat at a time
                     }
                 }
@@ -791,8 +791,8 @@ var drawPowerupsHeld = function (goat) {
 
 
 /****************************************
-*              Powerups                *
-****************************************/
+ *              Powerups                *
+ ****************************************/
 var drawPowerupsVisuals = function (goat) {
     for (var i = 0, len = goat.powerUps.length; i < len; i++) {
         if (goat.powerUps[i] === "doubleJump") {
@@ -803,16 +803,16 @@ var drawPowerupsVisuals = function (goat) {
         }
         if (goat.powerUps[i] === "highJump") {
             if (goat.right) {
-                goat.highJumpRightPowerupAnimation.drawFrame(goat.game.clockTick, goat.ctx, goat.x + 3 , goat.y + 8, goat.scale * 0.8);
+                goat.highJumpRightPowerupAnimation.drawFrame(goat.game.clockTick, goat.ctx, goat.x + 3, goat.y + 8, goat.scale * 0.8);
             } else {
                 goat.highJumpLeftPowerupAnimation.drawFrame(goat.game.clockTick, goat.ctx, goat.x + 2 + goat.width / 2.5, goat.y + 8, goat.scale * 0.8);
             }
         }
         if (goat.powerUps[i] === "speedUp") {
             if (goat.right) {
-                goat.speedUpPowerupAnimation.drawFrame(goat.game.clockTick, goat.ctx, goat.x - 15 , goat.y + 8, goat.scale * 0.5);
+                goat.speedUpPowerupAnimation.drawFrame(goat.game.clockTick, goat.ctx, goat.x - 15, goat.y + 8, goat.scale * 0.5);
             } else {
-                goat.speedUpPowerupAnimation.drawFrame(goat.game.clockTick, goat.ctx, goat.x + 20 , goat.y + 8, goat.scale * 0.5);   
+                goat.speedUpPowerupAnimation.drawFrame(goat.game.clockTick, goat.ctx, goat.x + 20, goat.y + 8, goat.scale * 0.5);
             }
         }
     }

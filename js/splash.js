@@ -54,6 +54,8 @@ Splash.prototype.startScene = function () {
 Splash.prototype.endScene = function () {
     this.isDone = true;
     this.running = false;
+    if (this.next.type == "Title") bgMusic.play();     // Cue game music!
+
 };
 
 // checks if user has clicked to play or see tutorial

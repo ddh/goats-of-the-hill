@@ -137,6 +137,7 @@ Title.prototype.draw = function (ctx) {
 
 // performs variable initialization
 Title.prototype.startScene = function () {
+    bgMusic.play();     // Cue game music!
     this.running = true;
     this.isDone = false;
 };

@@ -2,7 +2,7 @@
 // https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 
 // Class Constants:
-var ROUND_TIME_LIMIT = 5; // 1 minute (in seconds)
+var ROUND_TIME_LIMIT = 10; // 1 minute (in seconds)
 var GOLD_COLOR = "rgb(255, 215, 0)";
 var MAX_IDLE_TIME = 10;    // *Currently turned off* - How many seconds of inactivity before goat AI kicks in on an idle player.
 var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
@@ -181,6 +181,7 @@ Round.prototype.drawTimer = function (ctx) {
     if (secondsLeft < 0) secondsLeft = 0;
     if (Math.floor(this.roundTimer / 1) === 5 && !announcerSFX.ended) {
         announcerSFX.play('countdown');
+        if (MUTED)announcerSFX.mute();
         announcerSFX.ended = true;
     }
     if (Math.floor(this.roundTimer / 1) > ROUND_TIME_LIMIT) {
@@ -255,6 +256,7 @@ Round.prototype.update = function () {
 
     if (!announcerSFX.started) {
         announcerSFX.play('start');
+        if (MUTED) announcerSFX.mute();
         announcerSFX.started = true;
     } else {
         this.roundTimer -= this.game.clockTick;

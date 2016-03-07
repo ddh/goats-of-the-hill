@@ -14,6 +14,7 @@ ASSET_MANAGER.queueDownload("./img/endgame-scene.png");
 ASSET_MANAGER.queueDownload("./img/bg-space.png");
 ASSET_MANAGER.queueDownload("./img/bg-winter.png");
 ASSET_MANAGER.queueDownload("./img/mountainforest.png");
+ASSET_MANAGER.queueDownload("./img/bg-credits.png");
 
 // Platform Sprites
 ASSET_MANAGER.queueDownload("./img/platform-small-hay.png");
@@ -127,32 +128,17 @@ var makeSceneManager = function (gameEngine) {
     // ---
     var titleScene = new Title(gameEngine);
     var tutorialScene = new Tutorial(gameEngine);
+    var creditsScene = new Credits(gameEngine);
     var demo = createDemoRound(gameEngine);
-    //var r1 = createFirstRound(gameEngine); // first round
-    //var sb1 = new Scoreboard(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
-    //var r2 = createSecondRound(gameEngine); // second round
-    //var sb2 = new Scoreboard(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
-    //var r3 = createThirdRound(gameEngine); // third round
-    //var sb3 = new Scoreboard(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/scoreBoard.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
-    //var eg = new EndGame(gameEngine, new Background(gameEngine, ASSET_MANAGER.getAsset("./img/endgame-scene.png"), CANVAS_WIDTH, CANVAS_HEIGHT));
 
     // 2. Link up all Scenes in correct sequence before returning SceneManager with a reference to the title Scene
     // ---
     titleScene.roundScene = demo;
     titleScene.tutorialScene = tutorialScene;
+    titleScene.creditsScene = creditsScene;
     tutorialScene.next = titleScene;
+    creditsScene.next = titleScene;
     demo.next = titleScene;
-
-    //titleScene.roundScene = r1;
-    //titleScene.tutorialScene = tutorialScene;
-    //tutorialScene.next = titleScene;
-    //r1.next = sb1;
-    //sb1.next = r2;
-    //r2.next = sb2;
-    //sb2.next = r3;
-    //r3.next = sb3;
-    //sb3.next = eg;
-    //eg.next = titleScene;
 
     return new SceneManager(gameEngine, titleScene);
 };

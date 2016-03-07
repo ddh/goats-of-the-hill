@@ -89,8 +89,8 @@ ASSET_MANAGER.queueDownload("./img/transparent_pixel.png");
 ASSET_MANAGER.queueDownload("./img/simple-crown-animated.png");
 ASSET_MANAGER.queueDownload("./img/crown.png");
 ASSET_MANAGER.queueDownload("./img/back.png");
-ASSET_MANAGER.queueDownload("./img/crown-sparkle.png");
 ASSET_MANAGER.queueDownload("./img/regal-crown.png");
+ASSET_MANAGER.queueDownload("./img/sparkles.png");
 
 /* === Game Audio ===*/
 // bgMusic sourced from http://www.bensound.com/

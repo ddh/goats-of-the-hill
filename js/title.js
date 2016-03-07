@@ -19,6 +19,9 @@ function Title(gameEngine) {
 
     this.playGameHover = false;
     this.tutorialHover = false;
+
+    // for sparkling king crown animations
+    this.crownSparkleAnimation = new Animation(ASSET_MANAGER.getAsset("./img/crown-sparkle.png"), 0, 0, 140, 140, 0.1, 16, true, false);
 }
 
 Title.prototype = new Scene();
@@ -104,6 +107,9 @@ Title.prototype.draw = function (ctx) {
             "rgba(255, 255, 255, 0.4)",
             "rgba(255, 255, 255, 0)");
     }
+
+    // for drawing crown and associated sparkles
+    ctx.drawImage(ASSET_MANAGER.getAsset("./img/regal-crown.png"), 0, 0, 600, 454, 557, 10, 120, 90);
 };
 
 // performs variable initialization

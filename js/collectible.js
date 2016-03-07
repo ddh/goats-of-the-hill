@@ -80,7 +80,7 @@ Collectible.prototype.update = function () {
                 this.goat.powerUps.push(this.type);
                 console.log(this.goat + " picked up " + this);
                 this.pickedUp = true;
-                if (MUTED) collectibleSFX.play();
+                if (!MUTED) collectibleSFX.play();
                 break; // Enforces only one goat per collectible
             }
         }

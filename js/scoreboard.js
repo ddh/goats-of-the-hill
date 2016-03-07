@@ -15,7 +15,6 @@ function Scoreboard(game, background) {
         2: [],          // player 3
         3: []           // player 4
     };
-    this.mutedHitBox = {left: 750, right: 800, top: 550, bottom: 600};
 
     Scene.call(this, this.game, this.background, this.type);
 }
@@ -61,26 +60,7 @@ Scoreboard.prototype.draw = function (ctx) {
 };
 
 Scoreboard.prototype.update = function () {
-    // handles muting and unmuting
-    if (this.game.click) {
-        if (this.game.click.x < this.mutedHitBox.right && this.game.click.x > this.mutedHitBox.left &&
-            this.game.click.y < this.mutedHitBox.bottom && this.game.click.y > this.mutedHitBox.top) {
 
-            MUTED ^= true; // toggle muted bool
-            // console.log("Volume/mute button clicked.");
-        }
-    }
-    if (MUTED) {
-        bgMusic.mute();
-        announcerSFX.mute();
-        goatSFX.mute();
-        collectibleSFX.mute();
-    } else {
-        bgMusic.unmute();
-        announcerSFX.unmute();
-        goatSFX.unmute();
-        collectibleSFX.unmute();
-    }
 };
 
 // performs variable initialization

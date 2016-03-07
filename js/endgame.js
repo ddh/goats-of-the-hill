@@ -71,8 +71,6 @@ function EndGame(game, background) {
 
     this.delayDisplayBucket = 0;
 
-    this.mutedHitBox = {left: 750, right: 800, top: 550, bottom: 600};
-
     Scene.call(this, this.game, this.background, this.type);
 }
 
@@ -158,28 +156,6 @@ EndGame.prototype.update = function () {
     // 3. update "goats"
     for (var j = 0, len = this.goatData.length; j < len; j++) {
         updateIndvlGoatDataObj(this.goatData[j], this.pfData);
-    }
-
-    // handles muting and unmuting
-    if (this.game.click) {
-        if (this.game.click.x < this.mutedHitBox.right && this.game.click.x > this.mutedHitBox.left &&
-            this.game.click.y < this.mutedHitBox.bottom && this.game.click.y > this.mutedHitBox.top) {
-
-            MUTED ^= true; // toggle muted bool
-            // console.log("Volume/mute button clicked.");
-        }
-    }
-
-    if (MUTED) {
-        bgMusic.mute();
-        announcerSFX.mute();
-        goatSFX.mute();
-        collectibleSFX.mute();
-    } else {
-        bgMusic.unmute();
-        announcerSFX.unmute();
-        goatSFX.unmute();
-        collectibleSFX.unmute();
     }
 };
 

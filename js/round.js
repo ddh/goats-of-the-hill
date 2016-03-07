@@ -42,7 +42,6 @@ function Round(game, background, platforms, randomizeHill, randomHillSpeed) {
         3: []           // player 4
     };
     this.type = "Round"; // used to overload superclass constructor
-    this.mutedHitBox = {left: 750, right: 800, top: 550, bottom: 600};
 
     Scene.call(this, this.game, this.background, this.type);
 }
@@ -181,7 +180,7 @@ Round.prototype.drawTimer = function (ctx) {
     if (secondsLeft < 0) secondsLeft = 0;
     if (Math.floor(this.roundTimer / 1) === 5 && !announcerSFX.ended) {
         announcerSFX.play('countdown');
-        if (MUTED)announcerSFX.mute();
+        if (MUTED) announcerSFX.mute();
         announcerSFX.ended = true;
     }
     if (Math.floor(this.roundTimer / 1) > ROUND_TIME_LIMIT) {
@@ -243,17 +242,6 @@ Round.prototype.draw = function (ctx) {
 };
 
 Round.prototype.update = function () {
-
-    if (this.game.click) {
-        // handles muting and unmuting
-        if (this.game.click.x < this.mutedHitBox.right && this.game.click.x > this.mutedHitBox.left &&
-            this.game.click.y < this.mutedHitBox.bottom && this.game.click.y > this.mutedHitBox.top) {
-
-            MUTED ^= true; // toggle muted bool
-            // console.log("Volume/mute button clicked.");
-        }
-    }
-
     if (!announcerSFX.started) {
         announcerSFX.play('start');
         if (MUTED) announcerSFX.mute();
@@ -301,18 +289,6 @@ Round.prototype.update = function () {
             }
 
         }
-    }
-
-    if (MUTED) {
-        bgMusic.mute();
-        announcerSFX.mute();
-        goatSFX.mute();
-        collectibleSFX.mute();
-    } else {
-        bgMusic.unmute();
-        announcerSFX.unmute();
-        goatSFX.unmute();
-        collectibleSFX.unmute();
     }
 };
 

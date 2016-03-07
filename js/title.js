@@ -18,7 +18,6 @@ function Title(gameEngine) {
     this.playGameHitbox = {left: 407, right: 540, top: 307, bottom: 388};
     this.tutorialHitbox = {left: 407, right: 540, top: 407, bottom: 488};
     this.creditsHitbox = {left: 407, right: 540, top: 507, bottom: 588};
-    this.mutedHitBox = {left: 750, right: 800, top: 550, bottom: 600};
 
     this.playGameHover = false;
     this.tutorialHover = false;
@@ -93,24 +92,6 @@ Title.prototype.update = function () {
                 this.isDone = true;
                 // console.log("Credits clicked");
             }
-            // handles muting and unmuting
-            if (this.game.click.x < this.mutedHitBox.right && this.game.click.x > this.mutedHitBox.left &&
-                this.game.click.y < this.mutedHitBox.bottom && this.game.click.y > this.mutedHitBox.top) {
-
-                MUTED ^= true; // toggle muted bool
-                // console.log("Volume/mute button clicked.");
-            }
-        }
-        if (MUTED) {
-            bgMusic.mute();
-            announcerSFX.mute();
-            goatSFX.mute();
-            collectibleSFX.mute();
-        } else {
-            bgMusic.unmute();
-            announcerSFX.unmute();
-            goatSFX.unmute();
-            collectibleSFX.unmute();
         }
     }
 };

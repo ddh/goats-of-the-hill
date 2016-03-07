@@ -45,8 +45,6 @@ function Tutorial(gameEngine) {
     this.jumpRightAnimationGreen = new Animation(ASSET_MANAGER.getAsset('./img/green-goat-right.png'), 846, 0, 94, 90, 0.1, 8, true, false);
     this.attackRightAnimationGreen = new Animation(ASSET_MANAGER.getAsset('./img/green-goat-right.png'), 1974, 0, 94, 90, 0.1, 1, true, false);
     this.attackAuraRightAnimationGreen = new Animation(ASSET_MANAGER.getAsset('./img/green-goat-attackAuraRight.png'), 16, 0, 43, 150, .1, 4, true, true);
-
-    this.mutedHitBox = {left: 750, right: 800, top: 550, bottom: 600};
 }
 
 Tutorial.prototype = new Scene();
@@ -89,24 +87,6 @@ Tutorial.prototype.update = function () {
                 
                 this.isDone = true;
             }
-            // handles muting and unmuting
-            if (this.game.click.x < this.mutedHitBox.right && this.game.click.x > this.mutedHitBox.left &&
-                this.game.click.y < this.mutedHitBox.bottom && this.game.click.y > this.mutedHitBox.top) {
-
-                MUTED ^= true; // toggle muted bool
-                // console.log("Volume/mute button clicked.");
-            }
-        }
-        if (MUTED) {
-            bgMusic.mute();
-            announcerSFX.mute();
-            goatSFX.mute();
-            collectibleSFX.mute();
-        } else {
-            bgMusic.unmute();
-            announcerSFX.unmute();
-            goatSFX.unmute();
-            collectibleSFX.unmute();
         }
     }
 };

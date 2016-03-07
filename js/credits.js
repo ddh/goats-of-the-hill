@@ -22,8 +22,6 @@ function Credits(gameEngine) {
     this.greenGoatAnimation = new Animation(ASSET_MANAGER.getAsset('./img/green-goat-right.png'), 0, 0, 94, 90, 0.1, 4, true, false);
     this.redGoatAnimation = new Animation(ASSET_MANAGER.getAsset('./img/red-goat-right.png'), 0, 0, 94, 90, 0.1, 4, true, false);
     this.yellowGoatAnimation = new Animation(ASSET_MANAGER.getAsset('./img/yellow-goat-right.png'), 0, 0, 94, 90, 0.1, 4, true, false);
-
-    this.mutedHitBox = {left: 750, right: 800, top: 550, bottom: 600};
 }
 
 Credits.prototype = new Scene();
@@ -58,25 +56,7 @@ Credits.prototype.update = function () {
 
                     this.isDone = true;
                 }
-                // handles muting and unmuting
-                if (this.game.click.x < this.mutedHitBox.right && this.game.click.x > this.mutedHitBox.left &&
-                    this.game.click.y < this.mutedHitBox.bottom && this.game.click.y > this.mutedHitBox.top) {
-
-                    MUTED ^= true; // toggle muted bool
-                    // console.log("Volume/mute button clicked.");
-                }
             }
-        }
-        if (MUTED) {
-            bgMusic.mute();
-            announcerSFX.mute();
-            goatSFX.mute();
-            collectibleSFX.mute();
-        } else {
-            bgMusic.unmute();
-            announcerSFX.unmute();
-            goatSFX.unmute();
-            collectibleSFX.unmute();
         }
     }
 };

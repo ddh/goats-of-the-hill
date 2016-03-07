@@ -51,12 +51,6 @@ Scoreboard.prototype.draw = function (ctx) {
     drawTextWithOutline(ctx, "40px Impact", this.goats[1].score, 310, 202, this.goats[1].color, 'white'); // winner #2
     drawTextWithOutline(ctx, "40px Impact", this.goats[2].score, 585, 288, this.goats[2].color, 'white'); // winner #3
     drawTextWithOutline(ctx, "40px Impact", this.goats[3].score, 220, 368, this.goats[3].color, 'white'); // winner #4
-
-    if (MUTED) {
-        ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-muted-icon.png"), 0, 0, 1024, 1024, 750, 550, 50, 50);
-    } else {
-        ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-on-icon.png"), 0, 0, 2000, 2000, 750, 550, 50, 50);
-    }
 };
 
 Scoreboard.prototype.update = function () {

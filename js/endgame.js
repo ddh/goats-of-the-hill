@@ -134,12 +134,6 @@ EndGame.prototype.draw = function (ctx) {
         // draw crown over winning goat
         this.crownAnimation.drawFrame(this.game.clockTick, ctx, winningGoat.x + 45, winningGoat.y - 30, 1);
     }
-
-    if (MUTED) {
-        ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-muted-icon.png"), 0, 0, 1024, 1024, 750, 550, 50, 50);
-    } else {
-        ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-on-icon.png"), 0, 0, 2000, 2000, 750, 550, 50, 50);
-    }
 };
 
 EndGame.prototype.update = function () {

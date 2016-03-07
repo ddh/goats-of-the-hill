@@ -176,6 +176,13 @@ GameEngine.prototype.draw = function () {
         this.entities[i].draw(this.ctx);
     }
 
+    // draws mute buttons on all scenes
+    if (MUTED) {
+        this.ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-muted-icon.png"), 0, 0, 1024, 1024, 750, 550, 50, 50);
+    } else {
+        this.ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-on-icon.png"), 0, 0, 2000, 2000, 750, 550, 50, 50);
+    }
+
     // 4. Restore old state
     this.ctx.restore();
 };

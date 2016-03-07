@@ -134,11 +134,6 @@ Title.prototype.draw = function (ctx) {
             "rgba(255, 255, 255, 0.4)",
             "rgba(255, 255, 255, 0)");
     }
-    if (MUTED) {
-        ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-muted-icon.png"), 0, 0, 1024, 1024, 750, 550, 50, 50);
-    } else {
-        ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-on-icon.png"), 0, 0, 2000, 2000, 750, 550, 50, 50);
-    }
 };
 
 // performs variable initialization

@@ -45,6 +45,8 @@ function Tutorial(gameEngine) {
     this.jumpRightAnimationGreen = new Animation(ASSET_MANAGER.getAsset('./img/green-goat-right.png'), 846, 0, 94, 90, 0.1, 8, true, false);
     this.attackRightAnimationGreen = new Animation(ASSET_MANAGER.getAsset('./img/green-goat-right.png'), 1974, 0, 94, 90, 0.1, 1, true, false);
     this.attackAuraRightAnimationGreen = new Animation(ASSET_MANAGER.getAsset('./img/green-goat-attackAuraRight.png'), 16, 0, 43, 150, .1, 4, true, true);
+
+    this.mutedHitBox = {left: 750, right: 800, top: 550, bottom: 600};
 }
 
 Tutorial.prototype = new Scene();
@@ -85,8 +87,26 @@ Tutorial.prototype.update = function () {
             if (this.game.click.x < this.backButtonHitbox.right && this.game.click.x > this.backButtonHitbox.left &&
                 this.game.click.y < this.backButtonHitbox.bottom && this.game.click.y > this.backButtonHitbox.top) {
                 
-                this.isDone = true;;
+                this.isDone = true;
             }
+            // handles muting and unmuting
+            if (this.game.click.x < this.mutedHitBox.right && this.game.click.x > this.mutedHitBox.left &&
+                this.game.click.y < this.mutedHitBox.bottom && this.game.click.y > this.mutedHitBox.top) {
+
+                MUTED ^= true; // toggle muted bool
+                // console.log("Volume/mute button clicked.");
+            }
+        }
+        if (MUTED) {
+            bgMusic.mute();
+            announcerSFX.mute();
+            goatSFX.mute();
+            collectibleSFX.mute();
+        } else {
+            bgMusic.unmute();
+            announcerSFX.unmute();
+            goatSFX.unmute();
+            collectibleSFX.unmute();
         }
     }
 };
@@ -169,6 +189,12 @@ Tutorial.prototype.draw = function (ctx) {
                              50,
                              'rgba(255, 255, 255, 0.4)',
                              'rgba(255, 255, 255, 0)');
+    }
+
+    if (MUTED) {
+        ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-muted-icon.png"), 0, 0, 1024, 1024, 750, 550, 50, 50);
+    } else {
+        ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-on-icon.png"), 0, 0, 2000, 2000, 750, 550, 50, 50);
     }
 };
 

@@ -2,7 +2,7 @@
 // https://github.com/algorithm0r/GamesProject/blob/Unicorn/game.js
 
 // Class Constants:
-var ROUND_TIME_LIMIT = 60; // 1 minute (in seconds)
+var ROUND_TIME_LIMIT = 5; // 1 minute (in seconds)
 var GOLD_COLOR = "rgb(255, 215, 0)";
 var MAX_IDLE_TIME = 10;    // *Currently turned off* - How many seconds of inactivity before goat AI kicks in on an idle player.
 var COLLECTIBLES = ['speedUp', 'doubleJump', 'highJump', 'maxCharge', 'attackUp', 'invincibility'];
@@ -42,6 +42,7 @@ function Round(game, background, platforms, randomizeHill, randomHillSpeed) {
         3: []           // player 4
     };
     this.type = "Round"; // used to overload superclass constructor
+    this.mutedHitBox = {left: 750, right: 800, top: 550, bottom: 600};
 
     Scene.call(this, this.game, this.background, this.type);
 }
@@ -232,9 +233,25 @@ Round.prototype.draw = function (ctx) {
     this.drawTimer(ctx);
     drawTextWithOutline(ctx, "32px Impact", "Round #" + (ROUNDS_PLAYED + 1), 650, 40, 'purple', 'white');
     drawTextWithOutline(ctx, "32px Impact", "Oh My Goat!", 20, 40, 'purple', 'white');
+
+    if (MUTED) {
+        ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-muted-icon.png"), 0, 0, 1024, 1024, 750, 550, 50, 50);
+    } else {
+        ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-on-icon.png"), 0, 0, 2000, 2000, 750, 550, 50, 50);
+    }
 };
 
 Round.prototype.update = function () {
+
+    if (this.game.click) {
+        // handles muting and unmuting
+        if (this.game.click.x < this.mutedHitBox.right && this.game.click.x > this.mutedHitBox.left &&
+            this.game.click.y < this.mutedHitBox.bottom && this.game.click.y > this.mutedHitBox.top) {
+
+            MUTED ^= true; // toggle muted bool
+            // console.log("Volume/mute button clicked.");
+        }
+    }
 
     if (!announcerSFX.started) {
         announcerSFX.play('start');
@@ -284,7 +301,17 @@ Round.prototype.update = function () {
         }
     }
 
-
+    if (MUTED) {
+        bgMusic.mute();
+        announcerSFX.mute();
+        goatSFX.mute();
+        collectibleSFX.mute();
+    } else {
+        bgMusic.unmute();
+        announcerSFX.unmute();
+        goatSFX.unmute();
+        collectibleSFX.unmute();
+    }
 };
 
 /***********************************************

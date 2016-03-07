@@ -13,15 +13,18 @@ function Title(gameEngine) {
     this.running = false;
     this.isDone = false;
 
-    this.background = new Background(this.game, ASSET_MANAGER.getAsset("./img/titleScreen.png"), 800, 600)
+    this.background = new Background(this.game, ASSET_MANAGER.getAsset("./img/titleScreen.png"), 800, 600);
 
     this.playGameHitbox = {left: 407, right: 540, top: 307, bottom: 388};
     this.tutorialHitbox = {left: 407, right: 540, top: 407, bottom: 488};
     this.creditsHitbox = {left: 407, right: 540, top: 507, bottom: 588};
+    this.mutedHitBox = {left: 750, right: 800, top: 550, bottom: 600};
 
     this.playGameHover = false;
     this.tutorialHover = false;
     this.creditsHover = false;
+
+    Scene.call(this, this.game, this.background, this.type);
 }
 
 Title.prototype = new Scene();
@@ -72,7 +75,6 @@ Title.prototype.update = function () {
 
                 this.next = this.roundScene;
                 this.isDone = true;
-                ;
                 // console.log("Play Game clicked");
             }
 
@@ -91,6 +93,24 @@ Title.prototype.update = function () {
                 this.isDone = true;
                 // console.log("Credits clicked");
             }
+            // handles muting and unmuting
+            if (this.game.click.x < this.mutedHitBox.right && this.game.click.x > this.mutedHitBox.left &&
+                this.game.click.y < this.mutedHitBox.bottom && this.game.click.y > this.mutedHitBox.top) {
+
+                MUTED ^= true; // toggle muted bool
+                // console.log("Volume/mute button clicked.");
+            }
+        }
+        if (MUTED) {
+            bgMusic.mute();
+            announcerSFX.mute();
+            goatSFX.mute();
+            collectibleSFX.mute();
+        } else {
+            bgMusic.unmute();
+            announcerSFX.unmute();
+            goatSFX.unmute();
+            collectibleSFX.unmute();
         }
     }
 };
@@ -132,6 +152,11 @@ Title.prototype.draw = function (ctx) {
             25,
             "rgba(255, 255, 255, 0.4)",
             "rgba(255, 255, 255, 0)");
+    }
+    if (MUTED) {
+        ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-muted-icon.png"), 0, 0, 1024, 1024, 750, 550, 50, 50);
+    } else {
+        ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-on-icon.png"), 0, 0, 2000, 2000, 750, 550, 50, 50);
     }
 };
 

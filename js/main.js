@@ -90,6 +90,8 @@ ASSET_MANAGER.queueDownload("./img/transparent_pixel.png");
 ASSET_MANAGER.queueDownload("./img/simple-crown-animated.png");
 ASSET_MANAGER.queueDownload("./img/crown.png");
 ASSET_MANAGER.queueDownload("./img/back.png");
+ASSET_MANAGER.queueDownload("./img/volume-muted-icon.png");
+ASSET_MANAGER.queueDownload("./img/volume-on-icon.png");
 
 /* === Game Audio ===*/
 // bgMusic sourced from http://www.bensound.com/
@@ -121,6 +123,7 @@ ASSET_MANAGER.downloadAll(function () {
 var CANVAS_WIDTH = 800;
 var CANVAS_HEIGHT = 600;
 var HILL_SPEED = 8;
+var MUTED = false;
 
 // TODO: need to set next pointers for all Scenes
 var makeSceneManager = function (gameEngine) {

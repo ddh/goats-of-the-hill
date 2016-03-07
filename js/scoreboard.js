@@ -15,6 +15,7 @@ function Scoreboard(game, background) {
         2: [],          // player 3
         3: []           // player 4
     };
+    this.mutedHitBox = {left: 750, right: 800, top: 550, bottom: 600};
 
     Scene.call(this, this.game, this.background, this.type);
 }
@@ -51,9 +52,36 @@ Scoreboard.prototype.draw = function (ctx) {
     drawTextWithOutline(ctx, "40px Impact", this.goats[1].score, 310, 202, this.goats[1].color, 'white'); // winner #2
     drawTextWithOutline(ctx, "40px Impact", this.goats[2].score, 585, 288, this.goats[2].color, 'white'); // winner #3
     drawTextWithOutline(ctx, "40px Impact", this.goats[3].score, 220, 368, this.goats[3].color, 'white'); // winner #4
+
+    if (MUTED) {
+        ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-muted-icon.png"), 0, 0, 1024, 1024, 750, 550, 50, 50);
+    } else {
+        ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-on-icon.png"), 0, 0, 2000, 2000, 750, 550, 50, 50);
+    }
 };
 
-Scoreboard.prototype.update = function () {};
+Scoreboard.prototype.update = function () {
+    // handles muting and unmuting
+    if (this.game.click) {
+        if (this.game.click.x < this.mutedHitBox.right && this.game.click.x > this.mutedHitBox.left &&
+            this.game.click.y < this.mutedHitBox.bottom && this.game.click.y > this.mutedHitBox.top) {
+
+            MUTED ^= true; // toggle muted bool
+            // console.log("Volume/mute button clicked.");
+        }
+    }
+    if (MUTED) {
+        bgMusic.mute();
+        announcerSFX.mute();
+        goatSFX.mute();
+        collectibleSFX.mute();
+    } else {
+        bgMusic.unmute();
+        announcerSFX.unmute();
+        goatSFX.unmute();
+        collectibleSFX.unmute();
+    }
+};
 
 // performs variable initialization
 Scoreboard.prototype.startScene = function () {

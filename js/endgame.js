@@ -71,6 +71,8 @@ function EndGame(game, background) {
 
     this.delayDisplayBucket = 0;
 
+    this.mutedHitBox = {left: 750, right: 800, top: 550, bottom: 600};
+
     Scene.call(this, this.game, this.background, this.type);
 }
 
@@ -134,6 +136,12 @@ EndGame.prototype.draw = function (ctx) {
         // draw crown over winning goat
         this.crownAnimation.drawFrame(this.game.clockTick, ctx, winningGoat.x + 45, winningGoat.y - 30, 1);
     }
+
+    if (MUTED) {
+        ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-muted-icon.png"), 0, 0, 1024, 1024, 750, 550, 50, 50);
+    } else {
+        ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-on-icon.png"), 0, 0, 2000, 2000, 750, 550, 50, 50);
+    }
 };
 
 EndGame.prototype.update = function () {
@@ -150,6 +158,28 @@ EndGame.prototype.update = function () {
     // 3. update "goats"
     for (var j = 0, len = this.goatData.length; j < len; j++) {
         updateIndvlGoatDataObj(this.goatData[j], this.pfData);
+    }
+
+    // handles muting and unmuting
+    if (this.game.click) {
+        if (this.game.click.x < this.mutedHitBox.right && this.game.click.x > this.mutedHitBox.left &&
+            this.game.click.y < this.mutedHitBox.bottom && this.game.click.y > this.mutedHitBox.top) {
+
+            MUTED ^= true; // toggle muted bool
+            // console.log("Volume/mute button clicked.");
+        }
+    }
+
+    if (MUTED) {
+        bgMusic.mute();
+        announcerSFX.mute();
+        goatSFX.mute();
+        collectibleSFX.mute();
+    } else {
+        bgMusic.unmute();
+        announcerSFX.unmute();
+        goatSFX.unmute();
+        collectibleSFX.unmute();
     }
 };
 

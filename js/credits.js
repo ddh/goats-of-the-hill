@@ -23,6 +23,7 @@ function Credits(gameEngine) {
     this.redGoatAnimation = new Animation(ASSET_MANAGER.getAsset('./img/red-goat-right.png'), 0, 0, 94, 90, 0.1, 4, true, false);
     this.yellowGoatAnimation = new Animation(ASSET_MANAGER.getAsset('./img/yellow-goat-right.png'), 0, 0, 94, 90, 0.1, 4, true, false);
 
+    this.mutedHitBox = {left: 750, right: 800, top: 550, bottom: 600};
 }
 
 Credits.prototype = new Scene();
@@ -56,11 +57,27 @@ Credits.prototype.update = function () {
                     this.game.click.y < this.backButtonHitbox.bottom && this.game.click.y > this.backButtonHitbox.top) {
 
                     this.isDone = true;
-                    ;
+                }
+                // handles muting and unmuting
+                if (this.game.click.x < this.mutedHitBox.right && this.game.click.x > this.mutedHitBox.left &&
+                    this.game.click.y < this.mutedHitBox.bottom && this.game.click.y > this.mutedHitBox.top) {
+
+                    MUTED ^= true; // toggle muted bool
+                    // console.log("Volume/mute button clicked.");
                 }
             }
         }
-
+        if (MUTED) {
+            bgMusic.mute();
+            announcerSFX.mute();
+            goatSFX.mute();
+            collectibleSFX.mute();
+        } else {
+            bgMusic.unmute();
+            announcerSFX.unmute();
+            goatSFX.unmute();
+            collectibleSFX.unmute();
+        }
     }
 };
 
@@ -102,7 +119,11 @@ Credits.prototype.draw = function (ctx) {
     // Credits
     drawTextWithOutline(ctx, '48px Impact', 'Red Three Team', 240, 120, 'red', 'white', 5);
 
-
+    if (MUTED) {
+        ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-muted-icon.png"), 0, 0, 1024, 1024, 750, 550, 50, 50);
+    } else {
+        ctx.drawImage(ASSET_MANAGER.getAsset("./img/volume-on-icon.png"), 0, 0, 2000, 2000, 750, 550, 50, 50);
+    }
 };
 
 // performs variable initialization

@@ -25,10 +25,13 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+var AI_DELAY = 0.5; // "worse" AI updates every half second
+
 function Goat(game, playerNumber, controls, sprite, color) {
     // Game properties:
     this.playerNumber = playerNumber;
     this.aiEnabled = false;
+    this.aiDelay = AI_DELAY;
     this.controls = controls;
     this.game = game;
     this.ctx = game.ctx;
@@ -235,8 +238,10 @@ Goat.prototype.update = function () {
      ****************************************/
 
     // AI Goat basically emulates key presses:
-
-    if (this.aiEnabled && !this.injured) {
+    this.aiDelay -= this.game.clockTick;
+    if (this.aiEnabled && !this.injured && this.aiDelay < 0) {
+        console.log("AI updated");
+        this.aiDelay = AI_DELAY;
 
         // Find the hill
         function findHill(that) {
@@ -276,10 +281,10 @@ Goat.prototype.update = function () {
                 this.allowJump = true;
                 this.jumpKey = true;
             }
-        }
 
-        // AI Attacking: Goat is always charging up
-        this.attackKey = true
+            // AI Attacking: Goat is charging up if hill is present
+            this.attackKey = true;
+        }
 
         // Or Goat will attack the king if it detects a collision with king
         if (this.chargePower >= getRandomIntInclusive(3, this.chargePowerMax)) {

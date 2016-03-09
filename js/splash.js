@@ -28,7 +28,7 @@ Splash.prototype.reset = function () {
 Splash.prototype.update = function () {
 
     this.delay -= this.game.clockTick;
-    console.log(this.delay);
+    //console.log(this.delay);
 
     if (this.delay < 0 || this.game.anyKeyPressed) {
         this.isDone = true;

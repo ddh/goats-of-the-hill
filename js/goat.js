@@ -25,7 +25,7 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-var AI_DELAY = 0.5; // "worse" AI updates every half second
+var AI_DELAY = 0.45; // "worse" AI updates every half second (smaller number, smarter AI)
 
 function Goat(game, playerNumber, controls, sprite, color) {
     // Game properties:

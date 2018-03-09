@@ -1,2 +1,2 @@
 # goats are gravy.
-[Play the game here.](http://reidobandedo.github.io/Goat-Of-The-Hill/)
+[Play the game here.](https://duyh.github.io/goats-on-a-hill/)

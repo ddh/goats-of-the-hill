@@ -85,19 +85,19 @@ Credits.prototype.draw = function (ctx) {
 
     // Draw goats
     this.blueGoatAnimation.drawFrame(this.game.clockTick, ctx, 200, 150, 1);
-    this.greenGoatAnimation.drawFrame(this.game.clockTick, ctx, 200, 250, 1);
-    this.redGoatAnimation.drawFrame(this.game.clockTick, ctx, 200, 350, 1);
-    this.yellowGoatAnimation.drawFrame(this.game.clockTick, ctx, 200, 450, 1);
+    // this.greenGoatAnimation.drawFrame(this.game.clockTick, ctx, 200, 250, 1);
+    // this.redGoatAnimation.drawFrame(this.game.clockTick, ctx, 200, 350, 1);
+    // this.yellowGoatAnimation.drawFrame(this.game.clockTick, ctx, 200, 450, 1);
 
     // Draw developer names
     drawTextWithOutline(ctx, '32px Impact', 'Duy Huynh', 320, 210, 'blue', 'white', 5);
-    drawTextWithOutline(ctx, '32px Impact', 'Such Kamal', 320, 310, 'green', 'white', 5);
-    drawTextWithOutline(ctx, '32px Impact', 'Jasmine Pedersen', 320, 410, 'red', 'white', 5);
-    drawTextWithOutline(ctx, '32px Impact', 'Reid Thompson', 320, 510, GOLD_COLOR, 'white', 5);
+    // drawTextWithOutline(ctx, '32px Impact', 'Such Kamal', 320, 310, 'green', 'white', 5);
+    // drawTextWithOutline(ctx, '32px Impact', 'Jasmine Pedersen', 320, 410, 'red', 'white', 5);
+    // drawTextWithOutline(ctx, '32px Impact', 'Reid Thompson', 320, 510, GOLD_COLOR, 'white', 5);
 
 
     // Credits
-    drawTextWithOutline(ctx, '48px Impact', 'Red Three Team', 240, 120, 'red', 'white', 5);
+    // drawTextWithOutline(ctx, '48px Impact', 'Red Three Team', 240, 120, 'red', 'white', 5);
 };
 
 // performs variable initialization

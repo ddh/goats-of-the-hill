@@ -84,11 +84,13 @@ Round.prototype.initGoats = function () {
     var goat3 = new Goat(this.game, 2, playerThreeControls, "red-goat", "red");
     goat3.initControls();
     goat3.x = 430;
+    goat3.aiEnabled = true;
     this.goats.push(goat3);
 
     var playerFourControls = {jump: 0, left: 0, right: 0, attack: 0, run: 0};
     var goat4 = new Goat(this.game, 3, playerFourControls, "yellow-goat", GOLD_COLOR);
     goat4.initControls();
+    goat4.aiEnabled = true;
     goat4.x = 630;
     this.goats.push(goat4);
 };

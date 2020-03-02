@@ -1,4 +1,4 @@
-# 🕹️ [Play The Game In Your Browser!](https://ddh.github.io/goats-on-a-hill/) 
+# 🕹️ [Play The Game In Your Browser!](https://ddh.github.io/goats-of-the-hill/)
 
 ## 🐐 Say What?
 Originally a culminating project for a CS course, that has evolved into something more...

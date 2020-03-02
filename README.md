@@ -1,2 +1,2 @@
 # goats are gravy.
-[Play the game here.](https://duyh.github.io/goats-on-a-hill/)
+[Play the game here.](https://ddh.github.io/goats-on-a-hill/)
